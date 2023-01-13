@@ -43,7 +43,7 @@ def get_all():
             {
                 "code": 200,
                 "data": {
-                    "jobs": [booking.json() for booking in bookingList]
+                    "bookings": [booking.json() for booking in bookingList]
                 }
             }
         )
@@ -53,3 +53,6 @@ def get_all():
             "message": "There are no applications."
         }
     ), 404
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=5001, debug=True)
