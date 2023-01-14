@@ -54,5 +54,36 @@ def get_all():
         }
     ), 404
 
+@app.route("/bookings/<int:bookingID>" , methods = ['POST'])
+def createBooking(bookingID):
+
+    # bookingID = request.json.get('bookingID' , None)
+    bookingDate = request.json.get('bookingDate' , None)
+    bookingLocation = request.json.get('bookingLocation' , None)
+
+    newBooking = Booking(bookingID = bookingID, bookingDate = bookingDate , bookingLocation = bookingLocation)
+    
+    try:
+        db.session.add(newBooking)
+        db.session.commit()
+    
+    except Exception as e:
+        print(e)
+        return jsonify({
+            "code": 500,
+            "data": {
+                "bookingID": bookingID
+            },
+            "message": "An error occurred collecting"
+        }), 500
+
+    return jsonify(
+        {
+            "code": 201,
+            "data": newBooking.json(),
+            "message": "Your booking has been created"
+        }
+    ), 201 
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5001, debug=True)
