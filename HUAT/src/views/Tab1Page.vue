@@ -25,7 +25,7 @@
                 </ion-row>
                 <ion-row>
                     <ion-col>
-                        <ion-button expand="block" href="/tabs/viewBooking">My Bookings</ion-button>
+                        <ion-button expand="block" href="/viewBooking">My Bookings</ion-button>
                     </ion-col>
                 </ion-row>
             </ion-grid>

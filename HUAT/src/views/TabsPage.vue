@@ -29,7 +29,7 @@
         </ion-tab-button>
 
         <!-- for viewBooking page Navbar -->
-        <ion-tab-button tab="viewBookingtab5" href="/tabs/viewBooking">
+        <ion-tab-button tab="viewBookingtab5" href="/viewBooking">
           <ion-icon :icon="person" />
           <ion-label>My Profile</ion-label>
         </ion-tab-button>
