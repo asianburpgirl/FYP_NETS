@@ -13,7 +13,7 @@
             </ion-header>
             <!-- <ExploreContainer name="Tab 1 page" />  -->
             <ion-grid>
-                <ion-row>
+                <ion-row class="ion-align-items-center">
                     <ion-col>
                         <ion-button expand="block">Subscription Plans</ion-button>
                     </ion-col>
@@ -34,7 +34,13 @@
 </template>
 
 <style scoped>
+    ion-grid{
+        padding-top:50px;
+    }
 
+    ion-col{
+        padding:15px;
+    }
 </style>
 
 <script setup lang="ts">
