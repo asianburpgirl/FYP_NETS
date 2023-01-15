@@ -17,9 +17,13 @@
                     <ion-col>
                         <ion-button expand="block">Subscription Plans</ion-button>
                     </ion-col>
+                </ion-row>
+                <ion-row>
                     <ion-col>
                         <ion-button expand="block">Find me a carpark</ion-button>
                     </ion-col>
+                </ion-row>
+                <ion-row>
                     <ion-col>
                         <ion-button expand="block">My Bookings</ion-button>
                     </ion-col>
@@ -30,6 +34,7 @@
 </template>
 
 <style scoped>
+
 </style>
 
 <script setup lang="ts">
