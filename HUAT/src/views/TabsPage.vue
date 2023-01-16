@@ -3,7 +3,7 @@
     <ion-tabs>
       <ion-router-outlet></ion-router-outlet>
       <ion-tab-bar slot="bottom">
-        <ion-tab-button tab="tab1" href="/tabs/home">
+        <ion-tab-button tab="home" href="/tabs/home">
           <ion-icon :icon="home" />
           <ion-label>Home</ion-label>
         </ion-tab-button>
@@ -18,7 +18,7 @@
           <ion-label>View Plans</ion-label>
         </ion-tab-button>
 
-        <ion-tab-button tab="tab4" href="/tabs/tab4">
+        <ion-tab-button tab="map" href="/tabs/map">
           <ion-icon :icon="map" />
           <ion-label>Map</ion-label>
         </ion-tab-button>
