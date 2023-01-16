@@ -21,23 +21,23 @@ const routes: Array<RouteRecordRaw> = [
       },
       {
         path: 'home',
-        component: () => import('@/views/HomePage.vue')
+        component: () => import('@/views/homePage.vue')
       },
       {
-        path: 'tab2',
-        component: () => import('@/views/Tab2Page.vue')
+        path: 'wallet',
+        component: () => import('@/views/walletPage.vue')
       },
       {
-        path: 'tab3',
-        component: () => import('@/views/Tab3Page.vue')
+        path: 'plans',
+        component: () => import('@/views/plansPage.vue')
       },
       {
-        path: 'tab4',
-        component: () => import('@/views/Tab4Page.vue')
+        path: 'map',
+        component: () => import('@/views/mapPage.vue')
       },
       {
-        path: 'tab5',
-        component: () => import('@/views/Tab5Page.vue')
+        path: 'profile',
+        component: () => import('@/views/profilePage.vue')
       },
     ]
   },
