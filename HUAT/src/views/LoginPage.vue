@@ -51,11 +51,11 @@
 </template>
 
 <script lang="ts">
-import { IonRow, IonInput, IonItem, IonButton } from "@ionic/vue"; // IonCol, IonList
+import { IonRow, IonInput, IonItem, IonButton, IonCheckbox} from "@ionic/vue"; // IonCol, IonList
 import { defineComponent } from "vue";
 
 export default defineComponent({
-  components: { IonRow, IonInput, IonItem, IonButton }, //IonCol, IonList
+  components: { IonRow, IonInput, IonItem, IonButton, IonCheckbox}, //IonCol, IonList
 });
 </script>
 
