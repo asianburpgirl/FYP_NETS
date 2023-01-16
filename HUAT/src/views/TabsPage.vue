@@ -8,12 +8,12 @@
           <ion-label>Home</ion-label>
         </ion-tab-button>
 
-        <ion-tab-button tab="tab2" href="/tabs/wallet">
+        <ion-tab-button tab="wallet" href="/tabs/wallet">
           <ion-icon :icon="card" />
           <ion-label>Wallet</ion-label>
         </ion-tab-button>
 
-        <ion-tab-button tab="tab3" href="/tabs/tab3">
+        <ion-tab-button tab="plans" href="/tabs/plans">
           <ion-icon :icon="albums" />
           <ion-label>View Plans</ion-label>
         </ion-tab-button>
