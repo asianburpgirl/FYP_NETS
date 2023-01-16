@@ -1,14 +1,20 @@
 <template>
     <ion-page>
-        <ion-header>
+        <!-- <ion-header collapse="condense">
             <ion-toolbar>
+                <ion-buttons slot="start">
+                    <ion-back-button default-href="#"></ion-back-button>
+                </ion-buttons>
                 <ion-title>My Bookings</ion-title>
             </ion-toolbar>
-        </ion-header>
+        </ion-header> -->
         <ion-content>
             <ion-header collapse="condense">
                 <ion-toolbar>
-                    <ion-title size="large">My Bookings</ion-title>
+                    <ion-buttons slot="start">
+                        <ion-back-button default-href="/tabs"></ion-back-button>
+                    </ion-buttons>
+                    <ion-title>My Bookings</ion-title>
                 </ion-toolbar>
             </ion-header>
             <ion-searchbar></ion-searchbar>
@@ -76,11 +82,12 @@
   <ion-content class="ion-padding"></ion-content>
   
 <script lang="ts">
-import { IonCard, IonCardHeader, IonCardSubtitle, IonCardTitle, IonSearchbar } from '@ionic/vue';
+import { IonCard, IonCardHeader, IonCardSubtitle, IonCardTitle, IonSearchbar, IonButton, IonButtons, IonIcon, IonBackButton } from '@ionic/vue';
 import { defineComponent } from 'vue';
+import { arrowBack, home, star } from 'ionicons/icons';
 
 export default defineComponent({
-    components: { IonCard, IonCardHeader, IonCardSubtitle, IonCardTitle, IonSearchbar },
+    components: { IonCard, IonCardHeader, IonCardSubtitle, IonCardTitle, IonSearchbar, IonButton, IonBackButton },
 });
 </script>
   
