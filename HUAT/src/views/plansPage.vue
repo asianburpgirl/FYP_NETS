@@ -54,3 +54,4 @@ import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent } from '@ionic/vue
     padding: 0;
 }
 </style>
+

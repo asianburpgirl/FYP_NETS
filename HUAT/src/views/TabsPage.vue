@@ -23,7 +23,7 @@
           <ion-label>Map</ion-label>
         </ion-tab-button>
 
-        <ion-tab-button tab="tab5" href="/tabs/tab5">
+        <ion-tab-button tab="profile" href="/tabs/profile">
           <ion-icon :icon="person" />
           <ion-label>My Profile</ion-label>
         </ion-tab-button>
