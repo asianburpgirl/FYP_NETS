@@ -27,16 +27,16 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import('@/views/walletPage.vue')
       },
       {
-        path: 'tab3',
-        component: () => import('@/views/Tab3Page.vue')
+        path: 'plans',
+        component: () => import('@/views/plansPage.vue')
       },
       {
-        path: 'tab4',
-        component: () => import('@/views/Tab4Page.vue')
+        path: 'map',
+        component: () => import('@/views/mapPage.vue')
       },
       {
-        path: 'tab5',
-        component: () => import('@/views/Tab5Page.vue')
+        path: 'profile',
+        component: () => import('@/views/profilePage.vue')
       },
     ]
   },

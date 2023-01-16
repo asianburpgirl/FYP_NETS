@@ -42,7 +42,7 @@
       </ion-row>
 
       <ion-row class="ion-padding-top ion-justify-content-center">
-        <ion-button shape="round">Login</ion-button>
+        <ion-button shape="round" routerLink="/tabs/">Login</ion-button>
       </ion-row>
       
       
