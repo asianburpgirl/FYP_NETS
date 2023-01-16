@@ -3,6 +3,7 @@ import { RouteRecordRaw } from 'vue-router';
 import TabsPage from '../views/TabsPage.vue';
 import LoginPage from '../views/LoginPage.vue';
 import viewBooking from '../views/viewBooking.vue';
+import HomePage from '../views/HomePage.vue';
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -15,11 +16,11 @@ const routes: Array<RouteRecordRaw> = [
     children: [
       {
         path: '',
-        redirect: '/tabs/tab1'
+        redirect: '/tabs/home'
       },
       {
-        path: 'tab1',
-        component: () => import('@/views/Tab1Page.vue')
+        path: 'home',
+        component: () => import('@/views/HomePage.vue')
       },
       {
         path: 'tab2',
@@ -42,7 +43,16 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/viewBooking',
     component: viewBooking
-  }
+  },
+  {
+    path: '/login',
+    component: LoginPage
+  },
+  // {
+  //   path: '/home',
+  //   component: HomePage
+  // }
+  
 ]
 
 const router = createRouter({
