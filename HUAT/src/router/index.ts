@@ -4,6 +4,7 @@ import TabsPage from '../views/TabsPage.vue';
 import LoginPage from '../views/LoginPage.vue';
 import viewBooking from '../views/viewBooking.vue';
 import HomePage from '../views/HomePage.vue';
+import buySubscription from '../views/buySubscription.vue';
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -47,6 +48,10 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/login',
     component: LoginPage
+  },
+  {
+    path: '/buySubscription',
+    component: buySubscription
   },
   // {
   //   path: '/home',
