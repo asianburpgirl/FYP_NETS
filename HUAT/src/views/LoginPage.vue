@@ -21,63 +21,72 @@
         ></ion-input>
       </ion-item>
 
-      <ion-row>
+      <ion-row class="ion-padding-top">
         <ion-col>
-          <ion-item>
-            <ion-checkbox></ion-checkbox>
-            <ion-label>Remember me</ion-label>
-          </ion-item>
+          <div float-left class="myLine">
+            <ion-item lines="none">
+              <ion-checkbox></ion-checkbox>
+              <ion-label> Remember me</ion-label>
+            </ion-item>
+            <div float-right class="myLine2">
+              Forgot password
+            </div>
+          </div>
         </ion-col>
       </ion-row>
+
+      <ion-row class="ion-padding-top">
+        <ion-col>
+          <div class="ion-text-center">New User? Sign up now!</div>
+        </ion-col>
+      </ion-row>
+
+      <ion-row class="ion-padding-top ion-justify-content-center">
+        <ion-button shape="round">Login</ion-button>
+      </ion-row>
       
-      <ion-row>
-        <ion-col> Forgot Password? </ion-col>
-      </ion-row>
-
-      <ion-row>
-        New User? Sign up now!
-      </ion-row>
-
-      <ion-button>Login </ion-button>
-      <!-- PLS HELP CENTER THIS -->
+      
     </ion-grid>
   </ion-content>
 </template>
 
 <script lang="ts">
-import { IonGrid, IonRow, IonInput, IonItem } from "@ionic/vue"; // IonCol, IonList
+import { IonRow, IonInput, IonItem, IonButton } from "@ionic/vue"; // IonCol, IonList
 import { defineComponent } from "vue";
 
 export default defineComponent({
-  components: { IonGrid, IonRow, IonInput, IonItem }, //IonCol, IonList
- 
+  components: { IonRow, IonInput, IonItem, IonButton }, //IonCol, IonList
 });
 </script>
 
 <style scoped>
-
-
 img {
   /* --padding-top: 100px;  this is for ion content*/
-  padding-top: 100px;
+  padding-top: 70px;
 }
 .pageHeader {
-  padding: 60px;
+  padding: 70px;
   font-size: 40px;
   color: #484747;
   font-weight: 700;
 }
 
-ion-input {
-  --placeholder-color: #ffffff;
-  --placeholder-opacity: 1;
-  /* color: #dbdbdb; */
+ion-checkbox {
+  --size: 20px;
 }
 
 
-ion-button{
-  padding:60px,
-  
+ion-label {
+  font-size: 1000px;
+}
+.myLine {
+  display: flex;
+  align-items: center;
+}
+
+.myLine2 {
+  display: flex;
+  align-items: center;
+  padding-left: 10px;
 }
 </style>
-
