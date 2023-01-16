@@ -52,12 +52,7 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/buySubscription',
     component: buySubscription
-  },
-  // {
-  //   path: '/home',
-  //   component: HomePage
-  // }
-  
+  }
 ]
 
 const router = createRouter({

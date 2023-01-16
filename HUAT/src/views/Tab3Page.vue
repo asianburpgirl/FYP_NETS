@@ -33,12 +33,10 @@
                         <ion-card-subtitle>Pay parking fees at the end of the month</ion-card-subtitle>
                         <br>
                         <ion-item lines="none">
-                            <ion-button slot="end" color="success" size="large">Buy</ion-button>
+                            <ion-button slot="end" color="success" size="large" href="/buySubscription">Buy</ion-button>
                         </ion-item>
                     </ion-card-header>
-    
                 </ion-grid>
-    
             </ion-card>
         </ion-content>
     </ion-page>
