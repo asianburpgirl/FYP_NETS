@@ -4,7 +4,7 @@
             <ion-header collapse="condense">
                 <ion-toolbar>
                     <ion-buttons slot="start">
-                        <ion-back-button default-href="/tabs"></ion-back-button>
+                        <ion-back-button default-href="/tabs/home"></ion-back-button>
                     </ion-buttons>
                     <ion-title>My Bookings</ion-title>
                 </ion-toolbar>
