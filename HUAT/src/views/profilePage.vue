@@ -45,7 +45,7 @@
 
       <ion-list class="ion-margin">
         <ion-item button detail="true">
-          <ion-label router>View Bookings</ion-label>
+          <ion-label>View Bookings</ion-label>
         </ion-item>
         <ion-item button detail="true">
           <ion-label>Setting</ion-label>
