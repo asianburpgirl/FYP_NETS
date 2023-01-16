@@ -1,5 +1,5 @@
 <template>
-    <ion-page>
+    <ion-page class="ion-padding">
         <ion-content>
             <ion-header collapse="condense">
                 <ion-toolbar>
