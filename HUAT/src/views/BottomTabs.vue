@@ -15,7 +15,7 @@
 
         <ion-tab-button tab="plans" href="/tabs/plans">
           <ion-icon :icon="albums" />
-          <ion-label>View Plans</ion-label>
+          <ion-label> Plans</ion-label>
         </ion-tab-button>
 
         <ion-tab-button tab="map" href="/tabs/map">
@@ -25,7 +25,7 @@
 
         <ion-tab-button tab="profile" href="/tabs/profile">
           <ion-icon :icon="person" />
-          <ion-label>My Profile</ion-label>
+          <ion-label>Profile</ion-label>
         </ion-tab-button>
       </ion-tab-bar>
     </ion-tabs>

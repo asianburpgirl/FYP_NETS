@@ -1,10 +1,10 @@
 import { createRouter, createWebHistory } from '@ionic/vue-router';
 import { RouteRecordRaw } from 'vue-router';
-import TabsPage from '../views/TabsPage.vue';
-import LoginPage from '../views/LoginPage.vue';
+import TabsPage from '../views/BottomTabs.vue';
+import LoginPage from '../views/loginPage.vue';
 import viewBooking from '../views/viewBooking.vue';
-import HomePage from '../views/HomePage.vue';
 import buySubscription from '../views/buySubscription.vue';
+import nearbymePage from '../views/nearbymePage.vue';
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -21,7 +21,7 @@ const routes: Array<RouteRecordRaw> = [
       },
       {
         path: 'home',
-        component: () => import('@/views/HomePage.vue')
+        component: () => import('@/views/homePage.vue')
       },
       {
         path: 'wallet',
@@ -46,8 +46,8 @@ const routes: Array<RouteRecordRaw> = [
     component: viewBooking
   },
   {
-    path: '/login',
-    component: LoginPage
+    path: '/nearbyme',
+    component: nearbymePage
   },
   {
     path: '/buySubscription',

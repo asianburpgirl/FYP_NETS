@@ -1,51 +1,87 @@
 <template>
-    <ion-page class="ion-padding">
-        <ion-content>
-            <ion-header collapse="condense">
-                <ion-toolbar>
-                    <ion-buttons slot="start">
-                        <ion-back-button default-href="/tabs/home"></ion-back-button>
-                    </ion-buttons>
-                    <ion-title>Buy Subscription</ion-title>
-                </ion-toolbar>
-            </ion-header>
-            <ion-card>
-                <ion-grid>
-                    <ion-card-header>
-                        <ion-card-title>Premium Plan</ion-card-title>
-                        <ion-card-subtitle>Free 2 hour parking</ion-card-subtitle>
-                        <ion-card-subtitle>Free parking once a month</ion-card-subtitle>
-                        <ion-card-subtitle>Pay parking fees at the end of the month</ion-card-subtitle>
+  <base-layout pageTitle="Buy Subscription" pageToGoBack="/tabs/" needBackButton="y" needToolBar="y">
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>Premium Plan</ion-card-title>
+      </ion-card-header>
 
-                        <br>
-                        <ion-card-subtitle color="danger">*No refund after buying</ion-card-subtitle>
-                        <br>
-                        <ion-item lines="none">
-                            <ion-button slot="end" color="success" size="large" expand="block" href="/buySubscription">Buy</ion-button>
-                        </ion-item>
-                    </ion-card-header>
-                </ion-grid>
-            </ion-card>
-        </ion-content>
-    </ion-page>
+      <ion-card-content>
+        Free 2 hour parking<br />
+        Free parking once a month<br />
+        Pay parking fees at the end of the month<br />
+
+        <h3 class="ion-padding-top" style="color:red; font-weight: bold;">*No refund after buying</h3>
+      </ion-card-content>
+
+      <ion-button expand="full" shape="round"> Buy</ion-button>
+    </ion-card>
+  </base-layout>
+
+  <!-- <ion-page class="ion-padding">
+    <ion-header collapse="condense">
+      <ion-toolbar>
+        <ion-buttons slot="start">
+          <ion-back-button default-href="/tabs/home"></ion-back-button>
+        </ion-buttons>
+        <ion-title>Buy Subscription</ion-title>
+      </ion-toolbar>
+    </ion-header>
+
+    <ion-content>
+      <ion-card>
+        <ion-grid>
+          <ion-card-header>
+            <ion-card-title>Premium Plan</ion-card-title>
+            <ion-card-subtitle>Free 2 hour parking</ion-card-subtitle>
+            <ion-card-subtitle>Free parking once a month</ion-card-subtitle>
+            <ion-card-subtitle
+              >Pay parking fees at the end of the month</ion-card-subtitle
+            >
+
+            <br />
+            <ion-card-subtitle color="danger"
+              >*No refund after buying</ion-card-subtitle
+            >
+            <br />
+            <ion-item lines="none">
+              <ion-button
+                slot="end"
+                color="success"
+                size="large"
+                expand="block"
+                href="/buySubscription"
+                >Buy</ion-button
+              >
+            </ion-item>
+          </ion-card-header>
+        </ion-grid>
+      </ion-card>
+    </ion-content>
+  </ion-page> -->
 </template>
-  <!-- <ion-content class="ion-padding"></ion-content> -->
-  
+<!-- <ion-content class="ion-padding"></ion-content> -->
+
 <script lang="ts">
-import { IonCard, IonCardHeader, IonCardSubtitle, IonCardTitle, IonButton, IonButtons, IonIcon, IonBackButton } from '@ionic/vue';
-import { defineComponent } from 'vue';
+import { IonCard, IonCardHeader, IonCardTitle, IonIcon } from "@ionic/vue";
+import { defineComponent } from "vue";
+import BaseLayout from "../components/baseLayout.vue";
 // import { arrowBack, home, star } from 'ionicons/icons';
 
 export default defineComponent({
-    components: { IonCard, IonCardHeader, IonCardSubtitle, IonCardTitle, IonButton, IonButtons, IonBackButton },
+  components: {
+    IonCard,
+    IonCardHeader,
+    IonCardTitle,
+    BaseLayout,
+  },
 });
 </script>
-  
+
 <style scoped>
 /* iOS places the subtitle above the title */
 
 ion-card-header.ios {
-    display: flex;
-    flex-flow: column-reverse;
+  display: flex;
+  flex-flow: column-reverse;
 }
 </style>
