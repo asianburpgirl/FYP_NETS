@@ -1,7 +1,7 @@
 <template>
   <ion-content class="ion-padding">
     <ion-grid>
-      <ion-row>
+      <ion-row class="ion-justify-content-center">
         <img :src="require('../images/nets.png')" />
       </ion-row>
 
@@ -10,7 +10,8 @@
       </ion-row>
 
       <ion-item fill="solid" ref="item" class="paddingTop">
-        <ion-input :clearInput="true" placeholder="Username:" type="email" @ionInput="validate"></ion-input>
+        <!-- <ion-input :clearInput="true" placeholder="Username:" type="email" @ionInput="validate"></ion-input> -->
+        <ion-input :clearInput="true" placeholder="Username:" type="email"></ion-input>
         <ion-note slot="error">Invalid email</ion-note>
       </ion-item>
 
@@ -18,9 +19,9 @@
         <ion-input :clearInput="true" type="password" placeholder="Password:"></ion-input>
       </ion-item>
 
-      <ion-row class="ion-padding-top">
+      <ion-row class="ion-padding-top ">
         <ion-col>
-          <div float-left class="myLine">
+          <div class="myLine ion-justify-content-center">
             <ion-item lines="none">
               <ion-checkbox></ion-checkbox>
               <ion-label> Remember me</ion-label>
@@ -50,28 +51,28 @@ import { defineComponent } from "vue";
 
 export default defineComponent({
   components: { IonRow, IonInput, IonItem, IonButton, IonCheckbox,IonLabel, IonNote  }, //IonCol, IonList
-  methods:{
-    validateEmail(email: string) {
-        return email.match(/^(?=.{1,254}$)(?=.{1,64}@)[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+)*@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/);
-      },
+  // methods:{
+  //   validateEmail(email: string) {
+  //       return email.match(/^(?=.{1,254}$)(?=.{1,64}@)[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+)*@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/);
+  //     },
 
-      validate(ev: { target: { value: any; }; }) {
-        const value = ev.target.value;
+  //     validate(ev: { target: { value: any; }; }) {
+  //       const value = ev.target.value;
 
-        this.$refs.item.$el.classList.remove('ion-valid');
-        this.$refs.item.$el.classList.remove('ion-invalid');
+  //       this.$refs.item.$el.classList.remove('ion-valid');
+  //       this.$refs.item.$el.classList.remove('ion-invalid');
 
-        if (value === '') return;
+  //       if (value === '') return;
 
-        this.validateEmail(value)
-          ? this.$refs.item.$el.classList.add('ion-valid')
-          : this.$refs.item.$el.classList.add('ion-invalid');
-      },
+  //       this.validateEmail(value)
+  //         ? this.$refs.item.$el.classList.add('ion-valid')
+  //         : this.$refs.item.$el.classList.add('ion-invalid');
+  //     },
 
-      markTouched() {
-        this.$refs.item.$el.classList.add('ion-touched')
-      }
-  }
+  //     markTouched() {
+  //       this.$refs.item.$el.classList.add('ion-touched')
+  //     }
+  // }
 });
 
 
