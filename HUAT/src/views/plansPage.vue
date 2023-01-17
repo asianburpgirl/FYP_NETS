@@ -1,11 +1,7 @@
 <template>
-  <base-layout title="Subscription Plans">
-    <ion-content :fullscreen="true">
-      <ion-header collapse="condense">
-        <ion-toolbar>
-          <ion-title size="large">Subscription Plans</ion-title>
-        </ion-toolbar>
-      </ion-header>
+  <!-- <base-layout pageTitle="Subscription Plans" pageToGoBack="/tabs/"> -->
+  <base-layout pageTitle="Subscription Plans" pageToGoBack="/tabs/" >
+  
       <ion-card>
         <!-- <ion-img src="assets/images/ion.jpg"></ion-img> -->
         <ion-grid>
@@ -43,7 +39,7 @@
           </ion-card-header>
         </ion-grid>
       </ion-card>
-    </ion-content>
+
   </base-layout>
 </template>
 
