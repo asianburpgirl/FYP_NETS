@@ -1,18 +1,14 @@
 <template>
-  <ion-page>
+  <ion-page class="ion-padding">
+    
     <ion-header>
       <ion-toolbar>
-        <ion-title>Wallet</ion-title>
+        <ion-title class="ion-text-center">My Wallet</ion-title>
       </ion-toolbar>
     </ion-header>
-    <ion-content :fullscreen="true">
-      <ion-header collapse="condense">
-        <ion-toolbar>
-          <ion-title size="large">Wallet</ion-title>
-        </ion-toolbar>
-      </ion-header>
 
-      <!-- <ExploreContainer name="Tab 2 page" /> -->
+    <ion-content >
+  
     </ion-content>
   </ion-page>
 </template>

@@ -1,5 +1,5 @@
 <template>
-    <ion-page>
+    <ion-page class="ion-padding">
         <ion-header>
             <ion-toolbar>
                 <ion-title>Home</ion-title>
