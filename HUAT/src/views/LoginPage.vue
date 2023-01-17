@@ -1,6 +1,5 @@
 <template>
-  <ion-page class="ion-padding">
-    <ion-content>
+  <base-layout >
       <ion-grid>
         <ion-row class="ion-justify-content-center">
           <img :src="require('../images/nets.png')" />
@@ -50,8 +49,8 @@
           <ion-button shape="round" routerLink="/tabs/">Login</ion-button>
         </ion-row>
       </ion-grid>
-    </ion-content>
-  </ion-page>
+
+  </base-layout>
 </template>
 
 <script lang="ts">
@@ -109,12 +108,12 @@ ion-content {
 
 img {
   /* --padding-top: 100px;  this is for ion content*/
-  padding-top: 50px;
+  padding-top: 45px;
   width: 290px
 }
 .pageHeader {
-  padding: 50px;
-  font-size: 40px;
+  padding: 45px;
+  font-size: 35px;
   color: #484747;
   font-weight: 700;
 }

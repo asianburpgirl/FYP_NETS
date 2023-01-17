@@ -1,5 +1,5 @@
 <template>
-  <base-layout pageTitle="Buy Subscription" pageToGoBack="/tabs/" needBackButton="y">
+  <base-layout pageTitle="Buy Subscription" pageToGoBack="/tabs/" needBackButton="y" needToolBar="y">
     <ion-card>
       <ion-card-header>
         <ion-card-title>Premium Plan</ion-card-title>

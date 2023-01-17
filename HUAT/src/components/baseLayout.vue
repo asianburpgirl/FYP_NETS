@@ -1,7 +1,7 @@
 <template>
   <ion-page class="ion-padding">
     <ion-header>
-      <ion-toolbar>
+      <ion-toolbar v-if="needToolBar">
         <ion-buttons v-if="needBackButton" slot="start">
           <ion-back-button :default-href="pageToGoBack"></ion-back-button>
         </ion-buttons>
@@ -35,7 +35,8 @@ export default defineComponent({
   props: {
     pageTitle: String,
     needBackButton: String,
-    pageToGoBack: String
+    pageToGoBack: String,
+    needToolBar : String
   },
   components: {
     IonPage,

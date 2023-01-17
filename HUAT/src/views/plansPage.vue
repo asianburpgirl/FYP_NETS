@@ -1,6 +1,6 @@
 <template>
   <!-- <base-layout pageTitle="Subscription Plans" pageToGoBack="/tabs/"> -->
-  <base-layout pageTitle="Subscription Plans" pageToGoBack="/tabs/" >
+  <base-layout pageTitle="Subscription Plans" pageToGoBack="/tabs/" needToolBar="y">
   
       <ion-card>
         <!-- <ion-img src="assets/images/ion.jpg"></ion-img> -->
