@@ -1,24 +1,16 @@
 <template>
-    <ion-page class="ion-padding">
-      <ion-header>
-        <ion-toolbar>
-          <ion-title>Map Page</ion-title>
-        </ion-toolbar>
-      </ion-header>
-      <ion-content :fullscreen="true">
-        <ion-header collapse="condense">
-          <ion-toolbar>
-            <ion-title size="large">Map Page</ion-title>
-          </ion-toolbar>
-        </ion-header>
+  <base-layout pageTitle="Map Page" needToolBar="y"> 
   
-        <!-- <ExploreContainer name="Tab 4 page" /> -->
-      </ion-content>
-    </ion-page>
-  </template>
-  
-  <script setup lang="ts">
-  import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent } from '@ionic/vue';
+  </base-layout>
+</template>
+
+<script setup lang="ts">
+import {
+  IonPage,
+  IonHeader,
+  IonToolbar,
+  IonTitle,
+  IonContent,
+} from "@ionic/vue";
 //   import ExploreContainer from '@/components/ExploreContainer.vue';
-  </script>
-  
+</script>

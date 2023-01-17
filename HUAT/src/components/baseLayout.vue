@@ -6,7 +6,7 @@
           <ion-back-button :default-href="pageToGoBack"></ion-back-button>
         </ion-buttons>
 
-        <ion-title>
+        <ion-title class="ion-text-center">
           {{ pageTitle }}
         </ion-title>
 
