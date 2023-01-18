@@ -1,0 +1,210 @@
+<template>
+  <base-layout>
+    <ion-grid>
+      <ion-row class="ion-justify-content-center">
+        <img :src="require('../images/nets.png')" />
+      </ion-row>
+
+      <ion-row class="ion-justify-content-center">
+        <icon-col size="9" class="pageHeader"> Registration </icon-col>
+      </ion-row>
+
+      <!-- username -->
+      <ion-list>
+        <ion-item>
+          <ion-label position="stacked">Username:</ion-label>
+          <ion-input
+            :clear-input="true"
+            v-model="userName"
+            @change="validateUsername(userName)"
+          ></ion-input>
+        </ion-item>
+        <!-- username error message -->
+        <ion-item lines="none" v-if="isUsernameValid == 2">
+          <ion-note color="danger">Your username is too long!</ion-note>
+        </ion-item>
+
+        <!-- name -->
+        <ion-item>
+          <ion-label position="stacked">Name:</ion-label>
+          <ion-input
+            :clear-input="true"
+            v-model="name"
+            @change="validateName(name)"
+          >
+          </ion-input>
+        </ion-item>
+        <!-- name error message -->
+        <ion-item lines="none" v-if="isNameValid == 2">
+          <ion-note color="danger">Your name is too long!</ion-note>
+        </ion-item>
+
+        <!-- email -->
+        <ion-item>
+          <ion-label position="stacked">Email:</ion-label>
+          <ion-input
+            :clear-input="true"
+            type="email"
+            v-model="email"
+            @change="validateEmail(email)"
+          >
+          </ion-input>
+        </ion-item>
+        <!-- email error message -->
+        <ion-item lines="none" v-if="isEmailValid == 2">
+          <ion-note color="danger">Invalid email!</ion-note>
+        </ion-item>
+
+        <!-- password -->
+        <ion-item>
+          <ion-label position="stacked">Password:</ion-label>
+          <ion-input
+            :clear-input="true"
+            type="password"
+            v-model="password"
+          ></ion-input>
+        </ion-item>
+        <!-- password error message -->
+        <!-- <ion-item lines="none" v-if="isPasswordValid == 2"> -->
+            <ion-item lines="none">
+          <ion-note color="danger"> </ion-note>
+        </ion-item>
+
+        <!-- reconfirm password -->
+        <ion-item>
+          <ion-label position="stacked">Reconfirm password:</ion-label>
+          <ion-input
+            :clear-input="true"
+            type="password"
+            v-model="reconfirmPassword"
+          ></ion-input>
+        </ion-item>
+        <!-- reconfirm password error message -->
+        <!-- <ion-item lines="none" v-if="isEmailValid == 2">
+            <ion-note color="danger" >Invalid email</ion-note>
+        </ion-item> -->
+
+        <!-- phone num -->
+        <ion-item>
+          <ion-label position="stacked">Phone number:</ion-label>
+          <ion-input
+            :clear-input="true"
+            type="tel"
+            v-model="phoneNumber"
+          ></ion-input>
+        </ion-item>
+        <!-- phone num error message -->
+        <!-- <ion-item lines="none" v-if="isEmailValid == 2">
+            <ion-note color="danger" >Invalid email</ion-note>
+        </ion-item> -->
+
+        <ion-row class="ion-padding-top ion-justify-content-center">
+          <ion-button shape="round" routerLink="/tabs/">Register</ion-button>
+        </ion-row>
+      </ion-list>
+    </ion-grid>
+  </base-layout>
+</template>
+
+<script lang="ts">
+import { List } from "@ionic/core/dist/types/components/list/list";
+import {
+  IonRow,
+  IonInput,
+  IonItem,
+  IonButton,
+  IonLabel,
+  IonNote,
+} from "@ionic/vue";
+
+export default {
+  components: {
+    IonRow,
+    IonInput,
+    IonItem,
+    IonButton,
+    IonLabel,
+    IonNote,
+  },
+  data() {
+    return {
+      userName: "",
+      name: "",
+      email: "",
+      password: "",
+      reconfirmPassword: "",
+      phoneNumber: "",
+
+      // if using boolean, the error msgs will appear when user first load.
+      // 0 = neutral (first load), 1 = valid (accept field), 2 = not valid (error message)
+      isUsernameValid: 0,
+      isNameValid: 0,
+      isEmailValid: 0,
+      isReconfirmPasswordValid: 0,
+      isPhoneValid: 0,
+
+      //password need a list since there are multiple requiremnts to a password
+    //   isPasswordValid:{type: List,},
+    };
+  },
+  methods: {
+    validateEmail(email: string) {
+      //user enter valid address (with a @)
+      if (email.match("@")) {
+        this.isEmailValid = 1;
+      } else {
+        this.isEmailValid = 2;
+      }
+      //  copied from ionic website, not sure what it is but i think its @ in computer language. same as console.log(email.match('@'))
+      // console.log(email.match(/^(?=.{1,254}$)(?=.{1,64}@)[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+)*@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/))
+    },
+    validateUsername(username: string) {
+      //valid path. username less than 128 characters
+      if (username.length < 128) {
+        this.isUsernameValid = 1;
+      } else {
+        this.isUsernameValid = 2;
+      }
+    },
+    validateName(name: string) {
+      //valid path. name less than 128 characters
+      if (name.length < 128) {
+        this.isNameValid = 1;
+      } else {
+        this.isNameValid = 2;
+      }
+    },
+    validatePassword(password: string) {
+      //valid path. password more than 8 characters
+      if (password.length > 8) {
+        // const this.isPasswordValid : string[] = []; 
+        this.isPasswordValid = ["Password Length must be more than 8 characters"];
+      } else {
+        this.isPasswordValid = 2;
+      }
+    },
+  },
+};
+</script>
+
+<style scoped>
+img {
+  /* --padding-top: 100px;  this is for ion content*/
+  padding-top: 45px;
+  width: 290px;
+}
+.pageHeader {
+  padding: 45px;
+  font-size: 35px;
+  color: #484747;
+  font-weight: 700;
+}
+
+ion-checkbox {
+  --size: 20px;
+}
+
+ion-note {
+  font-size: small;
+}
+</style>
