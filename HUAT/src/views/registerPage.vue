@@ -233,12 +233,7 @@ export default defineComponent( {
       }
     },
     registerButton(){
-      // only let user register if they are no errors 
-      // disabledRegisterButton
-      console.log(this.isPhoneValid== 1)
-      console.log( this.isReconfirmPasswordValid ==1 ) 
-      console.log(this.isNameValid==1)
-      console.log(this.isEmailValid == 1)
+      // only let user register if they are no errors  
       if (this.isPhoneValid== 1 && this.isReconfirmPasswordValid== 1 && this.isNameValid==1 && this.isEmailValid == 1){
         this.disabledRegisterButton = 0
       }
