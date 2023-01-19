@@ -62,12 +62,16 @@
             :clear-input="true"
             type="password"
             v-model="password"
+            @change="validatePassword(password)"
           ></ion-input>
         </ion-item>
         <!-- password error message -->
-        <!-- <ion-item lines="none" v-if="isPasswordValid == 2"> -->
-            <ion-item lines="none">
-          <ion-note color="danger"> </ion-note>
+        <ion-item lines="none" v-if="passwordErrors.length != 0">
+          <ion-note color="danger">
+            <ul v-for="error of passwordErrors" :key="error">
+              <li>{{ error }}</li>
+            </ul>
+          </ion-note>
         </ion-item>
 
         <!-- reconfirm password -->
@@ -77,12 +81,13 @@
             :clear-input="true"
             type="password"
             v-model="reconfirmPassword"
+            @change="validateReconfirmPassword(reconfirmPassword)"
           ></ion-input>
         </ion-item>
         <!-- reconfirm password error message -->
-        <!-- <ion-item lines="none" v-if="isEmailValid == 2">
-            <ion-note color="danger" >Invalid email</ion-note>
-        </ion-item> -->
+        <ion-item lines="none" v-if="isReconfirmPasswordValid == 2">
+            <ion-note color="danger" >Your password do not match!</ion-note>
+        </ion-item>
 
         <!-- phone num -->
         <ion-item>
@@ -91,15 +96,16 @@
             :clear-input="true"
             type="tel"
             v-model="phoneNumber"
+            @change="validatePhone(phoneNumber)"
           ></ion-input>
         </ion-item>
         <!-- phone num error message -->
-        <!-- <ion-item lines="none" v-if="isEmailValid == 2">
-            <ion-note color="danger" >Invalid email</ion-note>
-        </ion-item> -->
+        <ion-item lines="none" v-if="isPhoneValid == 2">
+            <ion-note color="danger" >Invalid phone number!</ion-note>
+        </ion-item>
 
         <ion-row class="ion-padding-top ion-justify-content-center">
-          <ion-button shape="round" routerLink="/tabs/">Register</ion-button>
+          <ion-button shape="round" @click="registerButton()">Register</ion-button>
         </ion-row>
       </ion-list>
     </ion-grid>
@@ -108,6 +114,8 @@
 
 <script lang="ts">
 import { List } from "@ionic/core/dist/types/components/list/list";
+import { defineComponent } from 'vue';
+
 import {
   IonRow,
   IonInput,
@@ -116,8 +124,9 @@ import {
   IonLabel,
   IonNote,
 } from "@ionic/vue";
+import { construct } from "ionicons/icons";
 
-export default {
+export default defineComponent( {
   components: {
     IonRow,
     IonInput,
@@ -142,9 +151,9 @@ export default {
       isEmailValid: 0,
       isReconfirmPasswordValid: 0,
       isPhoneValid: 0,
-
-      //password need a list since there are multiple requiremnts to a password
-    //   isPasswordValid:{type: List,},
+      
+      //password need a list since there are multiple requiremnts to a password,
+      passwordErrors: Array<string>(),
     };
   },
   methods: {
@@ -175,16 +184,51 @@ export default {
       }
     },
     validatePassword(password: string) {
-      //valid path. password more than 8 characters
-      if (password.length > 8) {
-        // const this.isPasswordValid : string[] = []; 
-        this.isPasswordValid = ["Password Length must be more than 8 characters"];
-      } else {
-        this.isPasswordValid = 2;
+        this.passwordErrors = Array<string>(); // empty array to delete all errors
+      // error if password is too short
+      if (password.length < 8) {
+        this.passwordErrors.push(
+          "Password length must be more than 8 characters"
+        );
+      }
+      // check if there is at least a lower letter in password
+      const capsAllPassword = password.toUpperCase()
+      if (password == capsAllPassword) {
+        this.passwordErrors.push(
+          "Password must have at least a lower letter"
+        );
+      }
+      // check if there is at least a capital letter in password
+      const lowerAllPassword = password.toLowerCase()
+      if (password == lowerAllPassword) {
+        this.passwordErrors.push(
+          "Password must have at least an upper letter"
+        );
       }
     },
+    validateReconfirmPassword(reconfirmPassword: string) { 
+      //valid path. reconfirm password same as password
+      if (reconfirmPassword == this.password ) {
+        this.isReconfirmPasswordValid = 1;
+        //issue if user enter reconfirm password first, then enter password.
+        // even if same passwords, will have 
+      } else {
+        this.isReconfirmPasswordValid = 2;
+      }
+    },
+    validatePhone(phoneNum: string) { 
+      //valid path. phone number is 8 numbers
+      if (phoneNum.length == 8 ) {
+        this.isPhoneValid = 1;
+      } else {
+        this.isPhoneValid = 2;
+      }
+    },
+    registerButton(){
+      // routerLink="/tabs/"
+    }
   },
-};
+});
 </script>
 
 <style scoped>
