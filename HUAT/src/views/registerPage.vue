@@ -105,7 +105,7 @@
         </ion-item>
 
         <ion-row class="ion-padding-top ion-justify-content-center">
-          <ion-button shape="round" @click="registerButton()">Register</ion-button>
+          <ion-button shape="round" :disabled="disabledRegisterButton==1" routerLink="/tabs/">Register</ion-button>
         </ion-row>
       </ion-list>
     </ion-grid>
@@ -154,6 +154,8 @@ export default defineComponent( {
       
       //password need a list since there are multiple requiremnts to a password,
       passwordErrors: Array<string>(),
+
+      disabledRegisterButton: 1,
     };
   },
   methods: {
@@ -161,6 +163,7 @@ export default defineComponent( {
       //user enter valid address (with a @)
       if (email.match("@")) {
         this.isEmailValid = 1;
+        this.registerButton()
       } else {
         this.isEmailValid = 2;
       }
@@ -171,6 +174,7 @@ export default defineComponent( {
       //valid path. username less than 128 characters
       if (username.length < 128) {
         this.isUsernameValid = 1;
+        this.registerButton()
       } else {
         this.isUsernameValid = 2;
       }
@@ -179,6 +183,7 @@ export default defineComponent( {
       //valid path. name less than 128 characters
       if (name.length < 128) {
         this.isNameValid = 1;
+        this.registerButton()
       } else {
         this.isNameValid = 2;
       }
@@ -205,6 +210,7 @@ export default defineComponent( {
           "Password must have at least an upper letter"
         );
       }
+      this.registerButton()
     },
     validateReconfirmPassword(reconfirmPassword: string) { 
       //valid path. reconfirm password same as password
@@ -212,6 +218,7 @@ export default defineComponent( {
         this.isReconfirmPasswordValid = 1;
         //issue if user enter reconfirm password first, then enter password.
         // even if same passwords, will have 
+        this.registerButton()
       } else {
         this.isReconfirmPasswordValid = 2;
       }
@@ -220,13 +227,26 @@ export default defineComponent( {
       //valid path. phone number is 8 numbers
       if (phoneNum.length == 8 ) {
         this.isPhoneValid = 1;
+        this.registerButton()
       } else {
         this.isPhoneValid = 2;
       }
     },
     registerButton(){
-      // routerLink="/tabs/"
+      // only let user register if they are no errors 
+      // disabledRegisterButton
+      console.log(this.isPhoneValid== 1)
+      console.log( this.isReconfirmPasswordValid ==1 ) 
+      console.log(this.isNameValid==1)
+      console.log(this.isEmailValid == 1)
+      if (this.isPhoneValid== 1 && this.isReconfirmPasswordValid== 1 && this.isNameValid==1 && this.isEmailValid == 1){
+        this.disabledRegisterButton = 0
+      }
+      // this.$router.push({
+      //   path: '/tabs/',
+      // });
     }
+    
   },
 });
 </script>
