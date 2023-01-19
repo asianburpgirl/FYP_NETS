@@ -1,55 +1,57 @@
 <template>
   <base-layout >
-      <ion-grid>
-        <ion-row class="ion-justify-content-center">
-          <img :src="require('../images/nets.png')" />
-        </ion-row>
+    <ion-grid scroll-y="false">
+      <ion-row class="ion-justify-content-center">
+        <img :src="require('../images/nets.png')" />
+      </ion-row>
 
-        <ion-row class="ion-justify-content-center">
-          <icon-col size="9" class="pageHeader"> Login </icon-col>
-        </ion-row>
+      <ion-row class="ion-justify-content-center">
+        <icon-col size="9" class="pageHeader"> Login </icon-col>
+      </ion-row>
 
-        <ion-item fill="solid" ref="item" class="paddingTop">
-          <!-- <ion-input :clearInput="true" placeholder="Username:" type="email" @ionInput="validate"></ion-input> -->
-          <ion-input
-            :clearInput="true"
-            placeholder="Username:"
-            type="email"
-          ></ion-input>
-          <ion-note slot="error">Invalid email</ion-note>
-        </ion-item>
+      <ion-item fill="solid" ref="item" class="paddingTop">
+        <!-- <ion-input :clearInput="true" placeholder="Username:" type="email" @ionInput="validate"></ion-input> -->
+        <ion-input
+          :clearInput="true"
+          placeholder="Username:"
+          type="email"
+        ></ion-input>
+        <ion-note slot="error">Invalid email</ion-note>
+      </ion-item>
 
-        <ion-item>
-          <ion-input
-            :clearInput="true"
-            type="password"
-            placeholder="Password:"
-          ></ion-input>
-        </ion-item>
+      <ion-item>
+        <ion-input
+          :clearInput="true"
+          type="password"
+          placeholder="Password:"
+        ></ion-input>
+      </ion-item>
 
-        <ion-row class="ion-padding-top">
-          <ion-col>
-            <div class="myLine ion-justify-content-center">
-              <ion-item lines="none">
-                <ion-checkbox></ion-checkbox>
-                <ion-label> Remember me</ion-label>
-              </ion-item>
-              <div float-right class="myLine2">Forgot password</div>
-            </div>
-          </ion-col>
-        </ion-row>
+      <ion-row class="ion-padding-top">
+        <ion-col>
+          <div class="myLine ion-justify-content-center">
+            <ion-item lines="none">
+              <ion-checkbox></ion-checkbox>
+              <ion-label> Remember me</ion-label>
+            </ion-item>
+            <!-- <ion-button class="hyperlinkButton" >Forgot Password</ion-button> -->
+            <a float-right class="myLine2" href="/tabs/">Forgot password</a>
+          </div>
+        </ion-col>
+      </ion-row>
 
-        <ion-row class="ion-padding-top">
-          <ion-col>
-            <div class="ion-text-center">New User? Sign up now!</div>
-          </ion-col>
-        </ion-row>
+      <ion-row class="ion-padding-top">
+        <ion-col>
+          <div class="ion-text-center">
+            <a href="/register"> New User? Sign up now! </a>
+          </div>
+        </ion-col>
+      </ion-row>
 
-        <ion-row class="ion-padding-top ion-justify-content-center">
-          <ion-button shape="round" routerLink="/tabs/">Login</ion-button>
-        </ion-row>
-      </ion-grid>
-
+      <ion-row class="ion-padding-top ion-justify-content-center">
+        <ion-button shape="round" routerLink="/tabs/">Login</ion-button>
+      </ion-row>
+    </ion-grid>
   </base-layout>
 </template>
 
@@ -103,13 +105,13 @@ export default defineComponent({
 
 <style scoped>
 ion-content {
-     --overflow: hidden;
+  --overflow: hidden;
 }
 
 img {
   /* --padding-top: 100px;  this is for ion content*/
   padding-top: 45px;
-  width: 290px
+  width: 290px;
 }
 .pageHeader {
   padding: 45px;
@@ -122,12 +124,10 @@ ion-checkbox {
   --size: 20px;
 }
 
-ion-label {
-  font-size: 1000px;
-}
 .myLine {
   display: flex;
   align-items: center;
+  font-size: 14px;
 }
 
 .myLine2 {
@@ -135,4 +135,15 @@ ion-label {
   align-items: center;
   padding-left: 10px;
 }
+
+/* .hyperlinkButton{
+  --color: black;
+  --background: transparent;
+  --size: 10px;
+  font-size: 14px
+  
+} */
 </style>
+<!-- purpose filtering: focus -->
+<!-- purpose marketing: attract -->
+<!-- purpose sales: convert customers -->

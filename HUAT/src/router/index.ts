@@ -5,6 +5,7 @@ import LoginPage from '../views/loginPage.vue';
 import viewBooking from '../views/viewBooking.vue';
 import buySubscription from '../views/buySubscription.vue';
 import nearbymePage from '../views/nearbymePage.vue';
+import register from '../views/registerPage.vue';
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -21,7 +22,7 @@ const routes: Array<RouteRecordRaw> = [
       },
       {
         path: 'home',
-        component: () => import('@/views/homePage.vue')
+        component: () => import('@/views/HomePage.vue')
       },
       {
         path: 'wallet',
@@ -52,6 +53,10 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/buySubscription',
     component: buySubscription
+  },
+  {
+    path: '/register',
+    component: register
   }
 ]
 
