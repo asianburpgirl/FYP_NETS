@@ -1,7 +1,7 @@
 import { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'io.ionic.starter',
+  appId: 'NETS_Carpark',
   appName: 'HUAT',
   webDir: 'dist',
   bundledWebRuntime: false
