@@ -52,7 +52,7 @@ export default defineComponent({
   },
   methods: {
     loadUserData(){
-      this.userData = JSON.parse(localStorage.getItem("userData"));
+      this.userData = JSON.parse(localStorage.getItem("userData") || '{}');
     },
   },
   // Calls function on page load
