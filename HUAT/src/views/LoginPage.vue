@@ -9,14 +9,22 @@
         <icon-col size="9" class="pageHeader"> Login </icon-col>
       </ion-row>
 
+      <!-- username -->
       <ion-item fill="solid" ref="item" class="paddingTop">
         <!-- <ion-input :clearInput="true" placeholder="Username:" type="email" @ionInput="validate"></ion-input> -->
         <ion-input
           :clearInput="true"
           placeholder="Username:"
-          type="email"
+          v-model="username"
         ></ion-input>
-        <ion-note slot="error">Invalid email</ion-note>
+      </ion-item>
+      <!-- username error message -->
+      <ion-item lines="none" v-if="usernameError != ''">
+          <ion-note color="danger">
+            <ul>
+              <li>{{ usernameError }}</li>
+            </ul>
+          </ion-note>
       </ion-item>
 
       <ion-item>
@@ -24,9 +32,17 @@
           :clearInput="true"
           type="password"
           placeholder="Password:"
+          v-model="password"
         ></ion-input>
       </ion-item>
-
+      <ion-item lines="none" v-if="passwordError != ''">
+          <ion-note color="danger">
+            <ul>
+              <li>{{ passwordError }}</li>
+            </ul>
+          </ion-note>
+      </ion-item>
+      
       <ion-row class="ion-padding-top">
         <ion-col>
           <div class="myLine ion-justify-content-center">
@@ -47,13 +63,21 @@
           </div>
         </ion-col>
       </ion-row>
-
+      
       <ion-row class="ion-padding-top ion-justify-content-center">
-        <ion-button shape="round" routerLink="/tabs/">Login</ion-button>
+        <ion-button shape="round" @click="validateLogin()">Login</ion-button>
       </ion-row>
+
+      <ion-item lines="none" v-if="loginError != ''">
+          <ion-note color="danger">
+            <ul>
+              <li>{{ loginError }}</li>
+            </ul>
+          </ion-note>
+      </ion-item>
     </ion-grid>
   </base-layout>
-</template>
+</template> 
 
 <script lang="ts">
 import {
@@ -63,10 +87,9 @@ import {
   IonButton,
   IonCheckbox,
   IonLabel,
-  IonNote,
 } from "@ionic/vue"; // IonCol, IonList
-import { Method } from "ionicons/dist/types/stencil-public-runtime";
 import { defineComponent } from "vue";
+import axios from 'axios';
 
 export default defineComponent({
   components: {
@@ -76,30 +99,65 @@ export default defineComponent({
     IonButton,
     IonCheckbox,
     IonLabel,
-    IonNote,
-  }, //IonCol, IonList
-  // methods:{
-  //   validateEmail(email: string) {
-  //       return email.match(/^(?=.{1,254}$)(?=.{1,64}@)[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+)*@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/);
-  //     },
+  },
+  data() {
+    return {
+      username: "",
+      password: "",
+      passwordError: "",
+      usernameError: "",
+      loginError: "",
+    };
+  },
+  methods: {
+    validateLogin() {
+      //valid path. username less than 128 characters
+      let data = "";
+      let config = {};
 
-  //     validate(ev: { target: { value: any; }; }) {
-  //       const value = ev.target.value;
+      if(this.username != "" && this.password != ""){
+        console.log("username and password avail")
+        data = JSON.stringify({
+          "username": this.username,
+          "password": this.password
+        });
+        config = {
+          method: 'post',
+          mode: 'cors',
+          url: 'http://localhost:5002/userlogin',
+          headers: {
+              'Content-Type': 'application/json'
+          },
+          data: data
+        }
 
-  //       this.$refs.item.$el.classList.remove('ion-valid');
-  //       this.$refs.item.$el.classList.remove('ion-invalid');
+        const response =  axios(config)
+            .then(function (response) {
+                localStorage.setItem("userData", JSON.stringify(response.data.data));
+                console.log(response.data);
+                return response.data
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
 
-  //       if (value === '') return;
+        if (typeof response == "undefined") {
+            this.loginError = "Incorrect login details";
+            return false;
+        }
+        this.$router.push("tabs");
+        return response;
 
-  //       this.validateEmail(value)
-  //         ? this.$refs.item.$el.classList.add('ion-valid')
-  //         : this.$refs.item.$el.classList.add('ion-invalid');
-  //     },
-
-  //     markTouched() {
-  //       this.$refs.item.$el.classList.add('ion-touched')
-  //     }
-  // }
+      } else {
+        if (this.username == '') {
+          this.usernameError = "Username cannot be empty";
+        } 
+        if (this.password == ''){
+          this.passwordError = "Password cannot be empty";
+        }
+      }      
+    },
+  },
 });
 </script>
 
