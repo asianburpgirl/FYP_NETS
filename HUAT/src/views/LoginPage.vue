@@ -27,6 +27,7 @@
           </ion-note>
       </ion-item>
 
+      <!-- password -->
       <ion-item>
         <ion-input
           :clearInput="true"
@@ -35,6 +36,7 @@
           v-model="password"
         ></ion-input>
       </ion-item>
+      <!-- Password error message -->
       <ion-item lines="none" v-if="passwordError != ''">
           <ion-note color="danger">
             <ul>
@@ -64,10 +66,11 @@
         </ion-col>
       </ion-row>
       
+      <!-- login -->
       <ion-row class="ion-padding-top ion-justify-content-center">
         <ion-button shape="round" @click="validateLogin()">Login</ion-button>
       </ion-row>
-
+      <!-- login error message -->
       <ion-item lines="none" v-if="loginError != ''">
           <ion-note color="danger">
             <ul>
@@ -111,7 +114,6 @@ export default defineComponent({
   },
   methods: {
     validateLogin() {
-      //valid path. username less than 128 characters
       let data = "";
       let config = {};
 
