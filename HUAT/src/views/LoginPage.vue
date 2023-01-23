@@ -41,15 +41,17 @@
       </ion-row>
 
       <ion-row class="ion-padding-top">
-        <ion-col>
-          <div class="ion-text-center">
+        <ion-col class="ion-text-center">
             <a href="/register"> New User? Sign up now! </a>
-          </div>
         </ion-col>
       </ion-row>
 
       <ion-row class="ion-padding-top ion-justify-content-center">
         <ion-button shape="round" routerLink="/tabs/">Login</ion-button>
+      </ion-row>
+
+      <ion-row class="ion-padding-top ion-justify-content-center">
+        <ion-button shape="round" @click="getBookings">Get Booking sample</ion-button>
       </ion-row>
     </ion-grid>
   </base-layout>
@@ -67,6 +69,7 @@ import {
 } from "@ionic/vue"; // IonCol, IonList
 import { Method } from "ionicons/dist/types/stencil-public-runtime";
 import { defineComponent } from "vue";
+import axios from "axios";
 
 export default defineComponent({
   components: {
@@ -78,28 +81,19 @@ export default defineComponent({
     IonLabel,
     IonNote,
   }, //IonCol, IonList
-  // methods:{
-  //   validateEmail(email: string) {
-  //       return email.match(/^(?=.{1,254}$)(?=.{1,64}@)[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+)*@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/);
-  //     },
-
-  //     validate(ev: { target: { value: any; }; }) {
-  //       const value = ev.target.value;
-
-  //       this.$refs.item.$el.classList.remove('ion-valid');
-  //       this.$refs.item.$el.classList.remove('ion-invalid');
-
-  //       if (value === '') return;
-
-  //       this.validateEmail(value)
-  //         ? this.$refs.item.$el.classList.add('ion-valid')
-  //         : this.$refs.item.$el.classList.add('ion-invalid');
-  //     },
-
-  //     markTouched() {
-  //       this.$refs.item.$el.classList.add('ion-touched')
-  //     }
-  // }
+  methods:{
+    getBookings() {
+            const url = "http://127.0.0.1:5001/bookings";
+            axios.get(url)
+                .then(response => {
+                    console.log(response.data)
+            
+                })
+                .catch(error => {
+                    console.log(error.message)
+                })
+        },
+  }
 });
 </script>
 
@@ -110,11 +104,11 @@ ion-content {
 
 img {
   /* --padding-top: 100px;  this is for ion content*/
-  padding-top: 45px;
+  padding-top: 110px;
   width: 290px;
 }
 .pageHeader {
-  padding: 45px;
+  padding: 110px;
   font-size: 35px;
   color: #484747;
   font-weight: 700;
