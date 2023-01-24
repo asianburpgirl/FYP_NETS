@@ -7,14 +7,14 @@
       style="width: 400px; height: 800px"
     >
       <GMapCluster>
-        <!-- <GMapMarker
+        <GMapMarker
         :key="index"
         v-for="(m, index) in markers"
         :position="m.position"
         :clickable="true"
         :draggable="true"
         @click="center = m.position"
-      /> -->
+      />
         <GMapMarker />
       </GMapCluster>
     </GMapMap>
