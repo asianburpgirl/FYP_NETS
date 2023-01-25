@@ -78,6 +78,7 @@
             </ul>
           </ion-note>
       </ion-item>
+
     </ion-grid>
   </base-layout>
 </template> 
@@ -113,16 +114,22 @@ export default defineComponent({
     };
   },
   methods: {
+    init() {
+      localStorage.setItem("userData", "");
+    },
     validateLogin() {
       let data = "";
       let config = {};
+      
 
       if(this.username != "" && this.password != ""){
-        console.log("username and password avail")
+        // console.log("username and password avail")
         data = JSON.stringify({
           "username": this.username,
           "password": this.password
         });
+
+        // contains the configuration that was sent along with the request
         config = {
           method: 'post',
           mode: 'cors',
@@ -133,21 +140,22 @@ export default defineComponent({
           data: data
         }
 
+        
+        const router = this.$router;
+
         const response =  axios(config)
             .then(function (response) {
                 localStorage.setItem("userData", JSON.stringify(response.data.data));
-                console.log(response.data);
+                // console.log(response.data);
+                router.push("tabs");
                 return response.data
             })
             .catch(function (error) {
-                console.log(error);
+                if (error.status == undefined){
+                  alert("Incorrect login details. Please try again!")
+                }
             });
 
-        if (typeof response == "undefined") {
-            this.loginError = "Incorrect login details";
-            return false;
-        }
-        this.$router.push("tabs");
         return response;
 
       } else {
@@ -160,6 +168,9 @@ export default defineComponent({
       }      
     },
   },
+  mounted() {
+    this.init()
+  }
 });
 </script>
 
