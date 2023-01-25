@@ -120,7 +120,6 @@ export default defineComponent({
     validateLogin() {
       let data = "";
       let config = {};
-      
 
       if(this.username != "" && this.password != ""){
         // console.log("username and password avail")
@@ -150,11 +149,10 @@ export default defineComponent({
                 return response.data
             })
             .catch(function (error) {
-                if (error.status == undefined){
-                  alert("Incorrect login details. Please try again!")
-                }
+                console.log(error)
             });
 
+        this.loginError = "Incorrect login details. Please try again"
         return response;
 
       } else {
