@@ -140,7 +140,6 @@ export default defineComponent({
           data: data
         }
 
-        
         const router = this.$router;
 
         const response =  axios(config)
