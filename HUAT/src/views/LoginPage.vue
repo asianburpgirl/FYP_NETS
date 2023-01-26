@@ -75,9 +75,6 @@ export default defineComponent({
     IonLabel,
     IonNote,
   }, //IonCol, IonList
-  methods:{
-    
-  }
 });
 </script>
 
