@@ -1,13 +1,13 @@
 <template>
   <div>
-    <h2>Vue Js Google line Charts Demo</h2>
+    <h2>Percentage of bookings according to locations</h2>
     <GChart
-      type="LineChart"
+      type="PieChart"
       :options="options"
       :data="collectionData"
     />  
     <ion-row class="ion-padding-top ion-justify-content-center">
-        <ion-button shape="round" @click="getUser()">Create Charts</ion-button>
+        <ion-button shape="round" @click="getBooking()">Create Charts</ion-button>
     </ion-row>
   </div>
 </template>
@@ -21,26 +21,17 @@ import {
 import axios from 'axios';
 
 export default defineComponent({
-  name: "App",
+  name: "GoogleCharts",
   components: {
     GChart
   },
   data() {
     return {
-      collectionData: [
-        ["Day", "Guardians of the Galaxy", "The Avengers", "Transformers"],
-        [1,  40.45, 90.5, 42.8],
-        [2,  22.5, 68.4, 33.4],
-        [3,  36.5, 47, 55.5],
-        [4,  12.7, 23.8, 14.5],
-        [5,  10.9, 44.5, 10.3],
-        [6,   7.8, 14.5,  6.7],
-        [7,   8.6, 11.2,  19.6]
-      ],
+      collectionData: [],
       options: {
         chart: {
-          title: "First 7 days movies collection",
-          subtitle: "In millions of dollars (USD)"
+          title: "Percentage of bookings according to locations",
+          pieHole: 0.4,
         },
         width: 1000,
         height: 400
@@ -48,8 +39,9 @@ export default defineComponent({
     };
   },
   methods: {
-    getUser() {
+    getBooking() {
         let config = {}
+        let bookingData = this.collectionData;
 
         config = {
           method: 'get',
@@ -58,9 +50,9 @@ export default defineComponent({
 
         const response =  axios(config)
             .then(function (response) {
-                localStorage.setItem("bookingData", JSON.stringify(response.data.data));
-                // console.log(response.data);
-                return response.data
+                bookingData = JSON.stringify(response.data.data.bookings);
+                // console.log(bookingData);
+                return bookingData
             })
             .catch(function (error) {
                 console.log(error);
