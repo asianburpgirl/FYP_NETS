@@ -40,7 +40,7 @@
         </ion-col>
       </ion-row>
 
-      <ion-row class="ion-padding-top">
+      <ion-row class="ion-padding-top ion-justify-content-center">
         <ion-col class="ion-text-center">
             <a href="/register"> New User? Sign up now! </a>
         </ion-col>
@@ -67,7 +67,6 @@ import {
   IonLabel,
   IonNote,
 } from "@ionic/vue"; // IonCol, IonList
-import { Method } from "ionicons/dist/types/stencil-public-runtime";
 import { defineComponent } from "vue";
 import axios from "axios";
 
