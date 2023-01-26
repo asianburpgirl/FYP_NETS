@@ -71,10 +71,20 @@
         <ion-button shape="round" @click="validateLogin()">Login</ion-button>
       </ion-row>
       <!-- login error message -->
-      <ion-item lines="none" v-if="loginError != ''">
+    
+
+      <!-- <ion-item lines="none" v-if="loginError != ''">
           <ion-note color="danger">
             <ul>
               <li>{{ loginError }}</li>
+            </ul>
+          </ion-note>
+      </ion-item> -->
+
+      <ion-item lines="none">
+          <ion-note color="danger">
+            <ul id="hi">
+              <li></li>
             </ul>
           </ion-note>
       </ion-item>
@@ -83,7 +93,7 @@
   </base-layout>
 </template> 
 
-<script lang="ts">
+<script>
 import {
   IonRow,
   IonInput,
@@ -149,10 +159,12 @@ export default defineComponent({
                 return response.data
             })
             .catch(function (error) {
+                error = "Incorrect login details. Please try again"
+                document.getElementById("hi").innerText = error
                 console.log(error)
+                // return error
             });
 
-        this.loginError = "Incorrect login details. Please try again";
         return response;
 
       } else {
