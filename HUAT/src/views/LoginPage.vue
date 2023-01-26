@@ -50,9 +50,6 @@
         <ion-button shape="round" routerLink="/tabs/">Login</ion-button>
       </ion-row>
 
-      <ion-row class="ion-padding-top ion-justify-content-center">
-        <ion-button shape="round" @click="getBookings">Get Booking sample</ion-button>
-      </ion-row>
     </ion-grid>
   </base-layout>
 </template>
@@ -68,7 +65,6 @@ import {
   IonNote,
 } from "@ionic/vue"; // IonCol, IonList
 import { defineComponent } from "vue";
-import axios from "axios";
 
 export default defineComponent({
   components: {
@@ -81,17 +77,7 @@ export default defineComponent({
     IonNote,
   }, //IonCol, IonList
   methods:{
-    getBookings() {
-            const url = "http://127.0.0.1:5001/bookings";
-            axios.get(url)
-                .then(response => {
-                    console.log(response.data)
-            
-                })
-                .catch(error => {
-                    console.log(error.message)
-                })
-        },
+    
   }
 });
 </script>
