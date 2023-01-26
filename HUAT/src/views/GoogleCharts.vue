@@ -7,7 +7,7 @@
       :data="collectionData"
     />  
     <ion-row class="ion-padding-top ion-justify-content-center">
-        <ion-button shape="round" @click="getBooking()">Create Charts</ion-button>
+        <ion-button shape="round" @click="getBookings()">Create Charts</ion-button>
     </ion-row>
   </div>
 </template>
@@ -27,7 +27,9 @@ export default defineComponent({
   },
   data() {
     return {
-      collectionData: [],
+      collectionData: [
+        ['Bookings', 'Percentage of bookings']
+      ],
       options: {
         chart: {
           title: "Percentage of bookings according to locations",
@@ -39,26 +41,23 @@ export default defineComponent({
     };
   },
   methods: {
-    getBooking() {
-        let config = {}
-        let bookingData = this.collectionData;
+    getBookings() {
+      let bookingData = [];
 
-        config = {
-          method: 'get',
-          url: 'http://localhost:5001/bookings',
+      const url = "http://localhost:5001/bookings";
+      axios.get(url)
+      .then(response => {
+        bookingData = response.data.data.bookings;
+        // console.log(bookingData)
+        for (let i = 0; i < bookingData.length; i ++) {
+          this.collectionData.push([bookingData[i]['bookingLocation'],bookingData[i]['bookingID']])
         }
-
-        const response =  axios(config)
-            .then(function (response) {
-                bookingData = JSON.stringify(response.data.data.bookings);
-                // console.log(bookingData);
-                return bookingData
-            })
-            .catch(function (error) {
-                console.log(error);
-            });
-
-        return response;
+        return bookingData
+        // console.log(response.data.data.bookings)
+        })
+      .catch(error => {
+        console.log(error.message)
+        })
     }
   }
 });
