@@ -30,7 +30,7 @@
                 src="https://ionicframework.com/docs/img/demos/avatar.svg"
               />
             </ion-avatar>
-            <ion-label><h1> John Tan</h1> </ion-label>
+            <ion-label><h1> {{userData.name}} </h1> </ion-label>
           </ion-item>
         </ion-col>
       </ion-row>
@@ -82,26 +82,35 @@
       <ion-item button detail="true">
         <ion-label>Help Centre</ion-label>
       </ion-item>
+      <ion-item button detail="true" href="/">
+        <ion-label>Log Out</ion-label>
+      </ion-item>
     </ion-list>
   </base-layout>
 </template>
 
-<script setup lang="ts">
-import {
-  IonPage,
-  IonHeader,
-  IonToolbar,
-  IonTitle,
-  IonContent,
-  IonIcon,
-  IonCard,
-  IonCardHeader,
-  IonButton,
-} from "@ionic/vue";
-// import ExploreContainer from '@/components/ExploreContainer.vue';
+<script lang="ts">
 import { defineComponent } from "vue";
-import { wallet } from "ionicons/icons";
+
+export default defineComponent({
+  data() {
+    return {
+      userData: {}
+    }
+  },
+  methods: {
+    loadUserData(){
+      this.userData = JSON.parse(localStorage.getItem("userData") || '{}');
+    },
+  },
+  // Calls function on page load
+  mounted(){
+    this.loadUserData();
+  }
+});
 </script>
+
+
 
 <style scoped>
 ion-icon {

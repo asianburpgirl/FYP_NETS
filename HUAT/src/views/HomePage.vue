@@ -1,5 +1,9 @@
 <template>
-  <base-layout pageTitle="Welcome, John Tan!" needToolBar="y">
+  <base-layout :pageTitle="`Welcome, ${userData.name}!`" needToolBar="y">
+  <p>email: {{ userData.email }}</p>
+  <p>phoneNum: {{ userData.phoneNum }}</p>
+  <p>userID: {{ userData.userID }}</p>
+
     <!-- <ion-grid>
       <ion-row class="ion-align-items-center">
         <ion-col>
@@ -37,19 +41,23 @@
   </base-layout>
 </template>
 
-<style scoped>
+<script lang="ts">
+import { defineComponent } from "vue";
 
-
-</style>
-
-<script setup lang="ts">
-import {
-  IonPage,
-  IonHeader,
-  IonToolbar,
-  IonTitle,
-  IonContent,
-} from "@ionic/vue";
-import { person } from "ionicons/icons";
-// import ExploreContainer from '@components/ExploreContainer.vue';
+export default defineComponent({
+  data() {
+    return {
+      userData: {}
+    }
+  },
+  methods: {
+    loadUserData(){
+      this.userData = JSON.parse(localStorage.getItem("userData") || '{}');
+    },
+  },
+  // Calls function on page load
+  mounted(){
+    this.loadUserData();
+  }
+});
 </script>

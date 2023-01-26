@@ -9,24 +9,42 @@
         <icon-col size="9" class="pageHeader"> Login </icon-col>
       </ion-row>
 
+      <!-- username -->
       <ion-item fill="solid" ref="item" class="paddingTop">
         <!-- <ion-input :clearInput="true" placeholder="Username:" type="email" @ionInput="validate"></ion-input> -->
         <ion-input
           :clearInput="true"
           placeholder="Username:"
-          type="email"
+          v-model="username"
         ></ion-input>
-        <ion-note slot="error">Invalid email</ion-note>
+      </ion-item>
+      <!-- username error message -->
+      <ion-item lines="none" v-if="usernameError != ''">
+          <ion-note color="danger">
+            <ul>
+              <li>{{ usernameError }}</li>
+            </ul>
+          </ion-note>
       </ion-item>
 
+      <!-- password -->
       <ion-item>
         <ion-input
           :clearInput="true"
           type="password"
           placeholder="Password:"
+          v-model="password"
         ></ion-input>
       </ion-item>
-
+      <!-- Password error message -->
+      <ion-item lines="none" v-if="passwordError != ''">
+          <ion-note color="danger">
+            <ul>
+              <li>{{ passwordError }}</li>
+            </ul>
+          </ion-note>
+      </ion-item>
+      
       <ion-row class="ion-padding-top">
         <ion-col>
           <div class="myLine ion-justify-content-center">
@@ -40,22 +58,30 @@
         </ion-col>
       </ion-row>
 
-      <ion-row class="ion-padding-top ion-justify-content-center">
-        <ion-col class="ion-text-center">
+      <ion-row class="ion-padding-top">
+        <ion-col>
+          <div class="ion-text-center">
             <a href="/register"> New User? Sign up now! </a>
+          </div>
         </ion-col>
       </ion-row>
-
+      
+      <!-- login -->
       <ion-row class="ion-padding-top ion-justify-content-center">
-        <ion-button shape="round" routerLink="/tabs/">Login</ion-button>
+        <ion-button shape="round" @click="validateLogin()">Login</ion-button>
       </ion-row>
+      <!-- login error message -->
+      <ion-item lines="none" v-if="loginError != ''">
+          <ion-note color="danger">
+            <ul>
+              <li>{{ loginError }}</li>
+            </ul>
+          </ion-note>
+      </ion-item>
 
-      <ion-row class="ion-padding-top ion-justify-content-center">
-        <ion-button shape="round" @click="getBookings">Get Booking sample</ion-button>
-      </ion-row>
     </ion-grid>
   </base-layout>
-</template>
+</template> 
 
 <script lang="ts">
 import {
@@ -65,10 +91,9 @@ import {
   IonButton,
   IonCheckbox,
   IonLabel,
-  IonNote,
 } from "@ionic/vue"; // IonCol, IonList
 import { defineComponent } from "vue";
-import axios from "axios";
+import axios from 'axios';
 
 export default defineComponent({
   components: {
@@ -78,20 +103,70 @@ export default defineComponent({
     IonButton,
     IonCheckbox,
     IonLabel,
-    IonNote,
-  }, //IonCol, IonList
-  methods:{
-    getBookings() {
-            const url = "http://127.0.0.1:5001/bookings";
-            axios.get(url)
-                .then(response => {
-                    console.log(response.data)
-            
-                })
-                .catch(error => {
-                    console.log(error.message)
-                })
-        },
+  },
+  data() {
+    return {
+      username: "",
+      password: "",
+      passwordError: "",
+      usernameError: "",
+      loginError: "",
+    };
+  },
+  methods: {
+    init() {
+      localStorage.setItem("userData", "");
+    },
+    validateLogin() {
+      let data = "";
+      let config = {};
+
+      if(this.username != "" && this.password != ""){
+        // console.log("username and password avail")
+        data = JSON.stringify({
+          "username": this.username,
+          "password": this.password
+        });
+
+        // contains the configuration that was sent along with the request
+        config = {
+          method: 'post',
+          mode: 'cors',
+          url: 'http://localhost:5002/userlogin',
+          headers: {
+              'Content-Type': 'application/json'
+          },
+          data: data
+        }
+
+        const router = this.$router;
+
+        const response =  axios(config)
+            .then(function (response) {
+                localStorage.setItem("userData", JSON.stringify(response.data.data));
+                // console.log(response.data);
+                router.push("tabs");
+                return response.data
+            })
+            .catch(function (error) {
+                console.log(error)
+            });
+
+        this.loginError = "Incorrect login details. Please try again";
+        return response;
+
+      } else {
+        if (this.username == '') {
+          this.usernameError = "Username cannot be empty";
+        } 
+        if (this.password == ''){
+          this.passwordError = "Password cannot be empty";
+        }
+      }      
+    },
+  },
+  mounted() {
+    this.init()
   }
 });
 </script>
@@ -103,11 +178,11 @@ ion-content {
 
 img {
   /* --padding-top: 100px;  this is for ion content*/
-  padding-top: 110px;
+  padding-top: 45px;
   width: 290px;
 }
 .pageHeader {
-  padding: 110px;
+  padding: 45px;
   font-size: 35px;
   color: #484747;
   font-weight: 700;
