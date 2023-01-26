@@ -2,11 +2,11 @@
   <ion-page class="ion-padding">
     <ion-header>
       <ion-toolbar>
-        <ion-title>Mappp</ion-title>
+        <ion-title>Map</ion-title>
       </ion-toolbar>
     </ion-header>
-    <!-- <ion-content :fullscreen="true">
-      <ion-refresher slot="fixed" @ionRefresh="handleRefresh()">
+    <ion-content :fullscreen="true">
+    <!--   <ion-refresher slot="fixed" @ionRefresh="handleRefresh()">
         <ion-refresher-content></ion-refresher-content>
       </ion-refresher> -->
 
@@ -32,8 +32,8 @@ import {
   IonToolbar,
   IonTitle,
   IonContent,
-  IonRefresher,
-  IonRefresherContent,
+//   IonRefresher,
+//   IonRefresherContent,
 } from "@ionic/vue";
 import { GoogleMap } from "@capacitor/google-maps";
 import { Geolocation } from "@capacitor/geolocation";
@@ -45,8 +45,8 @@ export default defineComponent({
     IonToolbar,
     IonTitle,
     IonContent,
-    IonRefresher,
-    IonRefresherContent,
+    // IonRefresher,
+    // IonRefresherContent,
   },
 //   setup() {
 //     const handleRefresh = () => {
