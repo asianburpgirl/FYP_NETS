@@ -73,8 +73,7 @@ export default defineComponent({
     IonButton,
     IonCheckbox,
     IonLabel,
-    IonNote,
-  }, //IonCol, IonList
+  }, 
 });
 </script>
 
