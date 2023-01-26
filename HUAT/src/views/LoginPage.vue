@@ -152,7 +152,7 @@ export default defineComponent({
                 console.log(error)
             });
 
-        this.loginError = "Incorrect login details. Please try again"
+        this.loginError = "Incorrect login details. Please try again";
         return response;
 
       } else {
