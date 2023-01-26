@@ -66,14 +66,7 @@ import {
 import { defineComponent } from "vue";
 
 export default defineComponent({
-  components: {
-    IonRow,
-    IonInput,
-    IonItem,
-    IonButton,
-    IonCheckbox,
-    IonLabel,
-  }
+  
 });
 </script>
 
