@@ -49,7 +49,6 @@
       <ion-row class="ion-padding-top ion-justify-content-center">
         <ion-button shape="round" routerLink="/tabs/">Login</ion-button>
       </ion-row>
-
     </ion-grid>
   </base-layout>
 </template>
