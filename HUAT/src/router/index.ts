@@ -6,6 +6,7 @@ import viewBooking from '../views/viewBooking.vue';
 import buySubscription from '../views/buySubscription.vue';
 import nearbymePage from '../views/nearbymePage.vue';
 import register from '../views/registerPage.vue';
+import viewProfile from '../views/viewProfile.vue';
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -57,6 +58,10 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/register',
     component: register
+  },
+  {
+    path: '/viewProfile',
+    component: viewProfile
   }
 ]
 
