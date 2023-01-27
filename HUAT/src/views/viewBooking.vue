@@ -133,7 +133,7 @@ export default defineComponent({
               image: eachBooking.image,
               maxCapacity: eachBooking.maxCapacity,
               currentCapacity: eachBooking.currentCapacity,
-              image: eachBooking.image,
+              // image: eachBooking.image,
               userID: eachBooking.userID,
             });
           }
