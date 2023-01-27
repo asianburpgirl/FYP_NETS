@@ -30,7 +30,7 @@
                 src="https://ionicframework.com/docs/img/demos/avatar.svg"
               />
             </ion-avatar>
-            <ion-label><h1> {{userData.name}} </h1> </ion-label>
+            <!-- <ion-label><h1> {{userData.name}} </h1> </ion-label> -->
           </ion-item>
         </ion-col>
       </ion-row>
@@ -52,7 +52,7 @@
       </ion-row> -->
       <ion-item>
         <ion-col class="ion-margin-horizontal">
-          <ion-icon :icon="wallet" />
+          <!-- <ion-icon :icon="wallet" /> -->
           <ion-badge color="danger" style="position: absolute"
             >$100.45</ion-badge
           >
@@ -65,11 +65,12 @@
 
     <ion-list class="ion-margin">
       <ion-item button detail="true">
-        <ion-label>Edit Profile</ion-label>
+        <ion-label @click='routeUser("viewProfile")'>Edit Profile</ion-label>
       </ion-item>
       <ion-item button detail="true">
-        <ion-label>View Bookings</ion-label>
+        <ion-label @click='routeUser("viewBooking")'>View Bookings</ion-label>
       </ion-item>
+      
       <ion-item button detail="true">
         <ion-label>Setting</ion-label>
       </ion-item>
@@ -102,6 +103,12 @@ export default defineComponent({
     loadUserData(){
       this.userData = JSON.parse(localStorage.getItem("userData") || '{}');
     },
+
+    routeUser(route: string) {
+      this.$router.push({
+        path: '/'+route,
+      });
+    }
   },
   // Calls function on page load
   mounted(){
