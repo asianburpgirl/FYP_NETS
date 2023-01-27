@@ -7,7 +7,8 @@ from datetime import datetime
 
 app = Flask(__name__)
 # app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL') or 'mysql+mysqlconnector://root@localhost:3306/localconnect'
-app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL') or 'mysql+mysqlconnector://root:root@localhost:8889/localconnect'
+app.config['SQLALCHEMY_DATABASE_URI'] = environ.get(
+    'dbURL') or 'mysql+mysqlconnector://root:root@localhost:8889/localconnect'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {'pool_recycle': 299}
 
@@ -19,25 +20,53 @@ CORS(app)
 class Booking(db.Model):
     __tablename__ = 'bookings'
 
-    bookingID = db.Column(db.Integer, primary_key = True)
-    bookingDate = db.Column (db.DateTime, nullable=False)
-    bookingLocation = db.Column(db.String(100), nullable=False)
+    bookingID = db.Column(db.Integer, primary_key=True)
+    bookingDate = db.Column(db.DateTime, nullable=False)
+    bookingLocation = db.Column(db.String(128), nullable=False)
+    locationName = db.Column(db.String(128), nullable=False)
+    startTime = db.Column(db.DateTime, nullable=False)
+    endTime = db.Column(db.DateTime, nullable=False)
+    status = db.Column(db.String(128), nullable=False)
+    bookingRef = db.Column(db.String(128), nullable=False)
+    image = db.Column(db.String(128), nullable=True)
+    maxCapacity = db.Column(db.Integer, nullable=False)
+    currentCapacity = db.Column(db.Integer, nullable=False)
+    userID = db.Column(db.Integer, nullable=False)
 
-    def __init__(self, bookingID, bookingDate ,  bookingLocation):
+    def __init__(self, bookingID, bookingDate,  bookingLocation, locationName, startTime, endTime, status, bookingRef, image, maxCapacity, currentCapacity, userID):
         self.bookingID = bookingID
         self.bookingDate = bookingDate
         self.bookingLocation = bookingLocation
+        self.locationName = locationName
+        self.startTime = startTime
+        self.endTime = endTime
+        self.status = status
+        self.bookingRef = bookingRef
+        self.image = image
+        self.maxCapacity = maxCapacity
+        self.currentCapacity = currentCapacity
+        self.image = image
+        self.userID = userID
 
     def json(self):
         return {
             "bookingID": self.bookingID,
             "bookingDate": self.bookingDate,
-            "bookingLocation": self.bookingLocation
+            "bookingLocation": self.bookingLocation,
+            "locationName": self.locationName,
+            "startTime": self.startTime,
+            "endTime": self.endTime,
+            "status": self.status,
+            "bookingRef": self.bookingRef,
+            "image": self.image,
+            "maxCapacity": self.maxCapacity,
+            "currentCapacity": self.currentCapacity,
+            "image": self.image,
+            "userID": self.userID
         }
 
 
-
-#Get All Bookings
+# Get All Bookings
 @app.route("/bookings")
 def get_all():
     bookingList = Booking.query.all()
@@ -57,18 +86,20 @@ def get_all():
         }
     ), 404
 
-@app.route("/bookings/<int:bookingID>" , methods = ['POST'])
+
+@app.route("/bookings/<int:bookingID>", methods=['POST'])
 def createBooking(bookingID):
 
-    bookingDate = request.json.get('bookingDate' , None)
-    bookingLocation = request.json.get('bookingLocation' , None)
-    
-    newBooking = Booking(bookingID = bookingID, bookingDate = bookingDate, bookingLocation = bookingLocation)
-    
+    bookingDate = request.json.get('bookingDate', None)
+    bookingLocation = request.json.get('bookingLocation', None)
+
+    newBooking = Booking(
+        bookingID=bookingID, bookingDate=bookingDate, bookingLocation=bookingLocation)
+
     try:
         db.session.add(newBooking)
         db.session.commit()
-    
+
     except Exception as e:
         print(e)
         return jsonify({
@@ -85,13 +116,15 @@ def createBooking(bookingID):
             "data": newBooking.json(),
             "message": "Your booking has been created"
         }
-    ), 201 
+    ), 201
 
-#update bookings
-@app.route("/bookings/<int:bookingID>" , methods = ['PUT'])
+# update bookings
+
+
+@app.route("/bookings/<int:bookingID>", methods=['PUT'])
 def updateBooking(bookingID):
     data = request.get_json()
-    booking = Booking.query.filter_by(bookingID = bookingID).first()
+    booking = Booking.query.filter_by(bookingID=bookingID).first()
     print(data['bookingDate'])
     print(data)
     if booking:
@@ -104,7 +137,7 @@ def updateBooking(bookingID):
                     "code": 201,
                     "message": "Update successful!"
                 }
-            ),201
+            ), 201
 
         if data['bookingDate']:
             print(data['bookingDate'])
@@ -115,9 +148,8 @@ def updateBooking(bookingID):
                     "code": 201,
                     "message": "Update successful!"
                 }
-            ),201
-    
-    
+            ), 201
+
     else:
         return jsonify({
             "code": 500,
@@ -127,7 +159,9 @@ def updateBooking(bookingID):
             "message": "Booking ID not found"
         }), 500
 
-#delete bookings
+# delete bookings
+
+
 @app.route("/bookings/<int:bookingID>", methods=['DELETE'])
 def deleteBooking(bookingID):
     booking = Booking.query.filter_by(bookingID=bookingID).first()
@@ -139,7 +173,7 @@ def deleteBooking(bookingID):
                 "code": 200,
                 "data": {
                     "bookingID": bookingID,
-                    
+
                 },
                 "message": "Booking successfully deleted!"
             }
