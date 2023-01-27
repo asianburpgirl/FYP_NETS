@@ -1,5 +1,5 @@
 <template>
-  <ion-page class="ion-padding">
+  <ion-page>
     <ion-header>
       <ion-toolbar v-if="needToolBar">
         <ion-buttons v-if="needBackButton" slot="start">
@@ -13,7 +13,7 @@
       </ion-toolbar>
     </ion-header>
  
-    <ion-content>
+    <ion-content class="ion-padding">
       <slot />
     </ion-content>
   </ion-page>
