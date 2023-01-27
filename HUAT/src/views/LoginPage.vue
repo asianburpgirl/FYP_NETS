@@ -14,46 +14,30 @@
         <!-- <ion-input :clearInput="true" placeholder="Username:" type="email" @ionInput="validate"></ion-input> -->
         <ion-input
           :clearInput="true"
-          placeholder="Username:"
+          placeholder="Username"
           v-model="username"
         ></ion-input>
       </ion-item>
-      <!-- username error message -->
-      <ion-item lines="none" v-if="usernameError != ''">
-          <ion-note color="danger">
-            <ul>
-              <li>{{ usernameError }}</li>
-            </ul>
-          </ion-note>
-      </ion-item>
-
+      
       <!-- password -->
       <ion-item>
         <ion-input
           :clearInput="true"
           type="password"
-          placeholder="Password:"
+          placeholder="Password"
           v-model="password"
         ></ion-input>
-      </ion-item>
-      <!-- Password error message -->
-      <ion-item lines="none" v-if="passwordError != ''">
-          <ion-note color="danger">
-            <ul>
-              <li>{{ passwordError }}</li>
-            </ul>
-          </ion-note>
       </ion-item>
       
       <ion-row class="ion-padding-top">
         <ion-col>
-          <div class="myLine ion-justify-content-center">
+          <div class="myLine ion-justify-content-start">
             <ion-item lines="none">
               <ion-checkbox></ion-checkbox>
               <ion-label> Remember me</ion-label>
             </ion-item>
             <!-- <ion-button class="hyperlinkButton" >Forgot Password</ion-button> -->
-            <a float-right class="myLine2" href="/tabs/">Forgot password</a>
+            <a float-right class="myLine2" href="/tabs/">Forgot password?</a>
           </div>
         </ion-col>
       </ion-row>
@@ -61,7 +45,7 @@
       <ion-row class="ion-padding-top">
         <ion-col>
           <div class="ion-text-center">
-            <a href="/register"> New User? Sign up now! </a>
+            <a href="/register"> Do not have an account? Sign up now! </a>
           </div>
         </ion-col>
       </ion-row>
@@ -81,13 +65,33 @@
           </ion-note>
       </ion-item> -->
 
+      <!-- Password error message -->
       <ion-item lines="none">
+          <ion-note color="danger">
+            <ul>
+              <li v-if="usernameError != '' ">{{ usernameError }}</li>
+              <li v-if="passwordError != '' ">{{ passwordError }}</li>
+            </ul>
+          </ion-note>
+      </ion-item>
+
+      <!-- username error message -->
+      <!-- <ion-item lines="none" v-if="">
+          <ion-note color="danger">
+            <ul>
+              <li>{{ usernameError }}</li>
+            </ul>
+          </ion-note>
+      </ion-item> -->
+
+
+      <!-- <ion-item lines="none">
           <ion-note color="danger">
             <ul id="hi">
               <li></li>
             </ul>
           </ion-note>
-      </ion-item>
+      </ion-item> -->
 
     </ion-grid>
   </base-layout>
@@ -101,6 +105,9 @@ import {
   IonButton,
   IonCheckbox,
   IonLabel,
+  IonNote,
+  IonCol,
+  IonGrid
 } from "@ionic/vue"; // IonCol, IonList
 import { defineComponent } from "vue";
 import axios from 'axios';
@@ -108,6 +115,9 @@ import axios from 'axios';
 export default defineComponent({
   components: {
     IonRow,
+    IonGrid,
+    IonCol,
+    IonNote,
     IonInput,
     IonItem,
     IonButton,
@@ -190,30 +200,31 @@ ion-content {
 
 img {
   /* --padding-top: 100px;  this is for ion content*/
-  padding-top: 45px;
+  padding-top: 100px;
   width: 290px;
 }
 .pageHeader {
-  padding: 45px;
+  padding-top: 60px;
+  padding-bottom: 60px;
   font-size: 35px;
   color: #484747;
   font-weight: 700;
 }
 
 ion-checkbox {
-  --size: 20px;
+  --size: 14px;
 }
 
 .myLine {
   display: flex;
   align-items: center;
-  font-size: 14px;
+  /* font-size: 14px; */
 }
 
 .myLine2 {
   display: flex;
   align-items: center;
-  padding-left: 10px;
+  /* padding-left: 10px; */
 }
 
 /* .hyperlinkButton{

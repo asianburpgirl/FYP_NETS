@@ -1,16 +1,17 @@
 <template>
-  <ion-page class="ion-padding">
+    <base-layout>
+        <ion-page>
+            <ion-header>
+                <ion-toolbar>
+                    <ion-title class="ion-text-center">My Wallet</ion-title>
+                </ion-toolbar>
+            </ion-header>
     
-    <ion-header>
-      <ion-toolbar>
-        <ion-title class="ion-text-center">My Wallet</ion-title>
-      </ion-toolbar>
-    </ion-header>
-
-    <ion-content >
-  
-    </ion-content>
-  </ion-page>
+            <ion-content>
+    
+            </ion-content>
+        </ion-page>
+    </base-layout>
 </template>
 
 <script setup lang="ts">
