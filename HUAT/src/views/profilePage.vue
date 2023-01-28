@@ -69,7 +69,7 @@
   
           <ion-list class="ion-margin">
               <ion-item button detail="true">
-                  <ion-label>Edit Profile</ion-label>
+                  <ion-label @click='routeUser("viewProfile")'>Edit Profile</ion-label>
               </ion-item>
               <ion-item button detail="true">
                   <ion-label @click='routeUser("viewBooking")'>View Bookings</ion-label>
