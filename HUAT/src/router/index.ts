@@ -7,6 +7,7 @@ import buySubscription from '../views/buySubscription.vue';
 import nearbymePage from '../views/nearbymePage.vue';
 import register from '../views/registerPage.vue';
 import viewProfile from '../views/viewProfile.vue';
+import BarChart from '../views/BarChart.vue';
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -62,6 +63,10 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/viewProfile',
     component: viewProfile
+  },
+  {
+    path: '/BarChart',
+    component: BarChart
   }
 ]
 

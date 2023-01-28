@@ -72,7 +72,7 @@
       </ion-item>
       
       <ion-item button detail="true">
-        <ion-label>Setting</ion-label>
+        <ion-label @click='routeUser("BarChart")'>BarChart</ion-label>
       </ion-item>
       <ion-item button detail="true">
         <ion-label>Language</ion-label>
