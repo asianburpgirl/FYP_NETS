@@ -3,54 +3,58 @@
         <ion-page>
             <ion-header>
                 <ion-toolbar>
-                    <ion-title class="ion-text-center">My Wallet</ion-title>
+                    <ion-title class="ion-text-left">Edit Profile</ion-title>
                 </ion-toolbar>
             </ion-header>
     
-            <ion-content class="ion-padding">
+            
+                    <ion-list lines="none">
+                        <ion-list-header align="left">
+                            <ion-label>Enter your updated particulars and hit on the save button</ion-label>
+                        </ion-list-header>
+                        <ion-item>
+                            <ion-label position="stacked">Email</ion-label>
+                            <ion-input :clear-input="true" placeholder="Enter new Email"></ion-input>
+                            </ion-item>
+
+                            <ion-item>
+                            <ion-label position="stacked">Phone Number</ion-label>
+                            <ion-input :clear-on-edit="true" placeholder="Enter new phone number"></ion-input>
+                            </ion-item>
+
+                            <ion-item>
+                            <ion-label position="stacked">Password</ion-label>
+                            <ion-input type="password" placeholder="Enter new password"></ion-input>
+                            </ion-item>
+                    </ion-list>
+
+                    <ion-content class="ion-padding">
                 <div class="ion-text-center">
-                    <h1>Amount</h1>
+                    <h1></h1>
                     <ion-card>
                         <ion-grid>
                             <ion-row>
                                 <ion-col>
-                                    <ion-button color="dark">
+                                    <!-- <ion-button color="dark">
                                         <ion-icon :icon="add" />
-                                    </ion-button>
-                                    <p>Pay</p>
+                                    </ion-button> -->
+                                    <!-- <p>Pay</p> -->
                                 </ion-col>
                                 <ion-col>
                                     <ion-button color="dark">
                                         <ion-icon :icon="wallet" />
                                     </ion-button>
-                                    <p>Top Up</p>
+                                    <p>Save</p>
                                 </ion-col>
                                 <ion-col>
-                                    <ion-button color="dark">
+                                    <!-- <ion-button color="dark">
                                         <ion-icon :icon="card" />
                                     </ion-button>
-                                    <p>Card</p>
+                                    <p>Card</p> -->
                                 </ion-col>
                             </ion-row>
                         </ion-grid>
                     </ion-card>
-                    <ion-list lines="none">
-                        <ion-list-header align="left">
-                            <ion-label>Transaction History</ion-label>
-                        </ion-list-header>
-                        <ion-item>
-                            <ion-label>Top Up Account</ion-label>
-                            <ion-label align="end">$5</ion-label>
-                        </ion-item>
-                        <ion-item>
-                            <ion-label>Top Up Account</ion-label>
-                            <ion-label align="end">$20</ion-label>
-                        </ion-item>
-                        <ion-item>
-                            <ion-label>Top Up Account</ion-label>
-                            <ion-label align="end">$25</ion-label>
-                        </ion-item>
-                    </ion-list>
                 </div>
             </ion-content>
         </ion-page>
