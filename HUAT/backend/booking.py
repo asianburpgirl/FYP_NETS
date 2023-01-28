@@ -4,6 +4,9 @@ from flask_cors import CORS
 # from itsdangerous import json
 from os import environ
 from datetime import datetime
+import random
+import string
+import user
 
 app = Flask(__name__)
 # app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL') or 'mysql+mysqlconnector://root@localhost:3306/localconnect'
@@ -20,20 +23,23 @@ CORS(app)
 class Booking(db.Model):
     __tablename__ = 'bookings'
 
-    bookingID = db.Column(db.Integer, primary_key=True)
+    bookingID = db.Column(db.String(128), primary_key=True)
     bookingDate = db.Column(db.DateTime, nullable=False)
     bookingLocation = db.Column(db.String(128), nullable=False)
     locationName = db.Column(db.String(128), nullable=False)
     startTime = db.Column(db.DateTime, nullable=False)
     endTime = db.Column(db.DateTime, nullable=False)
     status = db.Column(db.String(128), nullable=False)
-    bookingRef = db.Column(db.String(128), nullable=False)
-    image = db.Column(db.String(128), nullable=True)
-    maxCapacity = db.Column(db.Integer, nullable=False)
-    currentCapacity = db.Column(db.Integer, nullable=False)
-    userID = db.Column(db.Integer, nullable=False)
+    # bookingRef = db.Column(db.String(128), nullable=False)
+    # image = db.Column(db.Blob, nullable=True)
+    # maxCapacity = db.Column(db.Integer, nullable=False)
+    # currentCapacity = db.Column(db.Integer, nullable=False)
+    userID = db.Column(db.ForeignKey('users.userID', ondelete='CASCADE', onupdate='CASCADE'), nullable=False, index=True)
 
-    def __init__(self, bookingID, bookingDate,  bookingLocation, locationName, startTime, endTime, status, bookingRef, image, maxCapacity, currentCapacity, userID):
+    user = db.relationship(
+        'User', primaryjoin='Booking.userID == User.userID', backref='booking')
+
+    def __init__(self, bookingID, bookingDate,  bookingLocation, locationName, startTime, endTime, status, userID):
         self.bookingID = bookingID
         self.bookingDate = bookingDate
         self.bookingLocation = bookingLocation
@@ -41,11 +47,10 @@ class Booking(db.Model):
         self.startTime = startTime
         self.endTime = endTime
         self.status = status
-        self.bookingRef = bookingRef
-        self.image = image
-        self.maxCapacity = maxCapacity
-        self.currentCapacity = currentCapacity
-        self.image = image
+        # self.bookingRef = bookingRef
+        # self.image = image
+        # self.maxCapacity = maxCapacity
+        # self.currentCapacity = currentCapacity
         self.userID = userID
 
     def json(self):
@@ -57,12 +62,41 @@ class Booking(db.Model):
             "startTime": self.startTime,
             "endTime": self.endTime,
             "status": self.status,
-            "bookingRef": self.bookingRef,
-            "image": self.image,
-            "maxCapacity": self.maxCapacity,
-            "currentCapacity": self.currentCapacity,
-            "image": self.image,
+            # "bookingRef": self.bookingRef,
+            # "image": self.image,
+            # "maxCapacity": self.maxCapacity,
+            # "currentCapacity": self.currentCapacity,
+            # "image": self.image,
             "userID": self.userID
+        }
+
+class User(db.Model):
+    __tablename__ = 'users'
+
+    userID = db.Column(db.Integer, primary_key = True)
+    email = db.Column (db.String(100), nullable=False)
+    name = db.Column(db.String(100), nullable=False)
+    phoneNum = db.Column(db.Integer, nullable=False)
+    username = db.Column(db.String(100), nullable=False)
+    password = db.Column(db.String(100), nullable=False)
+    
+
+    def __init__(self, userID, email, name, phoneNum, username, password):
+        self.userID = userID
+        self.email = email
+        self.name = name
+        self.phoneNum = phoneNum
+        self.username = username
+        self.password = password
+
+    def json(self):
+        return {
+            "userID": self.userID,
+            "email": self.email,
+            "name": self.name,
+            "phoneNum": self.phoneNum,
+            "username": self.username,
+            "password": self.password
         }
 
 
@@ -87,14 +121,22 @@ def get_all():
     ), 404
 
 
-@app.route("/bookings/<int:bookingID>", methods=['POST'])
-def createBooking(bookingID):
+@app.route("/bookings", methods=['POST'])
+def createBooking():
 
+    bookingID = ''.join(random.SystemRandom().choice(string.ascii_uppercase + string.digits) for _ in range(6))
     bookingDate = request.json.get('bookingDate', None)
     bookingLocation = request.json.get('bookingLocation', None)
+    locationName = request.json.get('locationName', None)
+    startTime = request.json.get('startTime', None)
+    endTime = request.json.get('endTime', None)
+    status = request.json.get('status', None)
+    # maxCapacity = request.json.get('maxCapacity', None)
+    # currentCapacity = request.json.get('currentCapacity', None)
+    userID = request.json.get('userID', None)
 
     newBooking = Booking(
-        bookingID=bookingID, bookingDate=bookingDate, bookingLocation=bookingLocation)
+        bookingID=bookingID, bookingDate=bookingDate, bookingLocation=bookingLocation, locationName=locationName, startTime=startTime, endTime=endTime, status=status, userID=userID)
 
     try:
         db.session.add(newBooking)
