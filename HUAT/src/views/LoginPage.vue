@@ -85,13 +85,12 @@
       </ion-item> -->
 
 
-      <!-- <ion-item lines="none">
+      <ion-item lines="none">
           <ion-note color="danger">
             <ul id="hi">
-              <li></li>
             </ul>
           </ion-note>
-      </ion-item> -->
+      </ion-item>
 
     </ion-grid>
   </base-layout>
