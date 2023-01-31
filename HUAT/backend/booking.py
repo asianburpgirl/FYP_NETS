@@ -23,14 +23,14 @@ CORS(app)
 class Booking(db.Model):
     __tablename__ = 'bookings'
 
-    bookingID = db.Column(db.String(128), primary_key=True)
+    bookingID = db.Column(db.Integer, primary_key=True)
     bookingDate = db.Column(db.DateTime, nullable=False)
     bookingLocation = db.Column(db.String(128), nullable=False)
     locationName = db.Column(db.String(128), nullable=False)
     startTime = db.Column(db.DateTime, nullable=False)
     endTime = db.Column(db.DateTime, nullable=False)
     status = db.Column(db.String(128), nullable=False)
-    # bookingRef = db.Column(db.String(128), nullable=False)
+    bookingRef = db.Column(db.String(128), nullable=False)
     # image = db.Column(db.Blob, nullable=True)
     # maxCapacity = db.Column(db.Integer, nullable=False)
     # currentCapacity = db.Column(db.Integer, nullable=False)
@@ -39,7 +39,7 @@ class Booking(db.Model):
     user = db.relationship(
         'User', primaryjoin='Booking.userID == User.userID', backref='booking')
 
-    def __init__(self, bookingID, bookingDate,  bookingLocation, locationName, startTime, endTime, status, userID):
+    def __init__(self, bookingID, bookingDate,  bookingLocation, locationName, startTime, endTime, status, userID, bookingRef):
         self.bookingID = bookingID
         self.bookingDate = bookingDate
         self.bookingLocation = bookingLocation
@@ -47,7 +47,7 @@ class Booking(db.Model):
         self.startTime = startTime
         self.endTime = endTime
         self.status = status
-        # self.bookingRef = bookingRef
+        self.bookingRef = bookingRef
         # self.image = image
         # self.maxCapacity = maxCapacity
         # self.currentCapacity = currentCapacity
@@ -62,7 +62,7 @@ class Booking(db.Model):
             "startTime": self.startTime,
             "endTime": self.endTime,
             "status": self.status,
-            # "bookingRef": self.bookingRef,
+            "bookingRef": self.bookingRef,
             # "image": self.image,
             # "maxCapacity": self.maxCapacity,
             # "currentCapacity": self.currentCapacity,
@@ -124,7 +124,9 @@ def get_all():
 @app.route("/bookings", methods=['POST'])
 def createBooking():
 
-    bookingID = ''.join(random.SystemRandom().choice(string.ascii_uppercase + string.digits) for _ in range(6))
+    bookingID = ''.join(random.SystemRandom().choice(string.digits) for _ in range(6))
+    bookingRef = ''.join(random.SystemRandom().choice(string.ascii_uppercase + string.digits)
+                        for _ in range(10))
     bookingDate = request.json.get('bookingDate', None)
     bookingLocation = request.json.get('bookingLocation', None)
     locationName = request.json.get('locationName', None)
@@ -136,7 +138,7 @@ def createBooking():
     userID = request.json.get('userID', None)
 
     newBooking = Booking(
-        bookingID=bookingID, bookingDate=bookingDate, bookingLocation=bookingLocation, locationName=locationName, startTime=startTime, endTime=endTime, status=status, userID=userID)
+        bookingID=bookingID, bookingDate=bookingDate, bookingLocation=bookingLocation, locationName=locationName, startTime=startTime, endTime=endTime, status=status, userID=userID, bookingRef=bookingRef)
 
     try:
         db.session.add(newBooking)

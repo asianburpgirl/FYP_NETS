@@ -28,12 +28,22 @@
           </ion-toolbar>
         </ion-header>
         <ion-content class="ion-padding">
-          <p>
+          <ion-item>
             Distance from your current location:
-            {{ distanceToLocation_km }} 
+            {{ distanceToLocation_km }} km
+            <br>
+            <br>
             Time taken from your current location:
-            {{ timeToLocation_mins }}
-          </p>
+            {{ timeToLocation_mins }} mins
+            <br>
+            
+          <ion-label position="stacked">Start Time:</ion-label>
+          <ion-datetime  v-model="startTime"></ion-datetime>
+
+           <ion-label position="stacked">End Time:</ion-label>
+          <ion-datetime  v-model="endTime"></ion-datetime>
+        </ion-item>
+          
           <ion-row class="ion-padding-top ion-justify-content-center">
         <ion-button shape="round" @click="makeBoooking()">Book</ion-button>
       </ion-row>
@@ -57,6 +67,7 @@ import {
   IonModal,
   IonButtons,
   IonButton,
+  IonDatetime
   //   IonRefresher,
   //   IonRefresherContent,
 } from "@ionic/vue";
@@ -72,6 +83,7 @@ export default defineComponent({
     IonModal,
     IonButtons,
     IonButton,
+    IonDatetime
     // IonRefresher,
     // IonRefresherContent,
   },
@@ -79,8 +91,11 @@ export default defineComponent({
     return {
       isOpen: false,
       clickedMarkerName: "",
+      clickedMarkerAddress: "",
       distanceToLocation_km: "",
       timeToLocation_mins: "",
+      startTime: "",
+      endTime: "",
     };
   },
 
@@ -92,7 +107,6 @@ export default defineComponent({
   methods: {
     calculateDistance() {
       const url = "https://maps.googleapis.com/maps/api/distancematrix/json?origins=1.2958419970838684,103.85841587741238&destinations=1.3007033161990564,103.84528924122294&departure_time=now&key=AIzaSyAJXGx7T2ypt5Ew5-9SbDTWF9gqloQUJwI"; // hardcoded
-      console.log("load")
       axios
         .get(url)
         .then((response) => {
@@ -126,28 +140,29 @@ export default defineComponent({
       const currentDateTimeFormatted =
         year + "-" + month + "-" + date + " " + hour + ":" + min + ":" + sec;
 
-      const url = "http://127.0.0.1:5001/bookings/7"; // hardcoded
+      const startDateTimeFormatted= this.startTime.substring(0,10) + " " + this.startTime.substring(11,19)
+      const endDateTimeFormatted= this.endTime.substring(0,10) + " " + this.endTime.substring(11,19)
+
+      const url = "http://127.0.0.1:5001/bookings"; // hardcoded
       axios
         .post(url, {
           bookingDate: currentDateTimeFormatted,
-          bookingLocation: "addresstest1234", // hardcoded
-
-          // bookingID: eachBooking.bookingID,
-
-          // locationName: eachBooking.locationName,
-          // startDate: startDateOnly,
-          // startTime: startTimeOnly,
-          // endDate: endDateOnly,
-          // endTime: endTimeOnly,
-          // status: eachBooking.status,
-          // bookingRef: eachBooking.bookingRef,
-          // image: eachBooking.image,
-          // maxCapacity: eachBooking.maxCapacity,
-          // currentCapacity: eachBooking.currentCapacity,
-          // userID: eachBooking.userID,
+          bookingLocation:this.clickedMarkerName,
+          locationName: this.clickedMarkerAddress, 
+          startTime: startDateTimeFormatted,
+          endTime:endDateTimeFormatted,
+          userID: 1,
+          status: "Booked"
         })
         .then((response) => {
           console.log(response.data);
+          this.setOpen(false);
+          this.$router.push({
+        path: '/viewBooking',
+          })
+            .then(()=> {this.$router.go(0)});
+      location.reload()
+          
         })
         .catch((error) => {
           console.log(error.message);
@@ -194,9 +209,12 @@ export default defineComponent({
       // listener for user click
       const markerListener = newMap.setOnMarkerClickListener((event) => {
         console.log(event);
-        console.log(event.latitude);
-        console.log(event.longitude);
+        // console.log(event.latitude);
+        // console.log(event.longitude);
+        console.log(event.title);
+        console.log(event.snippet)
         this.clickedMarkerName = event.title;
+        this.clickedMarkerAddress = event.snippet;
 
         this.setOpen(true);
       });

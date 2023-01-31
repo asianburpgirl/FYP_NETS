@@ -46,9 +46,9 @@
           <ion-row>
             <ion-col>
               <ion-card-title>{{ eachBooking.bookingLocation }}</ion-card-title>
-              <ion-card-subtitle>{{
+              <!-- <ion-card-subtitle>{{
                 eachBooking.locationName
-              }}</ion-card-subtitle>
+              }}</ion-card-subtitle> -->
             </ion-col>
             <ion-col>
               <ion-item lines="none">
