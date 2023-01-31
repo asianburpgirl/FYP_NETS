@@ -17,6 +17,12 @@
                   {{ eachBooking.bookingRef }}
                 </u></ion-card-subtitle
               >
+              <ion-row class="ion-padding-top ion-justify-content-center">
+        <ion-button shape="round" @click="editBooking()">Edit</ion-button>
+      </ion-row>
+       <ion-row class="ion-padding-top ion-justify-content-center">
+        <ion-button shape="round" @click="deleteBooking(eachBooking.bookingID)" color="danger" >Delete</ion-button>
+      </ion-row>
             </ion-col>
           </ion-row>
           <ion-row>
@@ -89,12 +95,27 @@ export default defineComponent({
     };
   },
   methods: {
+    deleteBooking(bookingID) {
+      const url = "http://127.0.0.1:5001/bookings/" + bookingID; // hardcoded
+      console.log(url)
+      axios
+        .delete(url)
+        .then((response) => {
+          console.log(response)
+        location.reload()
+        })
+       .catch((error) => {
+          console.log(error.message);
+        });
+      
+    },
     getAllBookings() {
       const url = "http://127.0.0.1:5001/bookings"; // hardcoded
       axios
         .get(url)
         .then((response) => {
           const data = response.data.data.bookings;
+          console.log(data)
           for (const eachBooking of data) {
             const startDateTime = new Date(eachBooking.startTime);
             const startDateOnly =

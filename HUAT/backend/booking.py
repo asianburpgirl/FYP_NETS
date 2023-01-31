@@ -1,7 +1,6 @@
 from flask import Flask, jsonify, request
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
-# from itsdangerous import json
 from os import environ
 from datetime import datetime
 import random
@@ -9,9 +8,9 @@ import string
 import user
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL') or 'mysql+mysqlconnector://root@localhost:3306/localconnect'
-# app.config['SQLALCHEMY_DATABASE_URI'] = environ.get(
-#     'dbURL') or 'mysql+mysqlconnector://root:root@localhost:8889/localconnect'
+# app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL') or 'mysql+mysqlconnector://root@localhost:3306/localconnect'
+app.config['SQLALCHEMY_DATABASE_URI'] = environ.get(
+    'dbURL') or 'mysql+mysqlconnector://root:root@localhost:8889/localconnect'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {'pool_recycle': 299}
 
@@ -204,8 +203,6 @@ def updateBooking(bookingID):
         }), 500
 
 # delete bookings
-
-
 @app.route("/bookings/<int:bookingID>", methods=['DELETE'])
 def deleteBooking(bookingID):
     booking = Booking.query.filter_by(bookingID=bookingID).first()
