@@ -5,7 +5,8 @@
         type="ColumnChart"
         :options="options"
         :data="data"
-      />    
+      />
+      
     </div>
   </template>
    
@@ -14,7 +15,7 @@
   import { defineComponent } from "vue";
   import {IonRow,} from "@ionic/vue";
   import axios from 'axios';
-
+  
   export default {
     name: "BarChart",
     components: {
@@ -23,16 +24,37 @@
     data() {
       return {
         data: [
-           ['Carpark Name', 'No. of Bookings', { role: 'style' }],
-           ['Funan', 10, '#6B58E2'],
-           ['ION Orchard', 25, '#00B28F'],
-           ['Plaza Singapura', 30, '#F8D12F'],
+           ['Carpark Name', 'No. of Bookings']
+          //  ['ION Orchard', 25],
+          //  ['Plaza Singapura', 30],
         ],
         options: {
           width: 1000,
           height: 500
         }
       };
+    },
+    mounted(){
+      this.getBookings()
+    },
+    methods: {
+      getBookings() {
+        let bookingData = [];
+        const url = "http://127.0.0.1:5001/bookings";
+
+        axios.get(url).then(response => {
+          bookingData = response.data.data.bookings;
+          console.log(bookingData)
+          for(let i = 0; i < bookingData.length; i++) {
+            console.log(bookingData[i]['bookingLocation'])
+            this.data.push([bookingData[i]['bookingLocation'],bookingData[i]['currentCapacity']])
+          }
+          return bookingData
+        })
+      .catch(error => {
+        console.log(error.message)
+        })
+      }
     }
   };
   </script>
