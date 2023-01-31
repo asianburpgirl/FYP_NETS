@@ -6,25 +6,47 @@
       </ion-toolbar>
     </ion-header>
     <ion-content :fullscreen="true">
-    <!--   <ion-refresher slot="fixed" @ionRefresh="handleRefresh()">
+      <!--   <ion-refresher slot="fixed" @ionRefresh="handleRefresh()">
         <ion-refresher-content></ion-refresher-content>
       </ion-refresher> -->
+      Distance from your current location:
+            {{ distanceToLocation_km }} 
+            <br>
+            Time taken from your current location:
+            {{ timeToLocation_mins }}
 
       <capacitor-google-map id="map"></capacitor-google-map>
 
-      <div>
-        {{ userLocation }}
-      </div>
-
-      <ion-row class="ion-padding-top ion-justify-content-center">
+      <ion-modal :is-open="isOpen" class="ion-padding">
+        <ion-header>
+          <ion-toolbar>
+            <ion-title>{{ clickedMarkerName }}</ion-title>
+            <ion-buttons slot="end">
+              <ion-button @click="setOpen(false)">Close</ion-button>
+              <!-- <ion-button @click="setOpen(false)">Close</ion-button> need to reload map cause its not showing after -->
+            </ion-buttons>
+          </ion-toolbar>
+        </ion-header>
+        <ion-content class="ion-padding">
+          <p>
+            Distance from your current location:
+            {{ distanceToLocation_km }} 
+            Time taken from your current location:
+            {{ timeToLocation_mins }}
+          </p>
+          <ion-row class="ion-padding-top ion-justify-content-center">
         <ion-button shape="round" @click="makeBoooking()">Book</ion-button>
       </ion-row>
+        </ion-content>
+      </ion-modal>
+
+      
     </ion-content>
   </ion-page>
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, ref } from "vue";
 import axios from "axios";
 import {
   IonPage,
@@ -32,11 +54,13 @@ import {
   IonToolbar,
   IonTitle,
   IonContent,
-//   IonRefresher,
-//   IonRefresherContent,
+  IonModal,
+  IonButtons,
+  IonButton,
+  //   IonRefresher,
+  //   IonRefresherContent,
 } from "@ionic/vue";
 import { GoogleMap } from "@capacitor/google-maps";
-import { Geolocation } from "@capacitor/geolocation";
 
 export default defineComponent({
   components: {
@@ -45,48 +69,50 @@ export default defineComponent({
     IonToolbar,
     IonTitle,
     IonContent,
+    IonModal,
+    IonButtons,
+    IonButton,
     // IonRefresher,
     // IonRefresherContent,
   },
-//   setup() {
-//     const handleRefresh = () => {
-//       setTimeout(() => {
-//         // Any calls to load data go here
-        
-//       }, 2000);
-//     };
-//     return { handleRefresh };
-//   },
-
   data() {
     return {
-      userLocation: { lat: 1.3521, lng: 103.8198 },
+      isOpen: false,
+      clickedMarkerName: "",
+      distanceToLocation_km: "",
+      timeToLocation_mins: "",
     };
   },
 
-  //  const createMap = async () => {
-  // const mapRef = document.getElementById('map');
-
-  // const newMap = await GoogleMap.create({
-  //   id: 'my-map', // Unique identifier for this map instance
-  //   element: mapRef, // reference to the capacitor-google-map element
-  //   apiKey: 'YOUR_API_KEY_HERE', // Your Google Maps API Key
-  //   config: {
-  //     center: {
-  //       // The initial position to be rendered by the map
-  //       lat: 33.6,
-  //       lng: -117.9,
-  //     },
-  //     zoom: 8, // The initial zoom level to be rendered by the map
-  //   },
-  // });
-
   mounted() {
     this.createMap();
-    this.getCurrentLocation();
+    this.calculateDistance();
   },
 
   methods: {
+    calculateDistance() {
+      const url = "https://maps.googleapis.com/maps/api/distancematrix/json?origins=1.2958419970838684,103.85841587741238&destinations=1.3007033161990564,103.84528924122294&departure_time=now&key=AIzaSyAJXGx7T2ypt5Ew5-9SbDTWF9gqloQUJwI"; // hardcoded
+      console.log("load")
+      axios
+        .get(url)
+        .then((response) => {
+          console.log(response.data);
+          const distance_km = (response.data.rows[0].elements[0].distance.value / 1000).toPrecision(2);
+          const duration_mins = (response.data.rows[0].elements[0].duration_in_traffic.value / 60).toPrecision(2);
+          console.log("distance: ",distance_km)
+
+          console.log( "duration: ", duration_mins)
+          this.distanceToLocation_km = distance_km
+          this.timeToLocation_mins = duration_mins
+          
+        })
+        .catch((error) => {
+          console.log(error.message);
+        });
+    },
+    setOpen(isOpen: boolean) {
+      this.isOpen = isOpen;
+    },
     makeBoooking() {
       const currentDateTime = new Date();
       const date = currentDateTime.getDate();
@@ -105,28 +131,26 @@ export default defineComponent({
         .post(url, {
           bookingDate: currentDateTimeFormatted,
           bookingLocation: "addresstest1234", // hardcoded
+
+          // bookingID: eachBooking.bookingID,
+
+          // locationName: eachBooking.locationName,
+          // startDate: startDateOnly,
+          // startTime: startTimeOnly,
+          // endDate: endDateOnly,
+          // endTime: endTimeOnly,
+          // status: eachBooking.status,
+          // bookingRef: eachBooking.bookingRef,
+          // image: eachBooking.image,
+          // maxCapacity: eachBooking.maxCapacity,
+          // currentCapacity: eachBooking.currentCapacity,
+          // userID: eachBooking.userID,
         })
         .then((response) => {
           console.log(response.data);
         })
         .catch((error) => {
           console.log(error.message);
-        });
-    },
-    //get Live location
-    getCurrentLocation() {
-      const location = Geolocation.getCurrentPosition();
-      location
-        .then((result) => {
-          this.userLocation = {
-            lat: result.coords.latitude,
-            lng: result.coords.longitude,
-          };
-          console.log(this.userLocation);
-        })
-        .catch((err) => {
-          // console.log(err)
-          return err;
         });
     },
 
@@ -142,7 +166,7 @@ export default defineComponent({
             lat: 1.2962823,
             lng: 103.8500894, // smu
           },
-          zoom: 10, // The initial zoom level to be rendered by the map
+          zoom: 13, // The initial zoom level to be rendered by the map
         },
       });
 
@@ -170,13 +194,17 @@ export default defineComponent({
       // listener for user click
       const markerListener = newMap.setOnMarkerClickListener((event) => {
         console.log(event);
+        console.log(event.latitude);
+        console.log(event.longitude);
+        this.clickedMarkerName = event.title;
+
+        this.setOpen(true);
       });
       //add traffic data
       const trafficDataEnable = newMap.enableTrafficLayer(true);
 
       // enable current location
       const currentLocationEnable = newMap.enableCurrentLocation(true);
-
       return newMap;
     },
   },
@@ -186,7 +214,7 @@ export default defineComponent({
 <style>
 capacitor-google-map {
   display: inline-block;
-  width: 300px;
-  height: 600px;
+  width: 330px;
+  height: 690px;
 }
 </style>
