@@ -44,18 +44,18 @@
           <ion-datetime  v-model="endTime"></ion-datetime>
         </ion-item>
           
-          <ion-row class="ion-padding-top ion-justify-content-center">
-        <ion-button shape="round" @click="makeBoooking()">Book</ion-button>
+        <ion-row class="ion-padding-top ion-justify-content-center ion-padding-bottom addPaddingBottom" >
+        <ion-button shape="round" @click="makeBoooking()" >Book</ion-button>
       </ion-row>
         </ion-content>
       </ion-modal>
-
       
     </ion-content>
   </ion-page>
 </template>
 
 <script lang="ts">
+
 import { defineComponent, ref } from "vue";
 import axios from "axios";
 import {
@@ -234,5 +234,8 @@ capacitor-google-map {
   display: inline-block;
   width: 330px;
   height: 690px;
+}
+.addPaddingBottom{
+  padding-bottom: 300px;
 }
 </style>

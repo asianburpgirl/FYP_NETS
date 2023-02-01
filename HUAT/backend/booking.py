@@ -161,8 +161,6 @@ def createBooking():
     ), 201
 
 # update bookings
-
-
 @app.route("/bookings/<int:bookingID>", methods=['PUT'])
 def updateBooking(bookingID):
     data = request.get_json()

@@ -75,6 +75,7 @@ import {
   IonCardSubtitle,
   IonCardTitle,
   IonSearchbar,
+  IonBadge
 } from "@ionic/vue";
 import { defineComponent } from "vue";
 import { arrowBack, home, star } from "ionicons/icons";
@@ -87,6 +88,7 @@ export default defineComponent({
     IonCardSubtitle,
     IonCardTitle,
     IonSearchbar,
+    IonBadge
   },
   data() {
     return {

@@ -105,7 +105,7 @@
         </ion-item>
 
         <ion-row class="ion-padding-top ion-justify-content-center">
-          <ion-button shape="round" :disabled="disabledRegisterButton==1" routerLink="/tabs/">Register</ion-button>
+          <ion-button shape="round" :disabled="disabledRegisterButton==1" @click="registerUser">Register</ion-button>
         </ion-row>
       </ion-list>
     </ion-grid>
@@ -125,6 +125,7 @@ import {
   IonNote,
 } from "@ionic/vue";
 import { construct } from "ionicons/icons";
+import axios from "axios";
 
 export default defineComponent( {
   components: {
@@ -189,7 +190,7 @@ export default defineComponent( {
       }
     },
     validatePassword(password: string) {
-        this.passwordErrors = Array<string>(); // empty array to delete all errors
+      this.passwordErrors = Array<string>(); // empty array to delete all errors
       // error if password is too short
       if (password.length < 8) {
         this.passwordErrors.push(
@@ -212,9 +213,9 @@ export default defineComponent( {
       }
       this.registerButton()
     },
-    validateReconfirmPassword(reconfirmPassword: string) { 
+    validateReconfirmPassword(reconfirmPassword: string) {
       //valid path. reconfirm password same as password
-      if (reconfirmPassword == this.password ) {
+      if (reconfirmPassword == this.password) {
         this.isReconfirmPasswordValid = 1;
         //issue if user enter reconfirm password first, then enter password.
         // even if same passwords, will have 
@@ -223,26 +224,40 @@ export default defineComponent( {
         this.isReconfirmPasswordValid = 2;
       }
     },
-    validatePhone(phoneNum: string) { 
+    validatePhone(phoneNum: string) {
       //valid path. phone number is 8 numbers
-      if (phoneNum.length == 8 ) {
+      if (phoneNum.length == 8) {
         this.isPhoneValid = 1;
         this.registerButton()
       } else {
         this.isPhoneValid = 2;
       }
     },
-    registerButton(){
+    registerButton() {
       // only let user register if they are no errors  
-      if (this.isPhoneValid== 1 && this.isReconfirmPasswordValid== 1 && this.isNameValid==1 && this.isEmailValid == 1){
-        this.disabledRegisterButton = 0
+      if (this.isPhoneValid == 1 && this.isReconfirmPasswordValid == 1 && this.isNameValid == 1 && this.isEmailValid == 1) {
+        this.disabledRegisterButton = 0 
       }
-      // this.$router.push({
-      //   path: '/tabs/',
-      // });
+    },
+    registerUser() {
+      const url = "http://127.0.0.1:5002/users"; // hardcoded
+        axios
+          .post(url, {
+            email: this.email,
+            name: this.name,
+            phoneNum: this.phoneNumber,
+            username: this.userName,
+            password: this.password,
+          })
+          .then((response) => {
+            console.log(response)
+            this.$router.push({
+          path: '/',
+        });
+
+          })
     }
-    
-  },
+  }
 });
 </script>
 

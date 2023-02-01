@@ -1,9 +1,10 @@
 from flask import Flask, jsonify, request
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
-# from itsdangerous 
 import json
 from os import environ
+import random
+import string
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL') or 'mysql+mysqlconnector://root@localhost:3306/localconnect'
@@ -93,10 +94,12 @@ def login_by_username():
         return jsonify({"code": 500, "message": "Input is not JSON."}), 500
 
 # create user
-@app.route("/users/<int:userID>" , methods = ['POST'])
-def createUser(userID):
+@app.route("/users" , methods = ['POST'])
+def createUser():
 
     # bookingID = request.json.get('bookingID' , None)
+    userID = ''.join(random.SystemRandom().choice(string.digits)
+                        for _ in range(6))
     email = request.json.get('email' , None)
     name = request.json.get('name' , None)
     phoneNum = request.json.get('phoneNum' , None)
