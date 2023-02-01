@@ -4,9 +4,6 @@
       <h2>Percentage of bookings according to locations</h2>
       <GChart type="PieChart" :options="PieChartOptions" :data="PieChartData" /> 
       <GChart type="ColumnChart" :data="ColumnChartData" :options="ColumnChartOptions" />
-      <ion-row class="ion-padding-top ion-justify-content-center">
-        <ion-button shape="round" @click="getCharts()">Create Charts</ion-button>
-      </ion-row>
     </div>
   </base-layout>
 </template>
@@ -53,7 +50,7 @@ export default defineComponent({
     }
   },
   methods: {
-    loadUserData(){
+    loadUserData() {
       this.userData = JSON.parse(localStorage.getItem("userData") || '{}');
     },
     getCharts() {
@@ -78,6 +75,7 @@ export default defineComponent({
   // Calls function on page load
   mounted(){
     this.loadUserData();
+    this.getCharts();
   }
 });
 </script>
