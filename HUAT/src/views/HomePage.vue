@@ -1,22 +1,22 @@
 <template>
-  <base-layout :pageTitle="`Welcome, ${userData.name}!`" needToolBar="y">
+  <base-layout needToolBar="y">
     <div>
       <h2>Percentage of bookings according to locations</h2>
-      <GChart type="PieChart" :options="PieChartOptions" :data="PieChartData" /> 
-      <GChart type="ColumnChart" :data="ColumnChartData" :options="ColumnChartOptions" />
+      <!-- <GChart type="PieChart" :options="PieChartOptions" :data="PieChartData" /> 
+      <GChart type="ColumnChart" :data="ColumnChartData" :options="ColumnChartOptions" /> -->
     </div>
   </base-layout>
 </template>
 
 <script lang="ts">
-import { GChart } from "vue-google-charts";
+// import { GChart } from "vue-google-charts";
 import { defineComponent } from "vue";
 import axios from 'axios';
 
 export default defineComponent({
   name: "GoogleCharts",
   components: {
-    GChart
+    // GChart
   },
   data() {
     return {

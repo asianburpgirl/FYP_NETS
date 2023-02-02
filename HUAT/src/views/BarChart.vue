@@ -1,17 +1,17 @@
 <template>
     <div>
       <h2>Business Analytics - Number of bookings per location</h2>
-      <GChart
+      <!-- <GChart
         type="ColumnChart"
         :options="options"
         :data="data"
-      />
+      /> -->
       
     </div>
   </template>
    
   <script>
-  import { GChart } from "vue-google-charts";
+  // import { GChart } from "vue-google-charts";
   import { defineComponent } from "vue";
   import {IonRow,} from "@ionic/vue";
   import axios from 'axios';
@@ -19,7 +19,7 @@
   export default {
     name: "BarChart",
     components: {
-      GChart
+      // GChart
     },
     data() {
       return {
