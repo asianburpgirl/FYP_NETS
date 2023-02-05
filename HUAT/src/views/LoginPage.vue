@@ -10,7 +10,7 @@
       </ion-row>
 
       <!-- username -->
-      <ion-item fill="solid" ref="item" class="paddingTop">
+      <ion-item fill="solid" ref="item">
         <!-- <ion-input :clearInput="true" placeholder="Username:" type="email" @ionInput="validate"></ion-input> -->
         <ion-input
           :clearInput="true"
@@ -37,7 +37,7 @@
               <ion-label> Remember me</ion-label>
             </ion-item>
             <!-- <ion-button class="hyperlinkButton" >Forgot Password</ion-button> -->
-            <a float-right class="myLine2" href="/tabs/">Forgot password?</a>
+            <a float-right class="myLine2" href="/forgotPassword">Forgot password?</a>
           </div>
         </ion-col>
       </ion-row>
@@ -55,15 +55,7 @@
         <ion-button shape="round" @click="validateLogin()">Login</ion-button>
       </ion-row>
       <!-- login error message -->
-    
-
-      <!-- <ion-item lines="none" v-if="loginError != ''">
-          <ion-note color="danger">
-            <ul>
-              <li>{{ loginError }}</li>
-            </ul>
-          </ion-note>
-      </ion-item> -->
+  
 
       <!-- Password error message -->
       <ion-item lines="none">
