@@ -6,9 +6,9 @@
       :options="options"
       :data="collectionData"
     />  
-    <ion-row class="ion-padding-top ion-justify-content-center">
+    <!-- <ion-row class="ion-padding-top ion-justify-content-center">
         <ion-button shape="round" @click="getBookings()">Create Charts</ion-button>
-    </ion-row>
+    </ion-row> -->
   </div>
 </template>
  
@@ -40,6 +40,9 @@ export default defineComponent({
       }
     };
   },
+    mounted(){
+      this.getBookings()
+    },
   methods: {
     getBookings() {
       let bookingData = [];
