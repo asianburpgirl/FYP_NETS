@@ -8,6 +8,7 @@ import nearbymePage from '../views/nearbymePage.vue';
 import register from '../views/registerPage.vue';
 import viewProfile from '../views/viewProfile.vue';
 import BarChart from '../views/BarChart.vue';
+import forgotPassword from '../views/forgotPasswordPage.vue';
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -67,7 +68,11 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/BarChart',
     component: BarChart
-  }
+  },
+  {
+    path: '/forgotPassword',
+    component: forgotPassword
+  },
 ]
 
 const router = createRouter({

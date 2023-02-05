@@ -182,6 +182,47 @@ def deleteUser(userID):
         }
     ), 404
     
+# check if user exists
+# @app.route("/users/<int:phoneNum>")
+# def checkUser(phoneNum):
+#     user = User.query.filter_by(phoneNum=phoneNum).first()
+#     if user:
+#         return jsonify(
+#             {
+#                 "code": 200,
+#                 "message": "User exists."
+#             }
+#         )
+
+#     return jsonify(
+#         {
+#             "code": 200,
+#             "message": "User does not exists"
+#         }
+#     )
+
+
+@app.route("/checkUserExist")
+def checkUser():
+    email = request.args.get('email')
+    account = request.args.get('account')
+    emailAccountCombined = email+"@"+account
+    user = User.query.filter_by(email=emailAccountCombined).first()
+    if user:
+        return jsonify(
+                    {
+                        "code": 200,
+                        "message": "User exists"
+                    }
+                )
+        
+    return jsonify(
+        {
+            "code": 200,
+            "message": "User not found."
+        }
+    )
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5002, debug=True)

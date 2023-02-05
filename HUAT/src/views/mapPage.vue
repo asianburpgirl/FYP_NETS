@@ -178,6 +178,8 @@ import {
   IonTitle,
   IonContent,
   IonModal,
+  IonRow,
+  IonList,
   IonButtons,
   IonButton,
   IonDatetime,
@@ -209,6 +211,8 @@ export default defineComponent({
     IonLabel,
     IonSelect,
     IonSelectOption,
+    IonRow,
+    IonList,
 
     // IonRefresher,
     // IonRefresherContent,
