@@ -103,16 +103,14 @@ export default defineComponent({
           emailAccountOnly;
         
         axios.get(url).then((response) => {
-          console.log(response.data.code);
           const responseMessage = response.data.message;
           if (responseMessage == "User exists") {
               this.successOpen = true
               const timer: ReturnType<typeof setTimeout> = setTimeout(() => this.setSuccessOpen(false), 2000);
           }
 
-          if (responseMessage == "User not found.") {
+          if (responseMessage == "User not found") {
               this.emailNoExist = true
-            console.log(this.emailNoExist)
           }
         
         });
