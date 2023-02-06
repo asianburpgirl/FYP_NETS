@@ -1,10 +1,10 @@
 from flask import Flask, jsonify, request
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
-import json
+# import json
 from os import environ
-import random
-import string
+# import random
+# import string
 
 app = Flask(__name__)
 # app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL') or 'mysql+mysqlconnector://root@localhost:3306/localconnect'
@@ -33,7 +33,7 @@ class Carpark(db.Model):
     seasonweekdaynonpeak = db.Column(db.Integer, nullable=False)
     seasonweekendpeak = db.Column(db.Integer, nullable=False)
     seasonweekendnonpeak = db.Column(db.Integer, nullable=False)
-    
+
     def __init__(self, carparkID, carparkName, maxCapacity, currentCapacity, hourlyweekdaypeak, hourlyweekdaynonpeak, hourlyweekendpeak, hourlyweekendnonpeak, seasonweekdaypeak, seasonweekdaynonpeak, seasonweekendpeak, seasonweekendnonpeak):
         self.carparkID = carparkID
         self.carparkName = carparkName
@@ -47,7 +47,6 @@ class Carpark(db.Model):
         self.seasonweekdaynonpeak = seasonweekdaynonpeak
         self.seasonweekendpeak = seasonweekendpeak
         self.seasonweekendnonpeak = seasonweekendnonpeak
-        
 
     def json(self):
         return {
@@ -57,12 +56,12 @@ class Carpark(db.Model):
             "currentCapacity": self.currentCapacity,
             "hourlyweekdaypeak": self.hourlyweekdaypeak,
             "hourlyweekdaynonpeak": self.hourlyweekdaynonpeak,
-            "hourlyweekendpeak": self.hourlyweekendpeak, 
+            "hourlyweekendpeak": self.hourlyweekendpeak,
             "hourlyweekendnonpeak": self.hourlyweekendnonpeak,
-            "seasonweekdaypeak": self.seasonweekdaypeak, "seasonweekdaynonpeak": self.seasonweekdaynonpeak, "seasonweekendpeak": self.seasonweekendpeak, "seasonweekendnonpeak": self.seasonweekendnonpeak, 
+            "seasonweekdaypeak": self.seasonweekdaypeak, "seasonweekdaynonpeak": self.seasonweekdaynonpeak, "seasonweekendpeak": self.seasonweekendpeak, "seasonweekendnonpeak": self.seasonweekendnonpeak,
         }
 
-#Get All carparks
+# Get All carparks
 @app.route("/carparks")
 def get_all():
     carparkList = Carpark.query.all()
@@ -71,107 +70,60 @@ def get_all():
             {
                 "code": 200,
                 "data": {
-                    "users": [user.json() for user in carparkList]
+                    "carparks": [carpark.json() for carpark in carparkList]
                 }
             }
         )
     return jsonify(
         {
             "code": 404,
-            "message": "There are no users."
+            "message": "There are no carparks."
         }
     ), 404
 
+# add carpark capacity by 1
+@app.route("/carparkCapAdd/<int:carparkID>")
+def addCarparkCapacity(carparkID):
+    carparkID = Carpark.query.filter_by(carparkID=carparkID).first()
+    if carparkID:
+        carparkID.currentCapacity += 1
+        db.session.commit()
+        return jsonify(
+            {
+                "code": 200,
+                "message": str(carparkID) + " added 1 capacity successful!"
+            }
+        )
+    else:
+        return jsonify(
+            {
+                "code": 404,
+                "message": "Carpark cannot be found"
+            }
+        )
 
-# create user
-# @app.route("/users", methods=['POST'])
-# def createUser():
+# minus carpark capacity by 1
 
-#     # bookingID = request.json.get('bookingID' , None)
-#     userID = ''.join(random.SystemRandom().choice(string.digits)
-#                      for _ in range(6))
-#     email = request.json.get('email', None)
-#     name = request.json.get('name', None)
-#     phoneNum = request.json.get('phoneNum', None)
-#     username = request.json.get('username', None)
-#     password = request.json.get('password', None)
 
-#     newUser = User(userID=userID, email=email, name=name,
-#                    phoneNum=phoneNum, username=username, password=password)
-
-#     try:
-#         db.session.add(newUser)
-#         db.session.commit()
-
-#     except Exception as e:
-#         print(e)
-#         return jsonify({
-#             "code": 500,
-#             "data": {
-#                 "userID": userID
-#             },
-#             "message": "An error occurred collecting the users information"
-#         }), 500
-
-#     return jsonify(
-#         {
-#             "code": 201,
-#             "data": newUser.json(),
-#             "message": "Your account has been created"
-#         }
-#     ), 201
-
-# update user password
-# @app.route("/users/<int:userID>", methods=["PUT"])
-# def updateUser(userID):
-#     data = request.get_json()
-#     user = User.query.filter_by(userID=userID).first()
-#     if user:
-#         if data['password']:
-#             user.password = data['password']
-
-#             db.session.commit()
-#             return jsonify(
-#                 {
-#                     "code": 200,
-#                     "message": "Password update successful!"
-#                 }
-#             )
-
-#     else:
-#         return jsonify(
-#             {
-#                 "code": 404,
-#                 "message": "User cannot be found"
-#             }
-#         )
-
-# delete user
-# @app.route("/users/<int:userID>", methods=['DELETE'])
-# def deleteUser(userID):
-#     user = User.query.filter_by(userID=userID).first()
-#     if user:
-#         db.session.delete(user)
-#         db.session.commit()
-#         return jsonify(
-#             {
-#                 "code": 200,
-#                 "data": {
-#                     "userID": userID,
-
-#                 },
-#                 "message": "Account has been deleted!"
-#             }
-#         )
-#     return jsonify(
-#         {
-#             "code": 404,
-#             "data": {
-#                 "userID": userID
-#             },
-#             "message": "User not found."
-#         }
-#     ), 404
+@app.route("/carparkCapMinus/<int:carparkID>")
+def minusCarparkCapacity(carparkID):
+    carparkID = Carpark.query.filter_by(carparkID=carparkID).first()
+    if carparkID:
+        carparkID.currentCapacity -= 1
+        db.session.commit()
+        return jsonify(
+            {
+                "code": 200,
+                "message":  str(carparkID) + " minus 1 capacity successful!"
+            }
+        )
+    else:
+        return jsonify(
+            {
+                "code": 404,
+                "message": "Carpark cannot be found"
+            }
+        )
 
 
 if __name__ == '__main__':
