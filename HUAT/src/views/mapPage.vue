@@ -105,6 +105,35 @@
         </ion-content>
       </ion-modal>
 
+    
+      <!-- when booking is successful, to show success popup -->
+      <ion-modal :is-open="bookingSuccessIsOpen" class="ion-padding">
+        <ion-header>
+          <ion-toolbar>
+            <ion-title>Success!</ion-title>
+          </ion-toolbar>
+        </ion-header>
+        <ion-content class="ion-padding">
+          <ion-row>
+            Your booking at {{clickedMarkerName}} is successful! 
+            <br> 
+            These are the details: 
+            Carpark Location: {{ clickedMarkerAddress }}
+            Start Date: {{ startTime }}
+            End Date: {{ endTime }}
+
+          </ion-row>
+          
+          <ion-row
+            class="ion-padding-top ion-justify-content-center ion-padding-bottom addPaddingBottom"
+          >
+            <ion-button shape="round" @click="
+                  setBookingSuccessOpen(false);">Back to Map</ion-button>
+            <ion-button shape="round" @click="routeToMyBookings()">View My Bookings</ion-button>
+          </ion-row>
+        </ion-content>
+      </ion-modal>
+
       <!-- when user select to subscription plans at the carpark location.  -->
       <ion-modal :is-open="subscriptionIsOpen" class="ion-padding">
         <ion-header>
@@ -213,7 +242,6 @@ export default defineComponent({
     IonSelectOption,
     IonRow,
     IonList,
-
     // IonRefresher,
     // IonRefresherContent,
   },
@@ -224,6 +252,8 @@ export default defineComponent({
   data() {
     return {
       bookingIsOpen: false,
+      bookingSuccessIsOpen: false,
+      subscriptionSuccessIsOpen: false,
       subscriptionIsOpen: false,
       choiceOpen: false,
 
@@ -242,6 +272,17 @@ export default defineComponent({
   },
 
   methods: {
+    routeToMyBookings(){
+      this.setBookingSuccessOpen(false); 
+      this.$router
+            .push({
+              path: "/viewBooking",
+            })
+            .then(() => {
+              this.$router.go(0);
+            });
+          location.reload();
+    },
     buySubscription() { 
       console.log("here")
     },
@@ -273,6 +314,9 @@ export default defineComponent({
     },
     setBookingOpen(isOpen: boolean) {
       this.bookingIsOpen = isOpen;
+    },
+    setBookingSuccessOpen(isOpen: boolean){
+      this.bookingSuccessIsOpen = isOpen;
     },
     setSubscriptionOpen(isOpen: boolean) {
       this.subscriptionIsOpen = isOpen;
@@ -309,16 +353,8 @@ export default defineComponent({
           status: "Booked",
         })
         .then((response) => {
-          console.log(response.data);
-          this.setBookingOpen(false);
-          this.$router
-            .push({
-              path: "/viewBooking",
-            })
-            .then(() => {
-              this.$router.go(0);
-            });
-          location.reload();
+          this.setBookingOpen(false); // close booking window 
+          this.setBookingSuccessOpen(true); // open booking sucess window 
         })
         .catch((error) => {
           console.log(error.message);
