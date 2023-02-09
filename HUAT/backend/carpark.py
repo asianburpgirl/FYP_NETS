@@ -19,12 +19,13 @@ CORS(app)
 
 
 class Carpark(db.Model):
-    __tablename__ = 'subscriptions'
+    __tablename__ = 'carparkDetails'
 
     carparkID = db.Column(db.Integer, primary_key=True)
-    # carparkName = db.Column(db.String(100), nullable=False)
-    # maxCapacity = db.Column(db.Integer, nullable=False)
-    # currentCapacity = db.Column(db.Integer, nullable=False)
+    carparkName = db.Column(db.String(100), nullable=False)
+    carparkLocation = db.Column(db.String(100), nullable=False)
+    maxCapacity = db.Column(db.Integer, nullable=False)
+    currentCapacity = db.Column(db.Integer, nullable=False)
     hourlyweekdaypeak = db.Column(db.Integer, nullable=False)
     hourlyweekdaynonpeak = db.Column(db.Integer, nullable=False)
     hourlyweekendpeak = db.Column(db.Integer, nullable=False)
@@ -34,11 +35,12 @@ class Carpark(db.Model):
     seasonweekendpeak = db.Column(db.Integer, nullable=False)
     seasonweekendnonpeak = db.Column(db.Integer, nullable=False)
 
-    def __init__(self, carparkID, hourlyweekdaypeak, hourlyweekdaynonpeak, hourlyweekendpeak, hourlyweekendnonpeak, seasonweekdaypeak, seasonweekdaynonpeak, seasonweekendpeak, seasonweekendnonpeak):
+    def __init__(self, carparkID, carparkName, carparkLocation, maxCapacity, currentCapacity, hourlyweekdaypeak, hourlyweekdaynonpeak, hourlyweekendpeak, hourlyweekendnonpeak, seasonweekdaypeak, seasonweekdaynonpeak, seasonweekendpeak, seasonweekendnonpeak):
         self.carparkID = carparkID
-        # self.carparkName = carparkName
-        # self.maxCapacity = maxCapacity
-        # self.currentCapacity = currentCapacity
+        self.carparkName = carparkName
+        self.carparkLocation = carparkLocation
+        self.maxCapacity = maxCapacity
+        self.currentCapacity = currentCapacity
         self.hourlyweekdaypeak = hourlyweekdaypeak
         self.hourlyweekdaynonpeak = hourlyweekdaynonpeak
         self.hourlyweekendpeak = hourlyweekendpeak
@@ -51,9 +53,10 @@ class Carpark(db.Model):
     def json(self):
         return {
             "carparkID": self.carparkID,
-            # "carparkName": self.carparkName,
-            # "maxCapacity": self.maxCapacity,
-            # "currentCapacity": self.currentCapacity,
+            "carparkName": self.carparkName,
+            "caparkLocation": self.carparkLocation,
+            "maxCapacity": self.maxCapacity,
+            "currentCapacity": self.currentCapacity,
             "hourlyweekdaypeak": self.hourlyweekdaypeak,
             "hourlyweekdaynonpeak": self.hourlyweekdaynonpeak,
             "hourlyweekendpeak": self.hourlyweekendpeak,
