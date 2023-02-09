@@ -1,7 +1,7 @@
 import { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'NETS_Carpark',
+  appId: 'com.nets.app',
   appName: 'HUAT',
   webDir: 'dist',
   bundledWebRuntime: false
