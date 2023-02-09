@@ -10,13 +10,14 @@ CREATE TABLE bookings(
     startTime DATETIME NOT NULL , 
     endTime DATETIME NOT NULL , 
     status VARCHAR(128) NOT NULL , 
-    bookingRef VARCHAR(128) NOT NULL , 
+    bookingRef VARCHAR(128) NOT NULL,
+    bookingAmt FLOAT(5,2) NOT NULL, 
     userID INT NOT NULL , 
     PRIMARY KEY (bookingID));
 	
-INSERT INTO `bookings` (`bookingID`, `bookingDate`, `bookingLocation`, `locationName`, `startTime`, `endTime`, `status`, `bookingRef`, `userID`) VALUES (NULL, CURRENT_TIMESTAMP,  'Funan','99 City Hall Street, Singapore 755666', '2023-02-01 15:30:00', '2023-02-20 11:30:00', 'Booked', 'aasS234Fa3Af3ff319fD',   '1');
-INSERT INTO `bookings` (`bookingID`, `bookingDate`, `bookingLocation`, `locationName`, `startTime`, `endTime`, `status`, `bookingRef`,  `userID`) VALUES (NULL, '2023-01-27 12:33:10', 'ION Orchard', '123 Orchard Street, Singapore 712345', '2023-01-30 12:30:00', '2023-02-09 12:30:00', 'Booked', 'S124fdf13Rafdf',   '2');
-INSERT INTO `bookings` (`bookingID`, `bookingDate`, `bookingLocation`, `locationName`, `startTime`, `endTime`, `status`, `bookingRef`,  `userID`) VALUES (NULL, '2023-01-27 12:43:10', 'ION Orchard', '123 Orchard Street, Singapore 712345', '2023-01-28 12:00:00', '2023-02-11 01:00:00', 'Booked', '22afsadsf4df13Rafdf','1');
+INSERT INTO `bookings` (`bookingID`, `bookingDate`, `bookingLocation`, `locationName`, `startTime`, `endTime`, `status`, `bookingRef`, `bookingAmt`, `userID`) VALUES (NULL, CURRENT_TIMESTAMP,  'Funan','99 City Hall Street, Singapore 755666', '2023-02-01 15:30:00', '2023-02-20 11:30:00', 'Booked', 'aasS234Fa3Af3ff319fD', 0.00, '1');
+INSERT INTO `bookings` (`bookingID`, `bookingDate`, `bookingLocation`, `locationName`, `startTime`, `endTime`, `status`, `bookingRef`, `bookingAmt`, `userID`) VALUES (NULL, '2023-01-27 12:33:10', 'ION Orchard', '123 Orchard Street, Singapore 712345', '2023-01-30 12:30:00', '2023-02-09 12:30:00', 'Booked', 'S124fdf13Rafdf', 0.00, '2');
+INSERT INTO `bookings` (`bookingID`, `bookingDate`, `bookingLocation`, `locationName`, `startTime`, `endTime`, `status`, `bookingRef`, `bookingAmt`, `userID`) VALUES (NULL, '2023-01-27 12:43:10', 'ION Orchard', '123 Orchard Street, Singapore 712345', '2023-01-28 12:00:00', '2023-02-11 01:00:00', 'Booked', '22afsadsf4df13Rafdf', 0.00, '1');
 
 CREATE TABLE carparkDetails (
 	carparkID INT NOT NULL AUTO_INCREMENT,
@@ -47,7 +48,7 @@ CREATE TABLE users (
 	phoneNum INT NOT NULL,
 	username VARCHAR(128) NOT NULL,
 	password VARCHAR(128) NOT NULL,
-	balance FLOAT(5,2) NOT NULL,
+	balance FLOAT(5,2),
   	PRIMARY KEY (userID));
 
 INSERT INTO users(email, name, phoneNum, username, password, balance) VALUES
