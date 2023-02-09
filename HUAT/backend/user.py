@@ -26,7 +26,7 @@ class User(db.Model):
     phoneNum = db.Column(db.Integer, nullable=False)
     username = db.Column(db.String(100), nullable=False)
     password = db.Column(db.String(100), nullable=False)
-    balance = db.Column(db.Float(), nullable=False)
+    balance = db.Column(db.Float())
     
 
     def __init__(self, userID, email, name, phoneNum, username, password, balance):

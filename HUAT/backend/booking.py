@@ -29,6 +29,7 @@ class Booking(db.Model):
     endTime = db.Column(db.DateTime, nullable=False)
     status = db.Column(db.String(128), nullable=False)
     bookingRef = db.Column(db.String(128), nullable=False)
+    bookingAmt = db.Column(db.Float(), nullable=False)
     # image = db.Column(db.Blob, nullable=True)
     # maxCapacity = db.Column(db.Integer, nullable=False)
     # currentCapacity = db.Column(db.Integer, nullable=False)
@@ -37,7 +38,7 @@ class Booking(db.Model):
     user = db.relationship(
         'User', primaryjoin='Booking.userID == User.userID', backref='booking')
 
-    def __init__(self, bookingID, bookingDate,  bookingLocation, locationName, startTime, endTime, status, userID, bookingRef):
+    def __init__(self, bookingID, bookingDate,  bookingLocation, locationName, startTime, endTime, status, userID, bookingRef, bookingAmt):
         self.bookingID = bookingID
         self.bookingDate = bookingDate
         self.bookingLocation = bookingLocation
@@ -46,6 +47,7 @@ class Booking(db.Model):
         self.endTime = endTime
         self.status = status
         self.bookingRef = bookingRef
+        self.bookingAmt = bookingAmt
         # self.image = image
         # self.maxCapacity = maxCapacity
         # self.currentCapacity = currentCapacity
@@ -61,6 +63,7 @@ class Booking(db.Model):
             "endTime": self.endTime,
             "status": self.status,
             "bookingRef": self.bookingRef,
+            "bookingAmt": self.bookingAmt,
             # "image": self.image,
             # "maxCapacity": self.maxCapacity,
             # "currentCapacity": self.currentCapacity,
@@ -78,7 +81,6 @@ class User(db.Model):
     username = db.Column(db.String(100), nullable=False)
     password = db.Column(db.String(100), nullable=False)
     
-
     def __init__(self, userID, email, name, phoneNum, username, password):
         self.userID = userID
         self.email = email
@@ -131,12 +133,13 @@ def createBooking():
     startTime = request.json.get('startTime', None)
     endTime = request.json.get('endTime', None)
     status = request.json.get('status', None)
+    bookingAmt = request.json.get('bookingAmt', None)
     # maxCapacity = request.json.get('maxCapacity', None)
     # currentCapacity = request.json.get('currentCapacity', None)
     userID = request.json.get('userID', None)
 
     newBooking = Booking(
-        bookingID=bookingID, bookingDate=bookingDate, bookingLocation=bookingLocation, locationName=locationName, startTime=startTime, endTime=endTime, status=status, userID=userID, bookingRef=bookingRef)
+        bookingID=bookingID, bookingDate=bookingDate, bookingLocation=bookingLocation, locationName=locationName, startTime=startTime, endTime=endTime, status=status, userID=userID, bookingRef=bookingRef, bookingAmt=bookingAmt)
 
     try:
         db.session.add(newBooking)
