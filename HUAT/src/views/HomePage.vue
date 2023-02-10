@@ -113,6 +113,7 @@ export default defineComponent({
       axios.get(url)
       .then(response => {
         columnData = response.data.data.carparks;
+        console.log(columnData)
         // console.log(columnData)
         for (let i=0; i < columnData.length; i++) {
           this.ColumnChartData.push([columnData[i]['carparkName'],parseInt(columnData[i]['hourlyweekdaypeak']),
