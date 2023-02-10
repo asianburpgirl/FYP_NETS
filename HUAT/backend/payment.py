@@ -1,8 +1,9 @@
 import json
 import os
 import stripe
-from flask import Flask, render_template, jsonify, request
+from flask import Flask, render_template, jsonify, request, redirect
 from flask_cors import CORS
+
 
 app = Flask(__name__)
 
@@ -16,7 +17,9 @@ stripe_keys = {
 stripe.api_key = stripe_keys['secret_key']
 
 # enable CORS
-CORS(app, resources={r'/*': {'origins': '*'}})
+CORS(app)
+
+stripe.api_key='sk_test_51MVFnNEK9AxKlwWVNSPD8wSNLNpSmqcuX2KncHhV6gzDde4AhFOImaqbkZQQrSCWxcJ6FHZZ321jdtIGzH0F0UV100ykysWHWB'
 
 def calculate_order_amount(items):
     # Replace this constant with a calculation of the order's amount
@@ -29,23 +32,49 @@ def get_publishable_key():
     stripe_config = {'publicKey': stripe_keys['publishable_key']}
     return jsonify(stripe_config)
 
-@app.route('/create-payment-intent', methods=['POST'])
-def create_payment():
-    domain_url = 'http://localhost:8100/tabs/wallet'
+YOUR_DOMAIN = 'http://localhost:8100/tabs/wallet'
+
+@app.route('/create-checkout-session', methods=['POST'])
+def create_checkout_session():
     try:
         data = json.loads(request.data)
+        # found_item = ''
+        # for item in Items:
+        #     if item['id'] == data['itemId']:
+        #         found_item = item
+        # print(found_item)
 
-        # create new checkout session
         checkout_session = stripe.checkout.Session.create(
-            success_url=domain_url +
-            '/success?session_id={CHECKOUT_SESSION_ID}',
-            cancel_url=domain_url + '/canceled',
-            payment_method_types=['card'],
+            line_items = [
+                {
+                    
+                    'quantity': 1,
+                    'price': 'price_1MYtU8EK9AxKlwWVvlseiWzF'
+                }
+            ],
             mode='payment',
-            line_items = calculate_order_amount(data['items'])
+            success_url=YOUR_DOMAIN + '/successPage',
+            cancel_url=YOUR_DOMAIN + '/successPage',
+            
         )
+        
+    except Exception as e:
+        return str(e)
+    print(checkout_session.url)
+    
+    return redirect(checkout_session.url, code=303)
 
-        return jsonify({'sessionId': checkout_session['id']})
+
+@app.route('/create-payment-intent', methods=['POST'])
+def create_payment():
+    try:
+        # create new checkout session
+        checkout_session = create_checkout_session()
+        print(checkout_session)
+        print(stripe.Price.retrieve(
+        "price_1MYtU8EK9AxKlwWVvlseiWzF",
+        ))
+        return jsonify({'sessionId': 123})
     except Exception as e:
         return jsonify(error=str(e)), 403
 
