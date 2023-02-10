@@ -23,28 +23,29 @@
 </table>
 </template>
 
+
 <script>
 import { defineComponent } from 'vue'
+
 
 export default defineComponent({
     data() {
         return {
-            stripe: null
+            stripe: null,
         }
     },
     methods: {
         purchaseBook() {
-          const items = [{ id: "xl-tshirt" }];
           fetch('http://localhost:4242/create-payment-intent', {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ items }),
+            
+            body: JSON.stringify({ item:123 }),
           })
           .then((result) => result.json())
           .then((data) => {
-            console.log(data);
             // Redirect to Stripe Checkout
-            return this.stripe.redirectToCheckout({ sessionId: data.sessionId });
+            return this.stripe.redirectToCheckout({ sessionId: 123 });
           })
           .then((res) => {
             console.log(res);
@@ -60,6 +61,11 @@ export default defineComponent({
         },
         created() {
             this.getStripePublishableKey();
+        },
+        mounted(){
+          const recaptchaScript = document.createElement('script')
+          recaptchaScript.setAttribute('src', 'https://js.stripe.com/v3/')
+          document.head.appendChild(recaptchaScript)
         }
     }
 })
