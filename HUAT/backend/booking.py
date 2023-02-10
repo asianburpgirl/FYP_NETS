@@ -6,6 +6,7 @@ from datetime import datetime
 import random
 import string
 import user
+import json
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL') or 'mysql+mysqlconnector://root@localhost:3306/localconnect'
@@ -34,8 +35,7 @@ class Booking(db.Model):
     # currentCapacity = db.Column(db.Integer, nullable=False)
     userID = db.Column(db.ForeignKey('users.userID', ondelete='CASCADE', onupdate='CASCADE'), nullable=False, index=True)
 
-    user = db.relationship(
-        'User', primaryjoin='Booking.userID == User.userID', backref='booking')
+    user = db.relationship('User', primaryjoin='Booking.userID == User.userID', backref='booking')
 
     def __init__(self, bookingID, bookingDate,  bookingLocation, locationName, startTime, endTime, status, userID, bookingRef):
         self.bookingID = bookingID
@@ -160,9 +160,8 @@ def createBooking():
         }
     ), 201
 
+
 # update bookings
-
-
 @app.route("/bookings/<int:bookingID>", methods=['PUT'])
 def updateBooking(bookingID):
     data = request.get_json()
