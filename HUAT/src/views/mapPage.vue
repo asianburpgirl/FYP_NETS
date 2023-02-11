@@ -1,11 +1,11 @@
 <template>
-  <ion-page class="ion-padding">
+  <ion-page>
     <ion-header>
       <ion-toolbar>
         <ion-title>Map</ion-title>
       </ion-toolbar>
     </ion-header>
-    <ion-content :fullscreen="true">
+    <ion-content :fullscreen="true" class="ion-padding">
       <!--   <ion-refresher slot="fixed" @ionRefresh="handleRefresh()">
         <ion-refresher-content></ion-refresher-content>
       </ion-refresher> -->
@@ -14,7 +14,6 @@
       <br />
       Time taken from your current location:
       {{ timeToLocation_mins }}
-
       <capacitor-google-map id="map"></capacitor-google-map>
 
       <!-- first popup page to open when user click on marker. User can choose either to book or subscribe to this carpark. button will open up respective popup  -->
