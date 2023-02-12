@@ -19,13 +19,6 @@ stripe.api_key = stripe_keys['secret_key']
 # enable CORS
 CORS(app)
 
-stripe.api_key='sk_test_51MVFnNEK9AxKlwWVNSPD8wSNLNpSmqcuX2KncHhV6gzDde4AhFOImaqbkZQQrSCWxcJ6FHZZ321jdtIGzH0F0UV100ykysWHWB'
-
-def calculate_order_amount(items):
-    # Replace this constant with a calculation of the order's amount
-    # Calculate the order total on the server to prevent
-    # people from directly manipulating the amount on the client
-    return 1400
 
 @app.route('/config')
 def get_publishable_key():
@@ -60,7 +53,6 @@ def create_checkout_session():
         
     except Exception as e:
         return str(e)
-    print(checkout_session.url)
     
     return redirect(checkout_session.url, code=303)
 
