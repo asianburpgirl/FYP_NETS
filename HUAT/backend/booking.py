@@ -176,14 +176,14 @@ def updateBooking(bookingID):
     if booking:
         if data['bookingLocation']:
             booking.bookingLocation = data['bookingLocation']
-        if data['bookingDate']:
-            booking.bookingDate = data['bookingDate']
+        if data['bookingDateTime']:
+            booking.bookingDateTime = data['bookingDateTime']
         if data['status']:
             booking.status = data['status']
-        if data['startTime']:
-            booking.startTime = data['startTime']
-        if data['endTime']:
-            booking.endTime = data['endTime']
+        if data['bookingStartDateTime']:
+            booking.bookingStartDateTime = data['bookingStartDateTime']
+        if data['bookingEndDateTime']:
+            booking.bookingEndDateTime = data['bookingEndDateTime']
         db.session.commit()
         return jsonify(
             {
