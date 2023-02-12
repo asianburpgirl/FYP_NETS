@@ -6,6 +6,7 @@ from os import environ
 import random
 import string
 
+
 app = Flask(__name__)
 # app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL') or 'mysql+mysqlconnector://root@localhost:3306/localconnect'
 app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL') or 'mysql+mysqlconnector://root:root@localhost:8889/localconnect'
@@ -48,6 +49,9 @@ class User(db.Model):
             "password": self.password,
             "balance": self.balance
         }
+
+
+    
 
 #Get All Users
 @app.route("/users")
@@ -207,6 +211,30 @@ def checkUser():
         }
     )
 
+# get balance based on user ID
+@app.route("/getBalance/<int:userID>")
+def getBalance(userID):
+    user = User.query.filter_by(userID = userID).first()
+    print(user.json())
+    if user:
+        return jsonify(
+            {
+                "code": 200,
+                "data": {
+                    "userID" : userID,
+                    "balance": user.json()['balance']
+                }
+            }
+        )
+        
+    return jsonify(
+        {
+            "code": 404,
+            "message": "No such user in the database."
+        }
+    ), 404
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5002, debug=True)
+
+

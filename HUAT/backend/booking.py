@@ -5,7 +5,8 @@ from os import environ
 from datetime import datetime
 import random
 import string
-import user
+
+
 
 app = Flask(__name__)
 # app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL') or 'mysql+mysqlconnector://root@localhost:3306/localconnect'
@@ -80,14 +81,17 @@ class User(db.Model):
     phoneNum = db.Column(db.Integer, nullable=False)
     username = db.Column(db.String(100), nullable=False)
     password = db.Column(db.String(100), nullable=False)
+    balance = db.Column(db.Float())
     
-    def __init__(self, userID, email, name, phoneNum, username, password):
+
+    def __init__(self, userID, email, name, phoneNum, username, password, balance):
         self.userID = userID
         self.email = email
         self.name = name
         self.phoneNum = phoneNum
         self.username = username
         self.password = password
+        self.balance = balance
 
     def json(self):
         return {
@@ -96,8 +100,15 @@ class User(db.Model):
             "name": self.name,
             "phoneNum": self.phoneNum,
             "username": self.username,
-            "password": self.password
+            "password": self.password,
+            "balance": self.balance
         }
+
+    def getUserId(userID):
+        user = User.query.filter_by(userID=userID).first()
+        
+        return user.json()
+
 
 
 # Get All Bookings
@@ -168,30 +179,27 @@ def createBooking():
 def updateBooking(bookingID):
     data = request.get_json()
     booking = Booking.query.filter_by(bookingID=bookingID).first()
-    print(data['bookingDate'])
+ 
     print(data)
+
     if booking:
         if data['bookingLocation']:
-            print(data['bookingLocation'])
             booking.bookingLocation = data['bookingLocation']
-            db.session.commit()
-            return jsonify(
-                {
-                    "code": 201,
-                    "message": "Update successful!"
-                }
-            ), 201
-
         if data['bookingDate']:
-            print(data['bookingDate'])
             booking.bookingDate = data['bookingDate']
-            db.session.commit()
-            return jsonify(
-                {
-                    "code": 201,
-                    "message": "Update successful!"
-                }
-            ), 201
+        if data['status']:
+            booking.status = data['status']
+        if data['startTime']:
+            booking.startTime = data['startTime']
+        if data['endTime']:
+            booking.endTime = data['endTime']
+        db.session.commit()
+        return jsonify(
+            {
+                "code": 201,
+                "message": "Update successful!"
+            }
+        ), 201
 
     else:
         return jsonify({
@@ -229,6 +237,53 @@ def deleteBooking(bookingID):
         }
     ), 404
 
+# credit and refund payment
+@app.route("/updateBalance/<int:bookingID>", methods=['PUT'])
+def updateBalance(bookingID):
+    data = request.get_json()
+    booking = Booking.query.filter_by(bookingID=bookingID).first()
+    userInfo = User.getUserId(booking.json()['userID'])
+    user = User.query.filter_by(userID=userInfo['userID']).first()
+    balance = user.json()['balance']
+
+    if booking and user:
+        if data['bookingID'] and booking.json()['status'] == 'Booked':
+            balance = balance - booking.json()['bookingAmt']
+            user.balance = balance
+            print(balance)
+            db.session.commit()
+            return jsonify(
+                {
+                    "code": 201,
+                    "data": balance,
+                    "message": "Update successful!"
+                }
+            ), 201
+            
+        #once status == cancel, will trigger the refund (to change status to cancel, refer to updateBooking function)
+        if data['bookingID'] and booking.json()['status'] == 'Canceled':
+            balance = balance + booking.json()['bookingAmt']
+            # balance = user.json()['balance']
+            user.balance = balance
+            print(balance)
+            db.session.commit()
+            return jsonify(
+                {
+                    "code": 201,
+                    "data": balance,
+                    "message": "Update successful!"
+                }
+            ), 201
+            
+
+    else:
+        return jsonify({
+            "code": 500,
+            "data": {
+                "bookingID": bookingID
+            },
+            "message": "Booking ID not found"
+        }), 500
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5001, debug=True)
