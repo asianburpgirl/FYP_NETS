@@ -123,7 +123,7 @@ def get_all():
         }
     ), 404
 
-
+# Create a new booking
 @app.route("/bookings", methods=['POST'])
 def createBooking():
 
@@ -141,7 +141,6 @@ def createBooking():
 
     newBooking = Booking(
         bookingID=bookingID, bookingDateTime=bookingDateTime, bookingLocation=bookingLocation, locationName=locationName, bookingStartDateTime=bookingStartDateTime, bookingEndDateTime=bookingEndDateTime, status=status, userID=userID, bookingRef=bookingRef, bookingAmt=bookingAmt)
-
 
     try:
         db.session.add(newBooking)

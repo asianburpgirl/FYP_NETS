@@ -87,6 +87,6 @@ CREATE TABLE users (
   	PRIMARY KEY (userID));
 
 INSERT INTO users(email, name, phoneNum, username, password, balance) VALUES
-("johntan99@gmail.com","John Tan", 91234567, "johntan99", "admin123", 0.00);
+("johntan99@gmail.com","John Tan", 91234567, "johntan99", "admin123", 1.23);
 INSERT INTO users(email, name, phoneNum, username, password, balance) VALUES
-("testLimIsSmart@gmail.com","Test Lim", 92345678, "test", "test", 0.00);
+("testLimIsSmart@gmail.com","Test Lim", 92345678, "test", "test", 92.42);
