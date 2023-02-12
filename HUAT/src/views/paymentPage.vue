@@ -14,23 +14,23 @@
 </template>
 
 <script>
-import { StripeCheckout } from '@vue-stripe/vue-stripe';
+import { StripeCheckout } from 'vue-stripe-checkout';
 export default {
   components: {
     StripeCheckout,
   },
   data () {
-    this.publishableKey = process.env.STRIPE_PUBLISHABLE_KEY;
+    this.publishableKey = 'pk_test_51MVFnNEK9AxKlwWVPfnTP44fQvkMd4HXXSKx1EJrb9JNHsBYtgX4KOctGmnzBiI3R6GaI9uN2rDCKQlB19LOcQJO00Nf2FrDpe';
     return {
       loading: false,
       lineItems: [
         {
-          price: 'some-price-id', // The id of the one-time price you created in your Stripe dashboard
+          price: 'price_1MabPcEK9AxKlwWVgzlADBHE', // The id of the one-time price you created in your Stripe dashboard
           quantity: 1,
         },
       ],
-      successURL: 'your-success-url',
-      cancelURL: 'your-cancel-url',
+      successURL: 'http://localhost:8100/tabs/wallet/successPage',
+      cancelURL: 'http://localhost:8100/tabs/wallet/successPage',
     };
   },
   methods: {
@@ -38,6 +38,11 @@ export default {
       // You will be redirected to Stripe's secure checkout page
       this.$refs.checkoutRef.redirectToCheckout();
     },
+    mounted () {
+      const recaptchaScript = document.createElement('script')
+      recaptchaScript.setAttribute('src', 'https://js.stripe.com/v3/')
+      document.head.appendChild(recaptchaScript)
+    }
   },
 };
 </script>
