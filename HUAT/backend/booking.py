@@ -35,7 +35,9 @@ class Booking(db.Model):
     user = db.relationship(
         'User', primaryjoin='Booking.userID == User.userID', backref='booking')
 
-    def __init__(self, bookingID,   bookingLocation, locationName, bookingStartDateTime, bookingEndDateTime, status, userID, bookingRef, bookingAmt, bookingDateTime):
+
+    def __init__(self, bookingID,   bookingLocation, locationName, bookingStartDateTime, 
+    bookingEndDateTime, status, userID, bookingRef, bookingAmt, bookingDateTime):
         self.bookingDateTime = bookingDateTime
         self.bookingID = bookingID
         self.bookingLocation = bookingLocation
@@ -71,7 +73,6 @@ class User(db.Model):
     username = db.Column(db.String(100), nullable=False)
     password = db.Column(db.String(100), nullable=False)
     
-
     def __init__(self, userID, email, name, phoneNum, username, password):
         self.userID = userID
         self.email = email
@@ -129,6 +130,7 @@ def createBooking():
 
     newBooking = Booking(
         bookingID=bookingID, bookingDateTime=bookingDateTime, bookingLocation=bookingLocation, locationName=locationName, bookingStartDateTime=bookingStartDateTime, bookingEndDateTime=bookingEndDateTime, status=status, userID=userID, bookingRef=bookingRef, bookingAmt=bookingAmt)
+
 
     try:
         db.session.add(newBooking)

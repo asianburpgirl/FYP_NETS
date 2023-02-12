@@ -28,8 +28,9 @@ CORS(app)
 
 
 #request type 1000
-@app.route("/res/<int:carparkid>", methods=["POST","GET"])
-def results(carparkid):
+# details to be updated in jar file
+@app.route("/getCarpark/<int:carparkid>", methods=["POST","GET"])
+def getCarparkDetails(carparkid):
     print("hi")
     payload = {
     "requesttype": 1000,
@@ -50,8 +51,54 @@ def results(carparkid):
             ), 201
 
     
-    
-    
+#request type 2001 (lot adjustment)
+#if want to deduct from lot used, put minus sign infront
+@app.route("/lotAdj/<int:carparkid>/<int:parkingtype>/<string:lotadjustment>", methods=["POST","GET"])
+def lotAdj(carparkid,parkingtype,lotadjustment):
+    print("hi")
+    payload = {
+    "requesttype": 2001,
+    "carparkid": carparkid,
+    "parkingtype":parkingtype,
+    "lotadjustment": lotadjustment
+    }
+    headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
+    r = requests.post('https://127.0.0.1:9000', json.dumps(payload), headers=headers, verify=False)
+    print (r.json())
+    # p = Popen(['java', '-jar', 'HUAT/backend/smuxserver.jar','127.0.0.1','8989'],stdout=subprocess.PIPE, stderr=STDOUT)
+    # for line in p.stdout.read():
+    #     print(line)
+    return jsonify (
+                {
+                    "code": 201,
+                    "data": r.json(),
+                    "message": "Update successful!"
+                }
+            ), 201
+
+#request type 3000 (carpark pricing)
+# to be updated in the jar file itself
+@app.route("/getCarparkPrice/<int:carparkid>", methods=["POST","GET"])
+def getCarparkPrice(carparkid):
+    print("hi")
+    payload = {
+    "requesttype": 3000,
+    "carparkid": carparkid
+    }
+    headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
+    r = requests.post('https://127.0.0.1:9000', json.dumps(payload), headers=headers, verify=False)
+    print (r.json())
+    # p = Popen(['java', '-jar', 'HUAT/backend/smuxserver.jar','127.0.0.1','8989'],stdout=subprocess.PIPE, stderr=STDOUT)
+    # for line in p.stdout.read():
+    #     print(line)
+    return jsonify (
+                {
+                    "code": 201,
+                    "data": r.json(),
+                    "message": "Update successful!"
+                }
+            ), 201
+
     
 
 if __name__ == '__main__':

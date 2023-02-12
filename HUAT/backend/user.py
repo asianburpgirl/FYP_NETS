@@ -26,15 +26,17 @@ class User(db.Model):
     phoneNum = db.Column(db.Integer, nullable=False)
     username = db.Column(db.String(100), nullable=False)
     password = db.Column(db.String(100), nullable=False)
+    balance = db.Column(db.Float())
     
 
-    def __init__(self, userID, email, name, phoneNum, username, password):
+    def __init__(self, userID, email, name, phoneNum, username, password, balance):
         self.userID = userID
         self.email = email
         self.name = name
         self.phoneNum = phoneNum
         self.username = username
         self.password = password
+        self.balance = balance
 
     def json(self):
         return {
@@ -43,7 +45,8 @@ class User(db.Model):
             "name": self.name,
             "phoneNum": self.phoneNum,
             "username": self.username,
-            "password": self.password
+            "password": self.password,
+            "balance": self.balance
         }
 
 #Get All Users
@@ -98,15 +101,15 @@ def login_by_username():
 def createUser():
 
     # bookingID = request.json.get('bookingID' , None)
-    userID = ''.join(random.SystemRandom().choice(string.digits)
-                        for _ in range(6))
+    userID = ''.join(random.SystemRandom().choice(string.digits) for _ in range(6))
     email = request.json.get('email' , None)
     name = request.json.get('name' , None)
     phoneNum = request.json.get('phoneNum' , None)
     username = request.json.get('username' , None)
     password = request.json.get('password' , None)
+    balance = request.json.get('balance', None)
 
-    newUser = User( userID = userID, email = email, name = name , phoneNum = phoneNum, username = username, password = password)
+    newUser = User( userID = userID, email = email, name = name , phoneNum = phoneNum, username = username, password = password, balance=balance)
     
     try:
         db.session.add(newUser)
