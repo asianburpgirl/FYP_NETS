@@ -14,7 +14,7 @@
     "@capacitor/app": "4.1.1",
     "@capacitor/core": "4.6.1",
     "@capacitor/geolocation": "^4.1.0",
-    "@capacitor/google-maps": "^4.3.2",
+    "@capacitor/google-maps": "^4.4.0",
     "@capacitor/haptics": "4.1.0",
     "@capacitor/ios": "4.6.1",
     "@capacitor/keyboard": "4.1.0",
@@ -30,7 +30,8 @@
     "mysql": "^2.18.1",
     "vue": "^3.2.21",
     "vue-google-charts": "^1.1.0",
-    "vue-router": "^4.0.12"
+    "vue-router": "^4.0.12",
+    "vue-stripe-checkout": "^3.5.15"
   },
   "devDependencies": {
     "@capacitor/cli": "4.6.1",
