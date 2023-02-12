@@ -29,9 +29,6 @@ class Booking(db.Model):
     endTime = db.Column(db.DateTime, nullable=False)
     status = db.Column(db.String(128), nullable=False)
     bookingRef = db.Column(db.String(128), nullable=False)
-    # image = db.Column(db.Blob, nullable=True)
-    # maxCapacity = db.Column(db.Integer, nullable=False)
-    # currentCapacity = db.Column(db.Integer, nullable=False)
     userID = db.Column(db.ForeignKey('users.userID', ondelete='CASCADE', onupdate='CASCADE'), nullable=False, index=True)
 
     user = db.relationship(
@@ -46,9 +43,6 @@ class Booking(db.Model):
         self.endTime = endTime
         self.status = status
         self.bookingRef = bookingRef
-        # self.image = image
-        # self.maxCapacity = maxCapacity
-        # self.currentCapacity = currentCapacity
         self.userID = userID
 
     def json(self):
@@ -61,10 +55,6 @@ class Booking(db.Model):
             "endTime": self.endTime,
             "status": self.status,
             "bookingRef": self.bookingRef,
-            # "image": self.image,
-            # "maxCapacity": self.maxCapacity,
-            # "currentCapacity": self.currentCapacity,
-            # "image": self.image,
             "userID": self.userID
         }
 
@@ -131,8 +121,6 @@ def createBooking():
     startTime = request.json.get('startTime', None)
     endTime = request.json.get('endTime', None)
     status = request.json.get('status', None)
-    # maxCapacity = request.json.get('maxCapacity', None)
-    # currentCapacity = request.json.get('currentCapacity', None)
     userID = request.json.get('userID', None)
 
     newBooking = Booking(
