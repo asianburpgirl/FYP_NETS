@@ -90,17 +90,73 @@
             {{ timeToLocation_mins }} mins
             <br />
 
-            <ion-label position="stacked">Start Time:</ion-label>
-            <ion-datetime v-model="startTime"></ion-datetime>
+            <ion-label position="stacked"> Booking Date:</ion-label>
+            <ion-datetime presentation="date" v-model="bookingDate"></ion-datetime>
+
+            <ion-label position="stacked"> Start Time:</ion-label>
+            <ion-datetime
+              presentation="time"
+              v-model="startTime"
+            ></ion-datetime>
+
+            <ion-label position="stacked"> End Time:</ion-label>
+            <ion-datetime presentation="time" v-model="endTime"></ion-datetime>
+
+            <!-- 
+            <ion-datetime presentation="time"></ion-datetime>
+            <ion-datetime presentation="date"></ion-datetime>
 
             <ion-label position="stacked">End Time:</ion-label>
-            <ion-datetime v-model="endTime"></ion-datetime>
+            <ion-datetime v-model="endTime"></ion-datetime> -->
           </ion-item>
 
           <ion-row
             class="ion-padding-top ion-justify-content-center ion-padding-bottom addPaddingBottom"
           >
             <ion-button shape="round" @click="makeBoooking()">Book</ion-button>
+          </ion-row>
+        </ion-content>
+      </ion-modal>
+
+      <!-- when booking is successful, to show success popup -->
+      <ion-modal :is-open="bookingSuccessIsOpen" class="ion-padding">
+        <ion-header>
+          <ion-toolbar>
+            <ion-title>Success!</ion-title>
+          </ion-toolbar>
+        </ion-header>
+        <ion-content class="ion-padding">
+          <ion-row>
+            Your booking at {{ clickedMarkerName }} is successful!
+             <br />
+            These are the details: Carpark Location:
+            <ul>
+              <li>
+                   Carpark Location: {{ clickedMarkerAddress }}
+              </li>
+              <li>
+                Booking Date: {{ bookingDate }}
+              </li>
+              
+              <li>
+                 Start Time: {{ startTime }} 
+              </li>
+              <li>
+                End Time: {{ endTime }}
+              </li>
+            </ul>
+           
+          </ion-row>
+
+          <ion-row
+            class="ion-padding-top ion-justify-content-center ion-padding-bottom addPaddingBottom"
+          >
+            <ion-button shape="round" @click="setBookingSuccessOpen(false)"
+              >Back to Map</ion-button
+            >
+            <ion-button shape="round" @click="routeToMyBookings()"
+              >View My Bookings</ion-button
+            >
           </ion-row>
         </ion-content>
       </ion-modal>
@@ -124,11 +180,10 @@
         </ion-header>
         <ion-content class="ion-padding">
           <h1>{{ clickedMarkerName }}</h1>
-          
+
           <h3>
             Address: <u> {{ clickedMarkerAddress }} test</u>
           </h3>
-
 
           <ion-item>
             <ion-label>Subscription Type</ion-label>
@@ -142,26 +197,19 @@
           </ion-item>
 
           <ion-list>
-            <ion-item>
-              Weekday Peak: $12/month
-            </ion-item>
-             <ion-item>
-              Weekday Non-Peak: $10/month
-            </ion-item>
-             <ion-item>
-              Weekend Peak: $20/month
-            </ion-item>
-             <ion-item>
-              Weekend Non-Peak: $15/month
-            </ion-item>
+            <ion-item> Weekday Peak: $12/month </ion-item>
+            <ion-item> Weekday Non-Peak: $10/month </ion-item>
+            <ion-item> Weekend Peak: $20/month </ion-item>
+            <ion-item> Weekend Non-Peak: $15/month </ion-item>
           </ion-list>
 
           <ion-row
             class="ion-padding-top ion-justify-content-center ion-padding-bottom addPaddingBottom"
           >
-            <ion-button shape="round" @click="buySubscription()">Buy Subscription</ion-button>
+            <ion-button shape="round" @click="buySubscription()"
+              >Buy Subscription</ion-button
+            >
           </ion-row>
-
         </ion-content>
       </ion-modal>
     </ion-content>
@@ -213,7 +261,6 @@ export default defineComponent({
     IonSelectOption,
     IonRow,
     IonList,
-
     // IonRefresher,
     // IonRefresherContent,
   },
@@ -224,6 +271,8 @@ export default defineComponent({
   data() {
     return {
       bookingIsOpen: false,
+      bookingSuccessIsOpen: false,
+      subscriptionSuccessIsOpen: false,
       subscriptionIsOpen: false,
       choiceOpen: false,
 
@@ -233,6 +282,7 @@ export default defineComponent({
       timeToLocation_mins: "",
       startTime: "",
       endTime: "",
+      bookingDate: ""
     };
   },
 
@@ -242,8 +292,19 @@ export default defineComponent({
   },
 
   methods: {
-    buySubscription() { 
-      console.log("here")
+    routeToMyBookings() {
+      this.setBookingSuccessOpen(false);
+      this.$router
+        .push({
+          path: "/viewBooking",
+        })
+        .then(() => {
+          this.$router.go(0);
+        });
+      location.reload();
+    },
+    buySubscription() {
+      console.log("here");
     },
     calculateDistance() {
       const url =
@@ -274,6 +335,9 @@ export default defineComponent({
     setBookingOpen(isOpen: boolean) {
       this.bookingIsOpen = isOpen;
     },
+    setBookingSuccessOpen(isOpen: boolean) {
+      this.bookingSuccessIsOpen = isOpen;
+    },
     setSubscriptionOpen(isOpen: boolean) {
       this.subscriptionIsOpen = isOpen;
     },
@@ -290,35 +354,29 @@ export default defineComponent({
       const currentDateTimeFormatted =
         year + "-" + month + "-" + date + " " + hour + ":" + min + ":" + sec;
 
-      const startDateTimeFormatted =
-        this.startTime.substring(0, 10) +
-        " " +
-        this.startTime.substring(11, 19);
-      const endDateTimeFormatted =
-        this.endTime.substring(0, 10) + " " + this.endTime.substring(11, 19);
+      this.bookingDate = this.bookingDate.substring(0, 10)
+        
+      const startDateTimeFormatted = this.bookingDate.substring(0, 10) + " " + this.startTime.substring(11, 19);
+      this.startTime =this.startTime.substring(11, 19);
+
+      const endDateTimeFormatted = this.bookingDate.substring(0, 10) + " " + this.endTime.substring(11, 19);
+      this.endTime =this.endTime.substring(11, 19);
 
       const url = "http://127.0.0.1:5001/bookings"; // hardcoded
       axios
         .post(url, {
-          bookingDate: currentDateTimeFormatted,
+          bookingDateTime: currentDateTimeFormatted,
           bookingLocation: this.clickedMarkerName,
           locationName: this.clickedMarkerAddress,
-          startTime: startDateTimeFormatted,
-          endTime: endDateTimeFormatted,
+          bookingStartDateTime: startDateTimeFormatted,
+          bookingEndDateTime: endDateTimeFormatted,
           userID: 1,
           status: "Booked",
+          bookingAmt: 1.23
         })
         .then((response) => {
-          console.log(response.data);
-          this.setBookingOpen(false);
-          this.$router
-            .push({
-              path: "/viewBooking",
-            })
-            .then(() => {
-              this.$router.go(0);
-            });
-          location.reload();
+          this.setBookingOpen(false); // close booking window
+          this.setBookingSuccessOpen(true); // open booking sucess window
         })
         .catch((error) => {
           console.log(error.message);
