@@ -22,40 +22,43 @@ class Booking(db.Model):
     __tablename__ = 'bookings'
 
     bookingID = db.Column(db.Integer, primary_key=True)
-    bookingDate = db.Column(db.DateTime, nullable=False)
+    bookingDateTime = db.Column(db.DateTime, nullable=False)
     bookingLocation = db.Column(db.String(128), nullable=False)
     locationName = db.Column(db.String(128), nullable=False)
-    startTime = db.Column(db.DateTime, nullable=False)
-    endTime = db.Column(db.DateTime, nullable=False)
+    bookingStartDateTime = db.Column(db.DateTime, nullable=False)
+    bookingEndDateTime = db.Column(db.DateTime, nullable=False)
     status = db.Column(db.String(128), nullable=False)
     bookingRef = db.Column(db.String(128), nullable=False)
+    bookingAmt = db.Column(db.Float, nullable=False)
     userID = db.Column(db.ForeignKey('users.userID', ondelete='CASCADE', onupdate='CASCADE'), nullable=False, index=True)
 
     user = db.relationship(
         'User', primaryjoin='Booking.userID == User.userID', backref='booking')
 
-    def __init__(self, bookingID, bookingDate,  bookingLocation, locationName, startTime, endTime, status, userID, bookingRef):
+    def __init__(self, bookingID,   bookingLocation, locationName, bookingStartDateTime, bookingEndDateTime, status, userID, bookingRef, bookingAmt, bookingDateTime):
+        self.bookingDateTime = bookingDateTime
         self.bookingID = bookingID
-        self.bookingDate = bookingDate
         self.bookingLocation = bookingLocation
         self.locationName = locationName
-        self.startTime = startTime
-        self.endTime = endTime
+        self.bookingStartDateTime = bookingStartDateTime
+        self.bookingEndDateTime = bookingEndDateTime
         self.status = status
         self.bookingRef = bookingRef
         self.userID = userID
+        self.bookingAmt = bookingAmt
 
     def json(self):
         return {
             "bookingID": self.bookingID,
-            "bookingDate": self.bookingDate,
             "bookingLocation": self.bookingLocation,
             "locationName": self.locationName,
-            "startTime": self.startTime,
-            "endTime": self.endTime,
+            "bookingStartDateTime": self.bookingStartDateTime,
+            "bookingEndDateTime": self.bookingEndDateTime,
             "status": self.status,
             "bookingRef": self.bookingRef,
-            "userID": self.userID
+            "userID": self.userID,
+            "bookingAmt": self.bookingAmt,
+            "bookingDateTime": self.bookingDateTime
         }
 
 class User(db.Model):
@@ -115,16 +118,17 @@ def createBooking():
     bookingID = ''.join(random.SystemRandom().choice(string.digits) for _ in range(6))
     bookingRef = ''.join(random.SystemRandom().choice(string.ascii_uppercase + string.digits)
                         for _ in range(10))
-    bookingDate = request.json.get('bookingDate', None)
+    bookingDateTime = request.json.get('bookingDateTime', None)
     bookingLocation = request.json.get('bookingLocation', None)
     locationName = request.json.get('locationName', None)
-    startTime = request.json.get('startTime', None)
-    endTime = request.json.get('endTime', None)
+    bookingStartDateTime = request.json.get('bookingStartDateTime', None)
+    bookingEndDateTime = request.json.get('bookingEndDateTime', None)
+    bookingAmt = request.json.get('bookingAmt', None)
     status = request.json.get('status', None)
     userID = request.json.get('userID', None)
 
     newBooking = Booking(
-        bookingID=bookingID, bookingDate=bookingDate, bookingLocation=bookingLocation, locationName=locationName, startTime=startTime, endTime=endTime, status=status, userID=userID, bookingRef=bookingRef)
+        bookingID=bookingID, bookingDateTime=bookingDateTime, bookingLocation=bookingLocation, locationName=locationName, bookingStartDateTime=bookingStartDateTime, bookingEndDateTime=bookingEndDateTime, status=status, userID=userID, bookingRef=bookingRef, bookingAmt=bookingAmt)
 
     try:
         db.session.add(newBooking)

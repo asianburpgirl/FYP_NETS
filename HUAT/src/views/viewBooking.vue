@@ -17,6 +17,11 @@
                   {{ eachBooking.bookingRef }}
                 </u></ion-card-subtitle
               >
+              <ion-card-subtitle
+                >Booking Amount:  $
+                  {{ eachBooking.amount }}
+                </ion-card-subtitle
+              >
               <ion-row class="ion-padding-top ion-justify-content-center">
         <ion-button shape="round" @click="editBooking()">Edit</ion-button>
       </ion-row>
@@ -112,14 +117,14 @@ export default defineComponent({
       
     },
     getAllBookings() {
-      const url = "http://127.0.0.1:5001/bookings"; // hardcoded
+      const url = "http://127.0.0.1:5001/bookings";
       axios
         .get(url)
         .then((response) => {
           const data = response.data.data.bookings;
           console.log(data)
           for (const eachBooking of data) {
-            const startDateTime = new Date(eachBooking.startTime);
+            const startDateTime = new Date(eachBooking.bookingStartDateTime);
             const startDateOnly =
               startDateTime.getDate() +
               "/" +
@@ -128,9 +133,9 @@ export default defineComponent({
               "/" +
               startDateTime.getFullYear();
             const startTimeOnly =
-              startDateTime.getHours() + ":" + startDateTime.getMinutes();
+              startDateTime.getHours() - 8 + ":" + ('0' + startDateTime.getMinutes()).slice(-2);
 
-            const endDateTime = new Date(eachBooking.endTime);
+            const endDateTime = new Date(eachBooking.bookingEndDateTime);
             const endDateOnly =
               endDateTime.getDate() +
               "/" +
@@ -139,8 +144,8 @@ export default defineComponent({
               "/" +
               endDateTime.getFullYear();
 
-            const endTimeOnly =
-              endDateTime.getHours() + ":" + endDateTime.getMinutes();
+            const endTimeOnly =  ('0'+(endDateTime.getHours()-8).toString()).slice(-2)+ ":" + ('0' + endDateTime.getMinutes()).slice(-2);
+                     
 
             this.bookingDetails.push({
               bookingDate: eachBooking.bookingDate,
@@ -150,21 +155,14 @@ export default defineComponent({
               startDate: startDateOnly,
               startTime: startTimeOnly,
               endDate: endDateOnly,
+              amount: eachBooking.bookingAmt,
               endTime: endTimeOnly,
               status: eachBooking.status,
               bookingRef: eachBooking.bookingRef,
-              image: eachBooking.image,
-              maxCapacity: eachBooking.maxCapacity,
-              currentCapacity: eachBooking.currentCapacity,
-              // image: eachBooking.image,
               userID: eachBooking.userID,
             });
           }
-          // console.log(this.bookingDetails);
-          // for (let i = 0; i < data.length; i++) {
-          //   console.log(data[i])
-          //   this.bookingDetails[i] =
-          // }
+        
         })
         .catch((error) => {
           console.log(error.message);
