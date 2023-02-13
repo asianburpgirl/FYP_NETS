@@ -215,7 +215,7 @@
   </ion-page>
 </template>
 
-<script lang="ts">
+<script>
 import { defineComponent, ref } from "vue";
 import axios from "axios";
 import {
@@ -281,7 +281,9 @@ export default defineComponent({
       timeToLocation_mins: "",
       startTime: "",
       endTime: "",
-      bookingDate: ""
+      bookingDate: "",
+
+      userData: {}
     };
   },
 
@@ -328,16 +330,16 @@ export default defineComponent({
           console.log(error.message);
         });
     },
-    setChoiceOpen(isOpen: boolean) {
+    setChoiceOpen(isOpen) {
       this.choiceOpen = isOpen;
     },
-    setBookingOpen(isOpen: boolean) {
+    setBookingOpen(isOpen) {
       this.bookingIsOpen = isOpen;
     },
-    setBookingSuccessOpen(isOpen: boolean) {
+    setBookingSuccessOpen(isOpen) {
       this.bookingSuccessIsOpen = isOpen;
     },
-    setSubscriptionOpen(isOpen: boolean) {
+    setSubscriptionOpen(isOpen) {
       this.subscriptionIsOpen = isOpen;
     },
     makeBoooking() {
@@ -359,9 +361,14 @@ export default defineComponent({
       this.startTime =this.startTime.substring(11, 19);
 
       const endDateTimeFormatted = this.bookingDate.substring(0, 10) + " " + this.endTime.substring(11, 19);
-      this.endTime =this.endTime.substring(11, 19);
+      this.endTime = this.endTime.substring(11, 19);
+
+      this.userData = JSON.parse(localStorage.getItem("userData"));
+      var userID = this.userData.userID
 
       const url = "http://127.0.0.1:5001/bookings"; // hardcoded
+
+      console.log(userID)
       axios
         .post(url, {
           bookingDateTime: currentDateTimeFormatted,
@@ -369,7 +376,7 @@ export default defineComponent({
           locationName: this.clickedMarkerAddress,
           bookingStartDateTime: startDateTimeFormatted,
           bookingEndDateTime: endDateTimeFormatted,
-          userID: 1,
+          userID: userID,
           status: "Booked",
           bookingAmt: 1.23
         })
@@ -386,7 +393,7 @@ export default defineComponent({
       const mapRef = document.getElementById("map");
       const newMap = await GoogleMap.create({
         id: "my-map", // Unique identifier for this map instance
-        element: mapRef!, // reference to the capacitor-google-map element
+        element: mapRef, // reference to the capacitor-google-map element
         apiKey: "AIzaSyAJXGx7T2ypt5Ew5-9SbDTWF9gqloQUJwI", // Your Google Maps API Key
         config: {
           center: {
