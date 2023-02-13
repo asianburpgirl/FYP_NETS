@@ -48,14 +48,14 @@
   </base-layout>
 </template>
 
-<script lang="ts">
+<script>
 import {
   IonGrid,
   IonCard,
   IonIcon,
   IonRow,
   IonCol,
-  IonButton,
+  IonButton,IonList,IonItem,IonLabel, IonListHeader
 } from "@ionic/vue";
 import { defineComponent } from "vue";
 // import { add, card, home, star, wallet } from "ionicons/icons";
@@ -64,7 +64,7 @@ import { wallet,card } from "ionicons/icons";
 import axios from "axios";
 
 export default defineComponent({
-    components: { IonGrid, IonCard, IonIcon, IonRow, IonCol, IonButton },
+    components: { IonGrid, IonCard, IonIcon, IonRow, IonCol, IonButton, IonList, IonItem,IonLabel,IonListHeader },
   setup() {
     return { card,wallet };
   },
@@ -73,12 +73,16 @@ export default defineComponent({
     },
    data() {
     return {
-      balance: 0,
+        balance: 0,
+        userData: {}
     };
   },
-  methods: {
-    getBalance() {
-      const url = "http://127.0.0.1:5002/getBalance/1";
+    methods: {
+    
+      getBalance() {
+      this.userData = JSON.parse(localStorage.getItem("userData"));
+    
+      const url = "http://127.0.0.1:5002/getBalance/" + this.userData.userID;
       axios
         .get(url)
         .then((response) => {
@@ -97,3 +101,4 @@ h1 {
   font-size: 50px;
 }
 </style>
+

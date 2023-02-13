@@ -17,24 +17,41 @@
                   {{ eachBooking.bookingRef }}
                 </u></ion-card-subtitle
               >
-              <ion-card-subtitle
+
+              <ion-card-subtitle v-if="eachBooking.status == 'Booked'"
                 >Booking Amount: $
                 {{ eachBooking.amount }}
               </ion-card-subtitle>
+              <ion-card-subtitle v-if="eachBooking.status == 'Cancelled'"
+                >Refunded Amount: $
+                {{ eachBooking.amount }}
+              </ion-card-subtitle>
+
               <ion-row class="ion-padding-top ion-justify-content-center">
-                <ion-button shape="round" @click="editBooking()"
+                <ion-button
+                  shape="round"
+                  @click="editBooking()"
+                  v-if="eachBooking.status == 'Booked'"
                   >Edit</ion-button
                 >
               </ion-row>
+
               <ion-row class="ion-padding-top ion-justify-content-center">
-                <!-- <ion-button shape="round" @click="deleteBooking(eachBooking.bookingID)" color="danger" >Delete</ion-button> -->
                 <ion-button
+                  v-if="eachBooking.status == 'Booked'"
                   shape="round"
-                  @click="presentAlert(eachBooking.bookingID)"
+                  @click="
+                    presentAlert(eachBooking.bookingID, eachBooking.amount)
+                  "
                   color="danger"
-                  >Delete</ion-button
+                  >Cancel</ion-button
                 >
               </ion-row>
+
+              <ion-row class="ion-padding-top ion-justify-content-center">
+                <ion-button v-if="eachBooking.status == 'Cancelled'" shape="round" @click="deleteBooking(eachBooking.bookingID)"  color="light">Delete</ion-button>
+              </ion-row>
+
             </ion-col>
           </ion-row>
           <ion-row>
@@ -59,9 +76,18 @@
             </ion-col>
             <ion-col>
               <ion-item lines="none">
-                <ion-badge color="success" slot="end">{{
-                  eachBooking.status
-                }}</ion-badge>
+                <ion-badge
+                  v-if="eachBooking.status == 'Booked'"
+                  color="success"
+                  slot="end"
+                  >{{ eachBooking.status }}</ion-badge
+                >
+                <ion-badge
+                  v-if="eachBooking.status == 'Cancelled'"
+                  color="medium"
+                  slot="end"
+                  >{{ eachBooking.status }}</ion-badge
+                >
               </ion-item>
             </ion-col>
           </ion-row>
@@ -112,9 +138,10 @@ export default defineComponent({
 
   setup() {
     const handlerMessage = ref("");
-    const presentAlert = async (bookingID) => {
+    const presentAlert = async (bookingID, amount) => {
       const alert = await alertController.create({
-        header: "Are you sure you want to delete this booking?",
+        header: "Are you sure you want to delete this booking? ",
+        subHeader: "$" + amount + " will be refunded back to your account",
         buttons: [
           {
             text: "Cancel",
@@ -130,16 +157,45 @@ export default defineComponent({
             role: "confirm",
             handler: () => {
               handlerMessage.value = "Alert confirmed";
-              const url = "http://127.0.0.1:5001/bookings/"+bookingID; 
+              // remove booking from db
+              // const url = "http://127.0.0.1:5001/bookings/"+bookingID;
+              // axios
+              //   .delete(url)
+              //   .then((response) => {
+              //     console.log(response);
+              //     location.reload();
+              //   })
+              //   .catch((error) => {
+              //     console.log(error.message);
+              //   });
+
+              // update booking status to "cancel"
+              let url = "http://127.0.0.1:5001/bookings/" + bookingID;
               axios
-                .delete(url)
+                .put(url, {
+                  status: "Cancelled",
+                })
                 .then((response) => {
                   console.log(response);
-                  location.reload();
+                  url = "http://127.0.0.1:5001/updateBalance/" + bookingID;
+                  axios
+                    .put(url, {
+                      bookingID: bookingID,
+                    })
+                    .then((response) => {
+                      console.log(response);
+                      location.reload();
+                    })
+                    .catch((error) => {
+                      console.log(error.message);
+                    });
                 })
                 .catch((error) => {
                   console.log(error.message);
                 });
+
+              //refund money
+              //http://127.0.0.1:5001/updateBalance/
             },
           },
         ],
@@ -156,13 +212,12 @@ export default defineComponent({
   data() {
     return {
       bookingDetails: [],
+      userData: {},
     };
   },
   methods: {
     deleteBooking(bookingID) {
-      console.log("HERE");
-      const url = "http://127.0.0.1:5001/bookings/" + bookingID; // hardcoded
-      console.log(url);
+      const url = "http://127.0.0.1:5001/bookings/" + bookingID;
       axios
         .delete(url)
         .then((response) => {
@@ -173,13 +228,13 @@ export default defineComponent({
           console.log(error.message);
         });
     },
-    getAllBookings() {
-      const url = "http://127.0.0.1:5001/bookings";
+    getUserBooking() {
+      this.userData = JSON.parse(localStorage.getItem("userData"));
+      const url = "http://127.0.0.1:5001/bookings/" + this.userData.userID;
       axios
         .get(url)
         .then((response) => {
           const data = response.data.data.bookings;
-          console.log(data);
           for (const eachBooking of data) {
             const startDateTime = new Date(eachBooking.bookingStartDateTime);
             const startDateOnly =
@@ -232,7 +287,7 @@ export default defineComponent({
   },
 
   mounted() {
-    this.getAllBookings();
+    this.getUserBooking();
   },
 });
 </script>
