@@ -41,7 +41,7 @@
                   v-if="eachBooking.status == 'Booked'"
                   shape="round"
                   @click="
-                    presentAlert(eachBooking.bookingID, eachBooking.amount)
+                    confirmationAlert(eachBooking.bookingID, eachBooking.amount)
                   "
                   color="danger"
                   >Cancel</ion-button
@@ -49,9 +49,14 @@
               </ion-row>
 
               <ion-row class="ion-padding-top ion-justify-content-center">
-                <ion-button v-if="eachBooking.status == 'Cancelled'" shape="round" @click="deleteBooking(eachBooking.bookingID)"  color="light">Delete</ion-button>
+                <ion-button
+                  v-if="eachBooking.status == 'Cancelled'"
+                  shape="round"
+                  @click="deleteBooking(eachBooking.bookingID)"
+                  color="light"
+                  >Delete</ion-button
+                >
               </ion-row>
-
             </ion-col>
           </ion-row>
           <ion-row>
@@ -94,9 +99,9 @@
           <ion-row>
             <ion-col>
               <ion-card-title>{{ eachBooking.bookingLocation }}</ion-card-title>
-              <!-- <ion-card-subtitle>{{
+              <ion-card-subtitle>{{
                 eachBooking.locationName
-              }}</ion-card-subtitle> -->
+              }}</ion-card-subtitle>
             </ion-col>
             <ion-col>
               <ion-item lines="none">
@@ -138,7 +143,7 @@ export default defineComponent({
 
   setup() {
     const handlerMessage = ref("");
-    const presentAlert = async (bookingID, amount) => {
+    const confirmationAlert = async (bookingID, amount) => {
       const alert = await alertController.create({
         header: "Are you sure you want to delete this booking? ",
         subHeader: "$" + amount + " will be refunded back to your account",
@@ -157,17 +162,6 @@ export default defineComponent({
             role: "confirm",
             handler: () => {
               handlerMessage.value = "Alert confirmed";
-              // remove booking from db
-              // const url = "http://127.0.0.1:5001/bookings/"+bookingID;
-              // axios
-              //   .delete(url)
-              //   .then((response) => {
-              //     console.log(response);
-              //     location.reload();
-              //   })
-              //   .catch((error) => {
-              //     console.log(error.message);
-              //   });
 
               // update booking status to "cancel"
               let url = "http://127.0.0.1:5001/bookings/" + bookingID;
@@ -176,15 +170,14 @@ export default defineComponent({
                   status: "Cancelled",
                 })
                 .then((response) => {
-                  console.log(response);
+                  //refund money
                   url = "http://127.0.0.1:5001/updateBalance/" + bookingID;
                   axios
                     .put(url, {
                       bookingID: bookingID,
                     })
                     .then((response) => {
-                      console.log(response);
-                      location.reload();
+                      sucessMsg(amount, response.data.data);
                     })
                     .catch((error) => {
                       console.log(error.message);
@@ -193,19 +186,33 @@ export default defineComponent({
                 .catch((error) => {
                   console.log(error.message);
                 });
+            },
+          },
+        ],
+      });
+      await alert.present();
+    };
 
-              //refund money
-              //http://127.0.0.1:5001/updateBalance/
+    const sucessMsg = async (amount,balance) => {
+      const alert = await alertController.create({
+        header: "Success!",
+        subHeader: "$"+ amount + " refunded. Balance is " + "$" +balance,
+        buttons: [
+          {
+            text: "Okay",
+            handler: () => {
+              location.reload();
             },
           },
         ],
       });
 
       await alert.present();
-      const { role } = await alert.onDidDismiss();
     };
+
     return {
-      presentAlert,
+      confirmationAlert,
+      sucessMsg,
     };
   },
 
