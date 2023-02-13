@@ -122,6 +122,26 @@ def get_all():
             "message": "There are no applications."
         }
     ), 404
+    
+#get booking by userID
+@app.route("/bookings/<int:userID>")
+def get_by_user(userID):
+    userBooking = Booking.query.filter_by(userID=userID).all()
+    if len(userBooking):
+        return jsonify(
+            {
+                "code": 200,
+                "data": {
+                    "bookings": [booking.json() for booking in userBooking]
+                }
+            }
+        )
+    return jsonify(
+        {
+            "code": 404,
+            "message": "There are no bookings."
+        }
+    ), 404
 
 # Create a new booking
 @app.route("/bookings", methods=['POST'])
@@ -173,16 +193,28 @@ def updateBooking(bookingID):
     print(data)
 
     if booking:
-        if data['bookingLocation']:
-            booking.bookingLocation = data['bookingLocation']
-        if data['bookingDateTime']:
+        if data.get('bookingLocation') != None:
+                    booking.bookingLocation = data['bookingLocation']
+        if data.get('bookingDateTime') != None:
             booking.bookingDateTime = data['bookingDateTime']
-        if data['status']:
+        if data.get('status') != None:
             booking.status = data['status']
-        if data['bookingStartDateTime']:
+        if data.get('bookingStartDateTime') != None:
             booking.bookingStartDateTime = data['bookingStartDateTime']
-        if data['bookingEndDateTime']:
+        if data.get('bookingEndDateTime') != None:
             booking.bookingEndDateTime = data['bookingEndDateTime']
+                    
+    # if booking:
+    #     if data['bookingLocation']:
+    #         booking.bookingLocation = data['bookingLocation']
+    #     if data['bookingDateTime']:
+    #         booking.bookingDateTime = data['bookingDateTime']
+    #     if data['status']:
+    #         booking.status = data['status']
+    #     if data['bookingStartDateTime']:
+    #         booking.bookingStartDateTime = data['bookingStartDateTime']
+    #     if data['bookingEndDateTime']:
+    #         booking.bookingEndDateTime = data['bookingEndDateTime']
         db.session.commit()
         return jsonify(
             {
@@ -251,7 +283,7 @@ def updateBalance(bookingID):
             ), 201
             
         #once status == cancel, will trigger the refund (to change status to cancel, refer to updateBooking function)
-        if data['bookingID'] and booking.json()['status'] == 'Canceled':
+        if data['bookingID'] and booking.json()['status'] == 'Cancelled':
             balance = balance + booking.json()['bookingAmt']
             # balance = user.json()['balance']
             user.balance = balance
