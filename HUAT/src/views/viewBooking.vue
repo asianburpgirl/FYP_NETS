@@ -5,6 +5,66 @@
     pageToGoBack="/tabs/profile"
     needToolBar="y"
   >
+<!-- <ion-modal :is-open="choiceOpen" class="ion-padding"> -->
+  <ion-modal class="ion-padding" :is-open="editBookingOpen">
+        <ion-header>
+          <ion-toolbar>
+            <ion-title class="ion-text-center">
+              Edit Booking</ion-title>
+
+               <ion-buttons slot="start">
+              <ion-button @click="setEditBookingOpen(false)">
+                <ion-icon :icon="arrowBackOutline"></ion-icon>
+              </ion-button>
+            </ion-buttons>
+
+          </ion-toolbar>
+        </ion-header>
+
+        <ion-content class="ion-padding-top">
+          <ion-item>
+        
+            <ion-label position="stacked"> Booking Date: {{ bookingInfo.startDate }}</ion-label>
+            <ion-datetime presentation="date" v-model="newDate"  v-if="editDate==true"></ion-datetime>
+            <ion-button shape="round" @click="editDate=true"  v-if="editDate==false"
+              >Edit Booking Date</ion-button
+            >
+             <ion-button shape="round" @click="editDate=true"  v-if="editDate==true" color="danger"
+              >Cancel</ion-button
+            >
+
+            <ion-label position="stacked"> Start Time: {{ bookingInfo.startTime }}</ion-label>
+            <ion-datetime
+              presentation="time" v-model="newStartTime" v-if="editStartTime==true"
+            ></ion-datetime>
+            <ion-button shape="round" @click="editStartTime=true"  v-if="editStartTime==false"
+              >Edit Start Time</ion-button
+            >
+            <ion-button shape="round" @click="editDate=true"  v-if="editStartTime==true" color="danger"
+              >Cancel</ion-button
+            >
+
+            <ion-label position="stacked"> End Time: {{ bookingInfo.endTime }}</ion-label>
+            <ion-datetime presentation="time" v-model="newEndTime" v-if="editEndTime==true"></ion-datetime>
+             <ion-button shape="round" @click="editEndTime=true" v-if="editEndTime==false"
+              >Edit End Time</ion-button
+            >
+            <ion-button shape="round" @click="editDate=true"  v-if="editEndTime==true"  color="danger"
+              >Cancel</ion-button  
+            >
+            
+          </ion-item>
+
+           <ion-row class="ion-padding-top ion-justify-content-center addPaddingBottom">
+                 <ion-button @click="saveEditBooking()" >
+                Save
+          </ion-button>
+              </ion-row>
+
+        </ion-content>
+      </ion-modal>
+
+
     <ion-searchbar></ion-searchbar>
     <ion-card v-for="eachBooking in bookingDetails" :key="eachBooking">
       <img src="/assets/images/ion.jpg" />
@@ -30,7 +90,7 @@
               <ion-row class="ion-padding-top ion-justify-content-center">
                 <ion-button
                   shape="round"
-                  @click="editBooking()"
+                  @click="editBooking(eachBooking)"
                   v-if="eachBooking.status == 'Booked'"
                   >Edit</ion-button
                 >
@@ -116,6 +176,7 @@
 </template>
 
 <script>
+import { arrowBackOutline } from "ionicons/icons";
 import {
   IonCard,
   IonCardHeader,
@@ -125,6 +186,20 @@ import {
   IonBadge,
   IonButton,
   alertController,
+  IonModal,
+  IonHeader,
+  IonToolbar,
+  IonTitle,
+  IonContent,
+  IonIcon,
+  IonButtons,
+  IonLabel,
+  IonDatetime,
+  IonItem,
+  IonRow,
+  IonCol,
+  IonGrid,
+
 } from "@ionic/vue";
 import { defineComponent, ref } from "vue";
 
@@ -139,6 +214,19 @@ export default defineComponent({
     IonSearchbar,
     IonBadge,
     IonButton,
+    IonModal,
+  IonHeader,
+  IonToolbar,
+  IonTitle,
+    IonContent,
+  IonButtons,
+  IonLabel,
+  IonDatetime,
+  IonItem,
+  IonRow,
+  IonCol,
+    IonGrid,
+  IonIcon
   },
 
   setup() {
@@ -213,6 +301,7 @@ export default defineComponent({
     return {
       confirmationAlert,
       sucessMsg,
+      arrowBackOutline
     };
   },
 
@@ -220,9 +309,81 @@ export default defineComponent({
     return {
       bookingDetails: [],
       userData: {},
+      editBookingOpen: false,
+
+      //for editing booking
+      bookingInfo: {},
+      newDate: "",
+      newStartTime: "",
+      newEndTime: "" ,
+
+      //to open editing windows
+      editDate: false,
+      editStartTime: false,
+      editEndTime: false,
+
     };
   },
   methods: {
+    editBooking(bookingInfo) {
+      this.setEditBookingOpen(true)
+      this.bookingInfo = bookingInfo
+      console.log(this.bookingInfo)
+    },
+    saveEditBooking() {
+      // const startDateTimeFormatted = this.bookingDate.substring(0, 10) + " " + this.startTime.substring(11, 19);
+
+      // to change user booking timing to current timing
+      const currentDateTime = new Date();
+      const date = currentDateTime.getDate();
+
+      const month = currentDateTime.getMonth() + 1;
+      const year = currentDateTime.getFullYear();
+      const hour = currentDateTime.getHours();
+      const min = currentDateTime.getMinutes();
+      const sec = currentDateTime.getSeconds();
+
+      const currentDateTimeFormatted = //here
+        year + "-" + month + "-" + date + " " + hour + ":" + min + ":" + sec;
+
+      // to change booking date
+      let newStartDateFormatted = this.bookingInfo.startDate
+      if (this.newDate != "") {
+        newStartDateFormatted = this.newDate.substring(0, 10)
+      }
+
+      // to change start time
+      let newStartTimeFormatted = this.bookingInfo.startTime
+      if (this.newStartTime != "") {
+        newStartTimeFormatted = this.newStartTime.substring(11, 19)
+      }
+      const newStartDateTime = newStartDateFormatted + " " + newStartTimeFormatted
+
+       // to change end time
+      let newEndTimeFormatted = this.bookingInfo.endTime
+      if (this.newEndTime != "") {
+        newEndTimeFormatted = this.newEndTime.substring(11, 19)
+      }
+      const newEndDateTime = newStartDateFormatted + " " + newEndTimeFormatted
+      
+      const url = "http://127.0.0.1:5001/bookings/" + this.bookingInfo.bookingID;
+       axios
+        .put(url, {
+          bookingDateTime: currentDateTimeFormatted,
+          bookingStartDateTime:newStartDateTime,
+          bookingEndDateTime: newEndDateTime
+        })
+        .then((response) => {
+          console.log(response)
+        })
+        .catch((error) => {
+          console.log(error.message);
+        });  
+    },
+   
+    setEditBookingOpen(isOpen) {
+      this.editBookingOpen = isOpen
+    },
     deleteBooking(bookingID) {
       const url = "http://127.0.0.1:5001/bookings/" + bookingID;
       axios
@@ -252,8 +413,7 @@ export default defineComponent({
               "/" +
               startDateTime.getFullYear();
             const startTimeOnly =
-              startDateTime.getHours() -
-              8 +
+              startDateTime.getHours() - 8 +
               ":" +
               ("0" + startDateTime.getMinutes()).slice(-2);
 
@@ -272,7 +432,7 @@ export default defineComponent({
               ("0" + endDateTime.getMinutes()).slice(-2);
 
             this.bookingDetails.push({
-              bookingDate: eachBooking.bookingDate,
+              bookingDate: eachBooking.bookingDateTime,
               bookingID: eachBooking.bookingID,
               bookingLocation: eachBooking.bookingLocation,
               locationName: eachBooking.locationName,
@@ -331,5 +491,9 @@ button.alert-button.alert-button-confirm {
   border-right: 0;
   border-bottom-left-radius: 13px;
   border-top-left-radius: 13px;
+}
+
+.addPaddingBottom {
+  padding-bottom: 300px;
 }
 </style>

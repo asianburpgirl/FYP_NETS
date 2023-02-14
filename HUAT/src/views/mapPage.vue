@@ -75,12 +75,12 @@
                 <ion-icon :icon="arrowBackOutline"></ion-icon>
               </ion-button>
             </ion-buttons>
-            <ion-icon name="arrow-back"></ion-icon>
+            
           </ion-toolbar>
         </ion-header>
         <ion-content class="ion-padding">
           <ion-item>
-            <ion-icon name="arrow-back"></ion-icon>
+            
             Distance from your current location:
             {{ distanceToLocation_km }} km
             <br />
@@ -283,7 +283,10 @@ export default defineComponent({
       endTime: "",
       bookingDate: "",
 
-      userData: {}
+      userData: {},
+      userOrigin: "1.2958419970838684,103.85841587741238",
+      userDestinations: "",
+
     };
   },
 
@@ -309,7 +312,9 @@ export default defineComponent({
     },
     calculateDistance() {
       const url =
-        "https://maps.googleapis.com/maps/api/distancematrix/json?origins=1.2958419970838684,103.85841587741238&destinations=1.3007033161990564,103.84528924122294&departure_time=now&key=AIzaSyAJXGx7T2ypt5Ew5-9SbDTWF9gqloQUJwI"; // hardcoded
+        "https://maps.googleapis.com/maps/api/distancematrix/json?origins=1.2958419970838684,103.85841587741238&destinations=1.3007033161990564,103.84528924122294&departure_time=now&key=AIzaSyAJXGx7T2ypt5Ew5-9SbDTWF9gqloQUJwI";
+      // const url =
+      //   "https://maps.googleapis.com/maps/api/distancematrix/json?origins=" + userOrigin + "destinations=" + 1.3007033161990564,103.84528924122294&departure_time=now&key=AIzaSyAJXGx7T2ypt5Ew5-9SbDTWF9gqloQUJwI";
       axios
         .get(url)
         .then((response) => {
@@ -321,7 +326,6 @@ export default defineComponent({
             response.data.rows[0].elements[0].duration_in_traffic.value / 60
           ).toPrecision(2);
           console.log("distance: ", distance_km);
-
           console.log("duration: ", duration_mins);
           this.distanceToLocation_km = distance_km;
           this.timeToLocation_mins = duration_mins;
