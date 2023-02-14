@@ -38,6 +38,9 @@
             <br />
             Time taken from your current location:
             {{ timeToLocation_mins }} mins
+            <br />
+            Booking Amount: ${{ bookingAmount }}
+
           </h1>
 
           <ion-button
@@ -282,6 +285,7 @@ export default defineComponent({
       userData: {},
       userOrigin: "1.2958419970838684,103.85841587741238",
       userDestinations: "1.3007033161990564,103.84528924122294",
+      bookingAmount: "5.20"
     };
   },
 
@@ -395,7 +399,7 @@ export default defineComponent({
           bookingEndDateTime: endDateTimeFormatted,
           userID: userID,
           status: "Booked",
-          bookingAmt: 1.23,
+          bookingAmt: this.bookingAmount,
         })
         .then((response) => {
           this.setBookingOpen(false); // close booking window

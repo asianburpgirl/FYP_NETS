@@ -1,10 +1,9 @@
 <template>
-  <!-- <base-layout pageTitle="Subscription Plans" pageToGoBack="/tabs/"> -->
   <base-layout pageTitle="Subscription Plans" pageToGoBack="/tabs/" needToolBar="y">
-  
       <ion-card>
         <!-- <ion-img src="assets/images/ion.jpg"></ion-img> -->
-        <ion-grid>
+        <!-- <ion-grid v-for=""> -->
+          <ion-grid>
           <ion-card-header>
             <ion-card-title>Basic Plan</ion-card-title>
             <ion-card-subtitle>Free 1 hour parking</ion-card-subtitle>
@@ -43,7 +42,7 @@
   </base-layout>
 </template>
 
-<script setup lang="ts">
+<script lang="ts">
 import {
   IonPage,
   IonHeader,
@@ -51,7 +50,20 @@ import {
   IonTitle,
   IonContent,
 } from "@ionic/vue";
+import { defineComponent } from "vue";
 // import ExploreContainer from '@/components/ExploreContainer.vue';
+
+export default defineComponent({
+  components: {
+    IonPage,
+    IonHeader,
+    IonToolbar,
+    IonTitle,
+    IonContent,
+    // IonRefresher,
+    // IonRefresherContent,
+  }
+  })
 </script>
 
 <style scoped>
