@@ -28,7 +28,7 @@ const routes: Array<RouteRecordRaw> = [
       },
       {
         path: 'wallet',
-        component: () => import('@/views/paymentPage.vue'),
+        component: () => import('@/views/walletPage.vue'),
         children: [
           {
             path: '/successPage',
