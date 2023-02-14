@@ -29,7 +29,13 @@ const routes: Array<RouteRecordRaw> = [
       },
       {
         path: 'wallet',
-        component: () => import('@/views/walletPage.vue')
+        component: () => import('@/views/walletPage.vue'),
+        children: [
+          {
+            path: '/successPage',
+            component: () => import('@/views/successPage.vue')
+          }
+        ] 
       },
       {
         path: 'plans',

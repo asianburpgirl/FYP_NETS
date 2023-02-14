@@ -5,8 +5,8 @@ from os import environ
 from datetime import datetime
 import random
 import string
-
-
+import user
+import json
 
 app = Flask(__name__)
 # app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL') or 'mysql+mysqlconnector://root@localhost:3306/localconnect'
@@ -33,8 +33,7 @@ class Booking(db.Model):
     bookingAmt = db.Column(db.Float, nullable=False)
     userID = db.Column(db.ForeignKey('users.userID', ondelete='CASCADE', onupdate='CASCADE'), nullable=False, index=True)
 
-    user = db.relationship(
-        'User', primaryjoin='Booking.userID == User.userID', backref='booking')
+    user = db.relationship('User', primaryjoin='Booking.userID == User.userID', backref='booking')
 
 
     def __init__(self, bookingID,   bookingLocation, locationName, bookingStartDateTime, 
@@ -183,6 +182,7 @@ def createBooking():
             "message": "Your booking has been created"
         }
     ), 201
+
 
 # update bookings
 @app.route("/bookings/<int:bookingID>", methods=['PUT'])

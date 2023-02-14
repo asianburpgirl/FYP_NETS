@@ -49,18 +49,9 @@
 </template>
 
 <script>
-import {
-  IonGrid,
-  IonCard,
-  IonIcon,
-  IonRow,
-  IonCol,
-  IonButton,IonList,IonItem,IonLabel, IonListHeader
-} from "@ionic/vue";
-import { defineComponent } from "vue";
-// import { add, card, home, star, wallet } from "ionicons/icons";
-import { wallet,card } from "ionicons/icons";
-
+import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonGrid, IonCard, IonIcon, IonRow, IonCol, IonButton } from '@ionic/vue';
+import { defineComponent } from 'vue';
+import { add, card, home, star, wallet } from 'ionicons/icons';
 import axios from "axios";
 
 export default defineComponent({
@@ -68,32 +59,63 @@ export default defineComponent({
   setup() {
     return { card,wallet };
   },
-    mounted() {
-    this.getBalance();
-    },
-   data() {
-    return {
-        balance: 0,
-        userData: {}
-    };
+  data() {
+      return {
+          stripe: null,
+          balance: 0,
+            userData: {}
+      }
   },
-    methods: {
-    
-      getBalance() {
-      this.userData = JSON.parse(localStorage.getItem("userData"));
-    
-      const url = "http://127.0.0.1:5002/getBalance/" + this.userData.userID;
-      axios
-        .get(url)
-        .then((response) => {
-          this.balance = response.data.data.balance
+  methods: {
+        getBalance() {
+        this.userData = JSON.parse(localStorage.getItem("userData"));
+        
+        const url = "http://127.0.0.1:5002/getBalance/" + this.userData.userID;
+        axios
+            .get(url)
+            .then((response) => {
+            this.balance = response.data.data.balance
+            })
+            .catch((error) => {
+            console.log(error.message);
+            });
+        },
+      purchaseBook() {
+        fetch('http://localhost:4242/create-payment-intent', {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          
+          body: JSON.stringify({ item:123 }),
         })
-        .catch((error) => {
-          console.log(error.message);
+        .then((result) => result.json())
+        .then((data) => {
+          // Redirect to Stripe Checkout
+          return this.stripe.redirectToCheckout({ sessionId: 123 });
+        })
+        .then((res) => {
+          console.log(res);
         });
-    },
-  },
-});
+      },
+      getStripePublishableKey() {
+          fetch('http://localhost:4242/config')
+          .then((result) => result.json())
+          .then((data) => {
+              // Initialize Stripe.js
+              this.stripe = Stripe(data.publicKey); // eslint-disable-line no-undef
+          });
+      },
+      created() {
+          this.getStripePublishableKey();
+      },
+      mounted(){
+        const recaptchaScript = document.createElement('script')
+        recaptchaScript.setAttribute('src', 'https://js.stripe.com/v3/')
+        document.head.appendChild(recaptchaScript)
+        this.getBalance();
+      }
+  }
+})
+
 </script>
 
 <style>
