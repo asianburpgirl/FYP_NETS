@@ -57,7 +57,7 @@
     </base-layout>
 </template>
 
-<script setup lang="ts">
+<script>
 import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonGrid, IonCard, IonIcon, IonRow, IonCol, IonButton } from '@ionic/vue';
 import { defineComponent } from 'vue';
 import { add, card, home, star, wallet } from 'ionicons/icons';
@@ -65,6 +65,47 @@ import { add, card, home, star, wallet } from 'ionicons/icons';
 // export default defineComponent({
 //     components: { IonPage, IonContent, IonHeader, IonTitle, IonToolbar, IonGrid, IonCard, IonIcon, IonRow, IonCol, IonButton },
 // });
+export default defineComponent({
+  data() {
+      return {
+          stripe: null,
+      }
+  },
+  methods: {
+      purchaseBook() {
+        fetch('http://localhost:4242/create-payment-intent', {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          
+          body: JSON.stringify({ item:123 }),
+        })
+        .then((result) => result.json())
+        .then((data) => {
+          // Redirect to Stripe Checkout
+          return this.stripe.redirectToCheckout({ sessionId: 123 });
+        })
+        .then((res) => {
+          console.log(res);
+        });
+      },
+      getStripePublishableKey() {
+          fetch('http://localhost:4242/config')
+          .then((result) => result.json())
+          .then((data) => {
+              // Initialize Stripe.js
+              this.stripe = Stripe(data.publicKey); // eslint-disable-line no-undef
+          });
+      },
+      created() {
+          this.getStripePublishableKey();
+      },
+      mounted(){
+        const recaptchaScript = document.createElement('script')
+        recaptchaScript.setAttribute('src', 'https://js.stripe.com/v3/')
+        document.head.appendChild(recaptchaScript)
+      }
+  }
+})
 </script>
 
 <style>
