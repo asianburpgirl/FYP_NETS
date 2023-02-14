@@ -364,7 +364,7 @@ export default defineComponent({
       this.endTime = this.endTime.substring(11, 19);
 
       this.userData = JSON.parse(localStorage.getItem("userData"));
-      var userID = this.userData.userID
+      const userID = this.userData.userID
 
       const url = "http://127.0.0.1:5001/bookings"; // hardcoded
 
