@@ -72,9 +72,9 @@
 </template>
 
 <script>
-import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonGrid, IonCard, IonIcon, IonRow, IonCol, IonButton } from '@ionic/vue';
+import { IonGrid, IonCard, IonIcon, IonRow, IonCol, IonButton } from '@ionic/vue';
 import { defineComponent } from 'vue';
-import { add, card, home, star, wallet } from 'ionicons/icons';
+import { card, wallet } from 'ionicons/icons';
 import axios from "axios";
 
 export default defineComponent({
@@ -83,60 +83,50 @@ export default defineComponent({
     return { card,wallet };
   },
   data() {
-      return {
-          stripe: null,
-          balance: 0,
-          userData: {}
-      }
+    return {
+      stripe: null,
+      balance: 0,
+      userData: {}
+    }
   },
   methods: {
     loadUserData() {
-      this.userData = JSON.parse(localStorage.getItem("userData") || '{}');
+      this.userData = JSON.parse(localStorage.getItem("userData"));
     },
     getBalance() {
-      const url = "http://127.0.0.1:5002/getBalance/" + this.userData.userID;
+      const url = "http://localhost:5002/getBalance/" + this.userData.userID;
       axios.get(url)
       .then((response) => {
-        this.balance = response.data.balance
+        // console.log(response)
+        this.balance = response.data.data.balance
       })
       .catch((error) => {
         console.log(error.message);
       });
-    },
-    routeTopup() {
-      // routeUser(route: string) {
-      //     this.$router.push({
-      //         path: '/' + route,
-      //     });
-      // }
-      const routeData = 'https://buy.stripe.com/test_3csdSy0va7hXaD64gg';
-      window.open(routeData, '_blank');
     },
     routeTen() {
       const routeData = 'https://buy.stripe.com/test_8wMaGm2Di8m1fXq6oq';
       window.open(routeData, '_blank');
 
-      const url = "http://127.0.0.1:5002/addTen/" + this.userData.userID + "/" + this.userData.balance;
+      const url = "http://localhost:5002/addTen/" + this.userData.userID + "/" + this.userData.balance;
       axios.put(url, {
         userID: this.userData.userID,
-        balance: this.balance
+        balance: this.userData.balance
       })
       .then((response) => {
-        console.log(response)
+        // console.log(response)
         this.balance = response.data.data
       })
       .catch((error) => {
         console.log(error.message);
       });
-        
-    },
-    mounted(){
-      this.loadUserData();
-      this.getBalance();
     }
+  },
+  mounted(){
+    this.loadUserData(),
+    this.getBalance()
   }
 })
-
 </script>
 
 <style>
