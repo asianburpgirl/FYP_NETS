@@ -9,11 +9,7 @@
       <!--   <ion-refresher slot="fixed" @ionRefresh="handleRefresh()">
         <ion-refresher-content></ion-refresher-content>
       </ion-refresher> -->
-      Distance from your current location:
-      {{ distanceToLocation_km }}
-      <br />
-      Time taken from your current location:
-      {{ timeToLocation_mins }}
+
       <capacitor-google-map id="map"></capacitor-google-map>
 
       <!-- first popup page to open when user click on marker. User can choose either to book or subscribe to this carpark. button will open up respective popup  -->
@@ -36,6 +32,13 @@
           <h2>
             Address: <u> {{ clickedMarkerAddress }}</u>
           </h2>
+          <h1>
+            Distance from your current location:
+            {{ distanceToLocation_km }} km
+            <br />
+            Time taken from your current location:
+            {{ timeToLocation_mins }} mins
+          </h1>
 
           <ion-button
             shape="round"
@@ -75,12 +78,10 @@
                 <ion-icon :icon="arrowBackOutline"></ion-icon>
               </ion-button>
             </ion-buttons>
-            
           </ion-toolbar>
         </ion-header>
         <ion-content class="ion-padding">
           <ion-item>
-            
             Distance from your current location:
             {{ distanceToLocation_km }} km
             <br />
@@ -90,7 +91,10 @@
             <br />
 
             <ion-label position="stacked"> Booking Date:</ion-label>
-            <ion-datetime presentation="date" v-model="bookingDate"></ion-datetime>
+            <ion-datetime
+              presentation="date"
+              v-model="bookingDate"
+            ></ion-datetime>
 
             <ion-label position="stacked"> Start Time:</ion-label>
             <ion-datetime
@@ -127,24 +131,15 @@
         <ion-content class="ion-padding">
           <ion-row>
             Your booking at {{ clickedMarkerName }} is successful!
-             <br />
+            <br />
             These are the details: Carpark Location:
             <ul>
-              <li>
-                   Carpark Location: {{ clickedMarkerAddress }}
-              </li>
-              <li>
-                Booking Date: {{ bookingDate }}
-              </li>
-              
-              <li>
-                 Start Time: {{ startTime }} 
-              </li>
-              <li>
-                End Time: {{ endTime }}
-              </li>
+              <li>Carpark Location: {{ clickedMarkerAddress }}</li>
+              <li>Booking Date: {{ bookingDate }}</li>
+
+              <li>Start Time: {{ startTime }}</li>
+              <li>End Time: {{ endTime }}</li>
             </ul>
-           
           </ion-row>
 
           <ion-row
@@ -241,6 +236,7 @@ import {
 } from "@ionic/vue";
 import { GoogleMap } from "@capacitor/google-maps";
 import { arrowBackOutline } from "ionicons/icons";
+import { Geolocation } from "@capacitor/geolocation";
 
 export default defineComponent({
   components: {
@@ -285,14 +281,12 @@ export default defineComponent({
 
       userData: {},
       userOrigin: "1.2958419970838684,103.85841587741238",
-      userDestinations: "",
-
+      userDestinations: "1.3007033161990564,103.84528924122294",
     };
   },
 
   mounted() {
     this.createMap();
-    this.calculateDistance();
   },
 
   methods: {
@@ -310,15 +304,30 @@ export default defineComponent({
     buySubscription() {
       console.log("here");
     },
+    async getCurrentLocation() {
+      const coordinates = await Geolocation.getCurrentPosition();
+
+      return coordinates;
+    },
     calculateDistance() {
-      const url =
-        "https://maps.googleapis.com/maps/api/distancematrix/json?origins=1.2958419970838684,103.85841587741238&destinations=1.3007033161990564,103.84528924122294&departure_time=now&key=AIzaSyAJXGx7T2ypt5Ew5-9SbDTWF9gqloQUJwI";
-      // const url =
-      //   "https://maps.googleapis.com/maps/api/distancematrix/json?origins=" + userOrigin + "destinations=" + 1.3007033161990564,103.84528924122294&departure_time=now&key=AIzaSyAJXGx7T2ypt5Ew5-9SbDTWF9gqloQUJwI";
+      this.getCurrentLocation().then((coordinates) => {
+        this.userOrigin =
+          coordinates.coords.latitude.toString() +
+          "," +
+          coordinates.coords.longitude.toString();
+        console.log("Your location:" + this.userOrigin)
+          const url =
+        "https://maps.googleapis.com/maps/api/distancematrix/json?origins=" +
+        this.userOrigin +
+        "&destinations=" +
+        this.userDestinations +
+        "&departure_time=now&key=AIzaSyAJXGx7T2ypt5Ew5-9SbDTWF9gqloQUJwI";
+      console.log(url);
+
       axios
         .get(url)
         .then((response) => {
-          console.log(response.data);
+          console.log("response:" + response.data);
           const distance_km = (
             response.data.rows[0].elements[0].distance.value / 1000
           ).toPrecision(2);
@@ -333,6 +342,8 @@ export default defineComponent({
         .catch((error) => {
           console.log(error.message);
         });
+      });
+      
     },
     setChoiceOpen(isOpen) {
       this.choiceOpen = isOpen;
@@ -359,20 +370,25 @@ export default defineComponent({
       const currentDateTimeFormatted =
         year + "-" + month + "-" + date + " " + hour + ":" + min + ":" + sec;
 
-      this.bookingDate = this.bookingDate.substring(0, 10)
-        
-      const startDateTimeFormatted = this.bookingDate.substring(0, 10) + " " + this.startTime.substring(11, 19);
-      this.startTime =this.startTime.substring(11, 19);
+      this.bookingDate = this.bookingDate.substring(0, 10);
 
-      const endDateTimeFormatted = this.bookingDate.substring(0, 10) + " " + this.endTime.substring(11, 19);
+      const startDateTimeFormatted =
+        this.bookingDate.substring(0, 10) +
+        " " +
+        this.startTime.substring(11, 19);
+      this.startTime = this.startTime.substring(11, 19);
+
+      const endDateTimeFormatted =
+        this.bookingDate.substring(0, 10) +
+        " " +
+        this.endTime.substring(11, 19);
       this.endTime = this.endTime.substring(11, 19);
 
       this.userData = JSON.parse(localStorage.getItem("userData"));
-      var userID = this.userData.userID
+      var userID = this.userData.userID;
 
       const url = "http://127.0.0.1:5001/bookings"; // hardcoded
 
-      console.log(userID)
       axios
         .post(url, {
           bookingDateTime: currentDateTimeFormatted,
@@ -382,7 +398,7 @@ export default defineComponent({
           bookingEndDateTime: endDateTimeFormatted,
           userID: userID,
           status: "Booked",
-          bookingAmt: 1.23
+          bookingAmt: 1.23,
         })
         .then((response) => {
           this.setBookingOpen(false); // close booking window
@@ -429,18 +445,29 @@ export default defineComponent({
             lng: 103.85841587741238,
           },
         },
+        {
+          title: "Suntec City",
+          snippet: "1 SBW Road",
+          coordinate: { 
+            lat: 1.4505038534431516,
+            lng:103.82023752816633
+          },
+        },
       ]);
       // listener for user click
       const markerListener = newMap.setOnMarkerClickListener((event) => {
         console.log(event);
         // console.log(event.latitude);
         // console.log(event.longitude);
-        console.log(event.title);
-        console.log(event.snippet);
+        // console.log(event.title);
+        // console.log(event.snippet);
         this.clickedMarkerName = event.title;
         this.clickedMarkerAddress = event.snippet;
 
+        this.userDestinations = event.latitude.toString() +',' + event.longitude.toString()
+
         this.setChoiceOpen(true);
+        this.calculateDistance()
       });
       //add traffic data
       const trafficDataEnable = newMap.enableTrafficLayer(true);
