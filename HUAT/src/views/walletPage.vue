@@ -19,16 +19,33 @@
               <p>Top Up</p>
             </ion-col>
             <ion-col>
-              <ion-button color="dark" @click="routePayment()">
-                <ion-icon :icon="wallet" > </ion-icon>
-              </ion-button>
-              <p>$10</p>
-            </ion-col>
-            <ion-col>
               <ion-button color="dark">
                 <ion-icon :icon="card" />
               </ion-button>
               <p>Card</p>
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <!-- <ion-col>
+              <ion-button color="dark">
+                <ion-icon :icon="addOutline" > </ion-icon>
+              </ion-button>
+              <p>Pay</p>
+            </ion-col> -->
+            <ion-col>
+              <ion-button color="dark" @click="routeTen()">
+                $10
+              </ion-button>
+            </ion-col>
+            <ion-col>
+              <ion-button color="dark" @click="routeTwenty()">
+                $20
+              </ion-button>
+            </ion-col>
+            <ion-col>
+              <ion-button color="dark" @click="routeThirty()">
+                $30
+              </ion-button>
             </ion-col>
           </ion-row>
         </ion-grid>
@@ -69,68 +86,54 @@ export default defineComponent({
       return {
           stripe: null,
           balance: 0,
-            userData: {}
+          userData: {}
       }
   },
   methods: {
-        getBalance() {
-        this.userData = JSON.parse(localStorage.getItem("userData"));
+    loadUserData() {
+      this.userData = JSON.parse(localStorage.getItem("userData") || '{}');
+    },
+    getBalance() {
+      const url = "http://127.0.0.1:5002/getBalance/" + this.userData.userID;
+      axios.get(url)
+      .then((response) => {
+        this.balance = response.data.balance
+      })
+      .catch((error) => {
+        console.log(error.message);
+      });
+    },
+    routeTopup() {
+      // routeUser(route: string) {
+      //     this.$router.push({
+      //         path: '/' + route,
+      //     });
+      // }
+      const routeData = 'https://buy.stripe.com/test_3csdSy0va7hXaD64gg';
+      window.open(routeData, '_blank');
+    },
+    routeTen() {
+      const routeData = 'https://buy.stripe.com/test_8wMaGm2Di8m1fXq6oq';
+      window.open(routeData, '_blank');
+
+      const url = "http://127.0.0.1:5002/addTen/" + this.userData.userID + "/" + this.userData.balance;
+      axios.put(url, {
+        userID: this.userData.userID,
+        balance: this.balance
+      })
+      .then((response) => {
+        console.log(response)
+        this.balance = response.data.data
+      })
+      .catch((error) => {
+        console.log(error.message);
+      });
         
-        const url = "http://127.0.0.1:5002/getBalance/" + this.userData.userID;
-        axios
-            .get(url)
-            .then((response) => {
-            this.balance = response.data.data.balance
-            })
-            .catch((error) => {
-            console.log(error.message);
-            });
-        },
-        topup() {
-          fetch('http://localhost:4242/create-payment-session', {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          
-          body: JSON.stringify({ item:123 }),
-        })
-        .then((result) => result.json())
-        // .then((data) => {
-        //   return this.stripe.redirectToCheckout({ sessionId: 123 });
-        // })
-        // .then((res) => {
-        //   console.log(res);
-        // });
-      },
-      getStripePublishableKey() {
-          fetch('http://localhost:4242/config')
-          .then((result) => result.json())
-          .then((data) => {
-              // Initialize Stripe.js
-              this.stripe = Stripe(data.publicKey); // eslint-disable-line no-undef
-          });
-      },
-      routeTopup() {
-        // routeUser(route: string) {
-        //     this.$router.push({
-        //         path: '/' + route,
-        //     });
-        // }
-          const routeData = 'https://buy.stripe.com/test_3csdSy0va7hXaD64gg';
-          window.open(routeData, '_blank');
-      },
-      routePayment() {
-        const routeData = 'https://buy.stripe.com/test_cN26q60va7hX4eI4gh';
-        window.open(routeData, '_blank');
-      },
-      created() {
-          this.getStripePublishableKey();
-      },
-      mounted(){
-        const recaptchaScript = document.createElement('script')
-        recaptchaScript.setAttribute('src', 'https://js.stripe.com/v3/')
-        document.head.appendChild(recaptchaScript)
-        this.getBalance();
-      }
+    },
+    mounted(){
+      this.loadUserData();
+      this.getBalance();
+    }
   }
 })
 

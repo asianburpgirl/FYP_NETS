@@ -234,6 +234,79 @@ def getBalance(userID):
         }
     ), 404
 
+@app.route("/addTen/<int:userID>/<int:balance>", methods=['PUT'])
+def addTen(userID, balance):
+    user = User.query.filter_by(userID = userID).first()
+    balance = user.json()['balance'] 
+    if user:
+        balance = balance + 10
+        user.balance = balance
+        # print(user.json()['balance'] + 10)
+        db.session.commit()
+        return jsonify(
+            {
+                "code": 201,
+                "data": balance,
+                "message": "YES!!!"
+            }
+        ), 201
+        
+    return jsonify(
+        {
+            "code": 404,
+            "message": "No such user in the database."
+        }
+    ), 404
+
+@app.route("/addTwenty/<int:userID>/<int:balance>", methods=['PUT'])
+def addTwenty(userID, balance):
+    user = User.query.filter_by(userID = userID).first()
+    balance = user.json()['balance'] 
+    if user:
+        balance = balance + 20
+        user.balance = balance
+        # print(user.json()['balance'] + 10)
+        db.session.commit()
+        return jsonify(
+            {
+                "code": 201,
+                "data": balance,
+                "message": "YES!!!"
+            }
+        ), 201
+        
+    return jsonify(
+        {
+            "code": 404,
+            "message": "No such user in the database."
+        }
+    ), 404
+
+@app.route("/addThirty/<int:userID>/<int:balance>", methods=['PUT'])
+def addThirty(userID, balance):
+    user = User.query.filter_by(userID = userID).first()
+    balance = user.json()['balance'] 
+    if user:
+        balance = balance + 30
+        user.balance = balance
+        # print(user.json()['balance'] + 10)
+        db.session.commit()
+        return jsonify(
+            {
+                "code": 201,
+                "data": balance,
+                "message": "YES!!!"
+            }
+        ), 201
+        
+    return jsonify(
+        {
+            "code": 404,
+            "message": "No such user in the database."
+        }
+    ), 404
+
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5002, debug=True)
 
