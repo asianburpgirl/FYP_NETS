@@ -1,61 +1,221 @@
 <template>
-  <ion-page class="ion-padding">
+  <ion-page>
     <ion-header>
       <ion-toolbar>
         <ion-title>Map</ion-title>
       </ion-toolbar>
     </ion-header>
-    <ion-content :fullscreen="true">
+    <ion-content :fullscreen="true" class="ion-padding">
       <!--   <ion-refresher slot="fixed" @ionRefresh="handleRefresh()">
         <ion-refresher-content></ion-refresher-content>
       </ion-refresher> -->
       Distance from your current location:
-            {{ distanceToLocation_km }} 
-            <br>
-            Time taken from your current location:
-            {{ timeToLocation_mins }}
-
+      {{ distanceToLocation_km }}
+      <br />
+      Time taken from your current location:
+      {{ timeToLocation_mins }}
       <capacitor-google-map id="map"></capacitor-google-map>
 
-      <ion-modal :is-open="isOpen" class="ion-padding">
+      <!-- first popup page to open when user click on marker. User can choose either to book or subscribe to this carpark. button will open up respective popup  -->
+      <ion-modal :is-open="choiceOpen" class="ion-padding">
         <ion-header>
           <ion-toolbar>
-            <ion-title>{{ clickedMarkerName }}</ion-title>
-            <ion-buttons slot="end">
-              <ion-button @click="setOpen(false)">Close</ion-button>
-              <!-- <ion-button @click="setOpen(false)">Close</ion-button> need to reload map cause its not showing after -->
+            <ion-title class="ion-text-center">
+              {{ clickedMarkerName }}</ion-title
+            >
+
+            <ion-buttons slot="start">
+              <ion-button @click="setChoiceOpen(false)">
+                <ion-icon :icon="arrowBackOutline"></ion-icon>
+              </ion-button>
             </ion-buttons>
+          </ion-toolbar>
+        </ion-header>
+
+        <ion-content class="ion-padding-top ion-padding">
+          <h2>
+            Address: <u> {{ clickedMarkerAddress }}</u>
+          </h2>
+
+          <ion-button
+            shape="round"
+            @click="
+              setBookingOpen(true);
+              setChoiceOpen(false);
+            "
+            expand="block"
+            size="large"
+            >Book</ion-button
+          >
+          <ion-button
+            shape="round"
+            @click="
+              setSubscriptionOpen(true);
+              setChoiceOpen(false);
+            "
+            expand="block"
+            size="large"
+            >Subscription</ion-button
+          >
+        </ion-content>
+      </ion-modal>
+
+      <!-- when user select to book a carpark at the location.  -->
+      <ion-modal :is-open="bookingIsOpen" class="ion-padding">
+        <ion-header>
+          <ion-toolbar>
+            <ion-title> Booking at {{ clickedMarkerName }}</ion-title>
+            <ion-buttons slot="start">
+              <ion-button
+                @click="
+                  setBookingOpen(false);
+                  setChoiceOpen(true);
+                "
+              >
+                <ion-icon :icon="arrowBackOutline"></ion-icon>
+              </ion-button>
+            </ion-buttons>
+            <ion-icon name="arrow-back"></ion-icon>
           </ion-toolbar>
         </ion-header>
         <ion-content class="ion-padding">
           <ion-item>
+            <ion-icon name="arrow-back"></ion-icon>
             Distance from your current location:
             {{ distanceToLocation_km }} km
-            <br>
-            <br>
+            <br />
+            <br />
             Time taken from your current location:
             {{ timeToLocation_mins }} mins
-            <br>
-            
-          <ion-label position="stacked">Start Time:</ion-label>
-          <ion-datetime  v-model="startTime"></ion-datetime>
+            <br />
 
-           <ion-label position="stacked">End Time:</ion-label>
-          <ion-datetime  v-model="endTime"></ion-datetime>
-        </ion-item>
-          
-          <ion-row class="ion-padding-top ion-justify-content-center">
-        <ion-button shape="round" @click="makeBoooking()">Book</ion-button>
-      </ion-row>
+            <ion-label position="stacked"> Booking Date:</ion-label>
+            <ion-datetime presentation="date" v-model="bookingDate"></ion-datetime>
+
+            <ion-label position="stacked"> Start Time:</ion-label>
+            <ion-datetime
+              presentation="time"
+              v-model="startTime"
+            ></ion-datetime>
+
+            <ion-label position="stacked"> End Time:</ion-label>
+            <ion-datetime presentation="time" v-model="endTime"></ion-datetime>
+
+            <!-- 
+            <ion-datetime presentation="time"></ion-datetime>
+            <ion-datetime presentation="date"></ion-datetime>
+
+            <ion-label position="stacked">End Time:</ion-label>
+            <ion-datetime v-model="endTime"></ion-datetime> -->
+          </ion-item>
+
+          <ion-row
+            class="ion-padding-top ion-justify-content-center ion-padding-bottom addPaddingBottom"
+          >
+            <ion-button shape="round" @click="makeBoooking()">Book</ion-button>
+          </ion-row>
         </ion-content>
       </ion-modal>
 
-      
+      <!-- when booking is successful, to show success popup -->
+      <ion-modal :is-open="bookingSuccessIsOpen" class="ion-padding">
+        <ion-header>
+          <ion-toolbar>
+            <ion-title>Success!</ion-title>
+          </ion-toolbar>
+        </ion-header>
+        <ion-content class="ion-padding">
+          <ion-row>
+            Your booking at {{ clickedMarkerName }} is successful!
+             <br />
+            These are the details: Carpark Location:
+            <ul>
+              <li>
+                   Carpark Location: {{ clickedMarkerAddress }}
+              </li>
+              <li>
+                Booking Date: {{ bookingDate }}
+              </li>
+              
+              <li>
+                 Start Time: {{ startTime }} 
+              </li>
+              <li>
+                End Time: {{ endTime }}
+              </li>
+            </ul>
+           
+          </ion-row>
+
+          <ion-row
+            class="ion-padding-top ion-justify-content-center ion-padding-bottom addPaddingBottom"
+          >
+            <ion-button shape="round" @click="setBookingSuccessOpen(false)"
+              >Back to Map</ion-button
+            >
+            <ion-button shape="round" @click="routeToMyBookings()"
+              >View My Bookings</ion-button
+            >
+          </ion-row>
+        </ion-content>
+      </ion-modal>
+
+      <!-- when user select to subscription plans at the carpark location.  -->
+      <ion-modal :is-open="subscriptionIsOpen" class="ion-padding">
+        <ion-header>
+          <ion-toolbar>
+            <ion-title>Subsciption plan </ion-title>
+            <ion-buttons slot="start">
+              <ion-button
+                @click="
+                  setSubscriptionOpen(false);
+                  setChoiceOpen(true);
+                "
+              >
+                <ion-icon :icon="arrowBackOutline"></ion-icon>
+              </ion-button>
+            </ion-buttons>
+          </ion-toolbar>
+        </ion-header>
+        <ion-content class="ion-padding">
+          <h1>{{ clickedMarkerName }}</h1>
+
+          <h3>
+            Address: <u> {{ clickedMarkerAddress }} test</u>
+          </h3>
+
+          <ion-item>
+            <ion-label>Subscription Type</ion-label>
+            <ion-select placeholder="Type">
+              <ion-select-option value="seasonal">Seasonal</ion-select-option>
+              <ion-select-option value="complimentary"
+                >Complimentary</ion-select-option
+              >
+              <ion-select-option value="hourly">Hourly</ion-select-option>
+            </ion-select>
+          </ion-item>
+
+          <ion-list>
+            <ion-item> Weekday Peak: $12/month </ion-item>
+            <ion-item> Weekday Non-Peak: $10/month </ion-item>
+            <ion-item> Weekend Peak: $20/month </ion-item>
+            <ion-item> Weekend Non-Peak: $15/month </ion-item>
+          </ion-list>
+
+          <ion-row
+            class="ion-padding-top ion-justify-content-center ion-padding-bottom addPaddingBottom"
+          >
+            <ion-button shape="round" @click="buySubscription()"
+              >Buy Subscription</ion-button
+            >
+          </ion-row>
+        </ion-content>
+      </ion-modal>
     </ion-content>
   </ion-page>
 </template>
 
-<script lang="ts">
+<script>
 import { defineComponent, ref } from "vue";
 import axios from "axios";
 import {
@@ -65,13 +225,22 @@ import {
   IonTitle,
   IonContent,
   IonModal,
+  IonRow,
+  IonList,
   IonButtons,
   IonButton,
-  IonDatetime
+  IonDatetime,
+  IonIcon,
+  IonItem,
+  IonLabel,
+  IonSelect,
+  IonSelectOption,
+
   //   IonRefresher,
   //   IonRefresherContent,
 } from "@ionic/vue";
 import { GoogleMap } from "@capacitor/google-maps";
+import { arrowBackOutline } from "ionicons/icons";
 
 export default defineComponent({
   components: {
@@ -83,19 +252,38 @@ export default defineComponent({
     IonModal,
     IonButtons,
     IonButton,
-    IonDatetime
+    IonDatetime,
+    IonIcon,
+    IonItem,
+    IonLabel,
+    IonSelect,
+    IonSelectOption,
+    IonRow,
+    IonList,
     // IonRefresher,
     // IonRefresherContent,
   },
+
+  setup() {
+    return { arrowBackOutline };
+  },
   data() {
     return {
-      isOpen: false,
+      bookingIsOpen: false,
+      bookingSuccessIsOpen: false,
+      subscriptionSuccessIsOpen: false,
+      subscriptionIsOpen: false,
+      choiceOpen: false,
+
       clickedMarkerName: "",
       clickedMarkerAddress: "",
       distanceToLocation_km: "",
       timeToLocation_mins: "",
       startTime: "",
       endTime: "",
+      bookingDate: "",
+
+      userData: {}
     };
   },
 
@@ -105,27 +293,54 @@ export default defineComponent({
   },
 
   methods: {
+    routeToMyBookings() {
+      this.setBookingSuccessOpen(false);
+      this.$router
+        .push({
+          path: "/viewBooking",
+        })
+        .then(() => {
+          this.$router.go(0);
+        });
+      location.reload();
+    },
+    buySubscription() {
+      console.log("here");
+    },
     calculateDistance() {
-      const url = "https://maps.googleapis.com/maps/api/distancematrix/json?origins=1.2958419970838684,103.85841587741238&destinations=1.3007033161990564,103.84528924122294&departure_time=now&key=AIzaSyAJXGx7T2ypt5Ew5-9SbDTWF9gqloQUJwI"; // hardcoded
+      const url =
+        "https://maps.googleapis.com/maps/api/distancematrix/json?origins=1.2958419970838684,103.85841587741238&destinations=1.3007033161990564,103.84528924122294&departure_time=now&key=AIzaSyAJXGx7T2ypt5Ew5-9SbDTWF9gqloQUJwI"; // hardcoded
       axios
         .get(url)
         .then((response) => {
           console.log(response.data);
-          const distance_km = (response.data.rows[0].elements[0].distance.value / 1000).toPrecision(2);
-          const duration_mins = (response.data.rows[0].elements[0].duration_in_traffic.value / 60).toPrecision(2);
-          console.log("distance: ",distance_km)
+          const distance_km = (
+            response.data.rows[0].elements[0].distance.value / 1000
+          ).toPrecision(2);
+          const duration_mins = (
+            response.data.rows[0].elements[0].duration_in_traffic.value / 60
+          ).toPrecision(2);
+          console.log("distance: ", distance_km);
 
-          console.log( "duration: ", duration_mins)
-          this.distanceToLocation_km = distance_km
-          this.timeToLocation_mins = duration_mins
-          
+          console.log("duration: ", duration_mins);
+          this.distanceToLocation_km = distance_km;
+          this.timeToLocation_mins = duration_mins;
         })
         .catch((error) => {
           console.log(error.message);
         });
     },
-    setOpen(isOpen: boolean) {
-      this.isOpen = isOpen;
+    setChoiceOpen(isOpen) {
+      this.choiceOpen = isOpen;
+    },
+    setBookingOpen(isOpen) {
+      this.bookingIsOpen = isOpen;
+    },
+    setBookingSuccessOpen(isOpen) {
+      this.bookingSuccessIsOpen = isOpen;
+    },
+    setSubscriptionOpen(isOpen) {
+      this.subscriptionIsOpen = isOpen;
     },
     makeBoooking() {
       const currentDateTime = new Date();
@@ -140,29 +355,34 @@ export default defineComponent({
       const currentDateTimeFormatted =
         year + "-" + month + "-" + date + " " + hour + ":" + min + ":" + sec;
 
-      const startDateTimeFormatted= this.startTime.substring(0,10) + " " + this.startTime.substring(11,19)
-      const endDateTimeFormatted= this.endTime.substring(0,10) + " " + this.endTime.substring(11,19)
+      this.bookingDate = this.bookingDate.substring(0, 10)
+        
+      const startDateTimeFormatted = this.bookingDate.substring(0, 10) + " " + this.startTime.substring(11, 19);
+      this.startTime =this.startTime.substring(11, 19);
+
+      const endDateTimeFormatted = this.bookingDate.substring(0, 10) + " " + this.endTime.substring(11, 19);
+      this.endTime = this.endTime.substring(11, 19);
+
+      this.userData = JSON.parse(localStorage.getItem("userData"));
+      var userID = this.userData.userID
 
       const url = "http://127.0.0.1:5001/bookings"; // hardcoded
+
+      console.log(userID)
       axios
         .post(url, {
-          bookingDate: currentDateTimeFormatted,
-          bookingLocation:this.clickedMarkerName,
-          locationName: this.clickedMarkerAddress, 
-          startTime: startDateTimeFormatted,
-          endTime:endDateTimeFormatted,
-          userID: 1,
-          status: "Booked"
+          bookingDateTime: currentDateTimeFormatted,
+          bookingLocation: this.clickedMarkerName,
+          locationName: this.clickedMarkerAddress,
+          bookingStartDateTime: startDateTimeFormatted,
+          bookingEndDateTime: endDateTimeFormatted,
+          userID: userID,
+          status: "Booked",
+          bookingAmt: 1.23
         })
         .then((response) => {
-          console.log(response.data);
-          this.setOpen(false);
-          this.$router.push({
-        path: '/viewBooking',
-          })
-            .then(()=> {this.$router.go(0)});
-      location.reload()
-          
+          this.setBookingOpen(false); // close booking window
+          this.setBookingSuccessOpen(true); // open booking sucess window
         })
         .catch((error) => {
           console.log(error.message);
@@ -173,7 +393,7 @@ export default defineComponent({
       const mapRef = document.getElementById("map");
       const newMap = await GoogleMap.create({
         id: "my-map", // Unique identifier for this map instance
-        element: mapRef!, // reference to the capacitor-google-map element
+        element: mapRef, // reference to the capacitor-google-map element
         apiKey: "AIzaSyAJXGx7T2ypt5Ew5-9SbDTWF9gqloQUJwI", // Your Google Maps API Key
         config: {
           center: {
@@ -212,11 +432,11 @@ export default defineComponent({
         // console.log(event.latitude);
         // console.log(event.longitude);
         console.log(event.title);
-        console.log(event.snippet)
+        console.log(event.snippet);
         this.clickedMarkerName = event.title;
         this.clickedMarkerAddress = event.snippet;
 
-        this.setOpen(true);
+        this.setChoiceOpen(true);
       });
       //add traffic data
       const trafficDataEnable = newMap.enableTrafficLayer(true);
@@ -234,5 +454,12 @@ capacitor-google-map {
   display: inline-block;
   width: 330px;
   height: 690px;
+}
+.addPaddingBottom {
+  padding-bottom: 300px;
+}
+
+h2 {
+  padding-bottom: 120px;
 }
 </style>

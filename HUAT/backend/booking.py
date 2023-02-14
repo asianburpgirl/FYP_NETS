@@ -9,8 +9,8 @@ import user
 import json
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL') or 'mysql+mysqlconnector://root@localhost:3306/localconnect'
-# app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL') or 'mysql+mysqlconnector://root:root@localhost:8889/localconnect'
+# app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL') or 'mysql+mysqlconnector://root@localhost:3306/localconnect'
+app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL') or 'mysql+mysqlconnector://root:root@localhost:8889/localconnect'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {'pool_recycle': 299}
 
@@ -23,49 +23,44 @@ class Booking(db.Model):
     __tablename__ = 'bookings'
 
     bookingID = db.Column(db.Integer, primary_key=True)
-    bookingDate = db.Column(db.DateTime, nullable=False)
+    bookingDateTime = db.Column(db.DateTime, nullable=False)
     bookingLocation = db.Column(db.String(128), nullable=False)
     locationName = db.Column(db.String(128), nullable=False)
-    startTime = db.Column(db.DateTime, nullable=False)
-    endTime = db.Column(db.DateTime, nullable=False)
+    bookingStartDateTime = db.Column(db.DateTime, nullable=False)
+    bookingEndDateTime = db.Column(db.DateTime, nullable=False)
     status = db.Column(db.String(128), nullable=False)
     bookingRef = db.Column(db.String(128), nullable=False)
-    # image = db.Column(db.Blob, nullable=True)
-    # maxCapacity = db.Column(db.Integer, nullable=False)
-    # currentCapacity = db.Column(db.Integer, nullable=False)
+    bookingAmt = db.Column(db.Float, nullable=False)
     userID = db.Column(db.ForeignKey('users.userID', ondelete='CASCADE', onupdate='CASCADE'), nullable=False, index=True)
 
     user = db.relationship('User', primaryjoin='Booking.userID == User.userID', backref='booking')
 
-    def __init__(self, bookingID, bookingDate,  bookingLocation, locationName, startTime, endTime, status, userID, bookingRef):
+
+    def __init__(self, bookingID,   bookingLocation, locationName, bookingStartDateTime, 
+    bookingEndDateTime, status, userID, bookingRef, bookingAmt, bookingDateTime):
+        self.bookingDateTime = bookingDateTime
         self.bookingID = bookingID
-        self.bookingDate = bookingDate
         self.bookingLocation = bookingLocation
         self.locationName = locationName
-        self.startTime = startTime
-        self.endTime = endTime
+        self.bookingStartDateTime = bookingStartDateTime
+        self.bookingEndDateTime = bookingEndDateTime
         self.status = status
         self.bookingRef = bookingRef
-        # self.image = image
-        # self.maxCapacity = maxCapacity
-        # self.currentCapacity = currentCapacity
         self.userID = userID
+        self.bookingAmt = bookingAmt
 
     def json(self):
         return {
             "bookingID": self.bookingID,
-            "bookingDate": self.bookingDate,
             "bookingLocation": self.bookingLocation,
             "locationName": self.locationName,
-            "startTime": self.startTime,
-            "endTime": self.endTime,
+            "bookingStartDateTime": self.bookingStartDateTime,
+            "bookingEndDateTime": self.bookingEndDateTime,
             "status": self.status,
             "bookingRef": self.bookingRef,
-            # "image": self.image,
-            # "maxCapacity": self.maxCapacity,
-            # "currentCapacity": self.currentCapacity,
-            # "image": self.image,
-            "userID": self.userID
+            "userID": self.userID,
+            "bookingAmt": self.bookingAmt,
+            "bookingDateTime": self.bookingDateTime
         }
 
 class User(db.Model):
@@ -77,15 +72,17 @@ class User(db.Model):
     phoneNum = db.Column(db.Integer, nullable=False)
     username = db.Column(db.String(100), nullable=False)
     password = db.Column(db.String(100), nullable=False)
+    balance = db.Column(db.Float())
     
 
-    def __init__(self, userID, email, name, phoneNum, username, password):
+    def __init__(self, userID, email, name, phoneNum, username, password, balance):
         self.userID = userID
         self.email = email
         self.name = name
         self.phoneNum = phoneNum
         self.username = username
         self.password = password
+        self.balance = balance
 
     def json(self):
         return {
@@ -94,8 +91,15 @@ class User(db.Model):
             "name": self.name,
             "phoneNum": self.phoneNum,
             "username": self.username,
-            "password": self.password
+            "password": self.password,
+            "balance": self.balance
         }
+
+    def getUserId(userID):
+        user = User.query.filter_by(userID=userID).first()
+        
+        return user.json()
+
 
 
 # Get All Bookings
@@ -117,26 +121,45 @@ def get_all():
             "message": "There are no applications."
         }
     ), 404
+    
+#get booking by userID
+@app.route("/bookings/<int:userID>")
+def get_by_user(userID):
+    userBooking = Booking.query.filter_by(userID=userID).all()
+    if len(userBooking):
+        return jsonify(
+            {
+                "code": 200,
+                "data": {
+                    "bookings": [booking.json() for booking in userBooking]
+                }
+            }
+        )
+    return jsonify(
+        {
+            "code": 404,
+            "message": "There are no bookings."
+        }
+    ), 404
 
-
+# Create a new booking
 @app.route("/bookings", methods=['POST'])
 def createBooking():
 
     bookingID = ''.join(random.SystemRandom().choice(string.digits) for _ in range(6))
     bookingRef = ''.join(random.SystemRandom().choice(string.ascii_uppercase + string.digits)
                         for _ in range(10))
-    bookingDate = request.json.get('bookingDate', None)
+    bookingDateTime = request.json.get('bookingDateTime', None)
     bookingLocation = request.json.get('bookingLocation', None)
     locationName = request.json.get('locationName', None)
-    startTime = request.json.get('startTime', None)
-    endTime = request.json.get('endTime', None)
+    bookingStartDateTime = request.json.get('bookingStartDateTime', None)
+    bookingEndDateTime = request.json.get('bookingEndDateTime', None)
+    bookingAmt = request.json.get('bookingAmt', None)
     status = request.json.get('status', None)
-    # maxCapacity = request.json.get('maxCapacity', None)
-    # currentCapacity = request.json.get('currentCapacity', None)
     userID = request.json.get('userID', None)
 
     newBooking = Booking(
-        bookingID=bookingID, bookingDate=bookingDate, bookingLocation=bookingLocation, locationName=locationName, startTime=startTime, endTime=endTime, status=status, userID=userID, bookingRef=bookingRef)
+        bookingID=bookingID, bookingDateTime=bookingDateTime, bookingLocation=bookingLocation, locationName=locationName, bookingStartDateTime=bookingStartDateTime, bookingEndDateTime=bookingEndDateTime, status=status, userID=userID, bookingRef=bookingRef, bookingAmt=bookingAmt)
 
     try:
         db.session.add(newBooking)
@@ -166,30 +189,39 @@ def createBooking():
 def updateBooking(bookingID):
     data = request.get_json()
     booking = Booking.query.filter_by(bookingID=bookingID).first()
-    print(data['bookingDate'])
+ 
     print(data)
-    if booking:
-        if data['bookingLocation']:
-            print(data['bookingLocation'])
-            booking.bookingLocation = data['bookingLocation']
-            db.session.commit()
-            return jsonify(
-                {
-                    "code": 201,
-                    "message": "Update successful!"
-                }
-            ), 201
 
-        if data['bookingDate']:
-            print(data['bookingDate'])
-            booking.bookingDate = data['bookingDate']
-            db.session.commit()
-            return jsonify(
-                {
-                    "code": 201,
-                    "message": "Update successful!"
-                }
-            ), 201
+    if booking:
+        if data.get('bookingLocation') != None:
+                    booking.bookingLocation = data['bookingLocation']
+        if data.get('bookingDateTime') != None:
+            booking.bookingDateTime = data['bookingDateTime']
+        if data.get('status') != None:
+            booking.status = data['status']
+        if data.get('bookingStartDateTime') != None:
+            booking.bookingStartDateTime = data['bookingStartDateTime']
+        if data.get('bookingEndDateTime') != None:
+            booking.bookingEndDateTime = data['bookingEndDateTime']
+                    
+    # if booking:
+    #     if data['bookingLocation']:
+    #         booking.bookingLocation = data['bookingLocation']
+    #     if data['bookingDateTime']:
+    #         booking.bookingDateTime = data['bookingDateTime']
+    #     if data['status']:
+    #         booking.status = data['status']
+    #     if data['bookingStartDateTime']:
+    #         booking.bookingStartDateTime = data['bookingStartDateTime']
+    #     if data['bookingEndDateTime']:
+    #         booking.bookingEndDateTime = data['bookingEndDateTime']
+        db.session.commit()
+        return jsonify(
+            {
+                "code": 201,
+                "message": "Update successful!"
+            }
+        ), 201
 
     else:
         return jsonify({
@@ -227,6 +259,53 @@ def deleteBooking(bookingID):
         }
     ), 404
 
+# credit and refund payment
+@app.route("/updateBalance/<int:bookingID>", methods=['PUT'])
+def updateBalance(bookingID):
+    data = request.get_json()
+    booking = Booking.query.filter_by(bookingID=bookingID).first()
+    userInfo = User.getUserId(booking.json()['userID'])
+    user = User.query.filter_by(userID=userInfo['userID']).first()
+    balance = user.json()['balance']
+
+    if booking and user:
+        if data['bookingID'] and booking.json()['status'] == 'Booked':
+            balance = balance - booking.json()['bookingAmt']
+            user.balance = balance
+            print(balance)
+            db.session.commit()
+            return jsonify(
+                {
+                    "code": 201,
+                    "data": balance,
+                    "message": "Update successful!"
+                }
+            ), 201
+            
+        #once status == cancel, will trigger the refund (to change status to cancel, refer to updateBooking function)
+        if data['bookingID'] and booking.json()['status'] == 'Cancelled':
+            balance = balance + booking.json()['bookingAmt']
+            # balance = user.json()['balance']
+            user.balance = balance
+            print(balance)
+            db.session.commit()
+            return jsonify(
+                {
+                    "code": 201,
+                    "data": balance,
+                    "message": "Update successful!"
+                }
+            ), 201
+            
+
+    else:
+        return jsonify({
+            "code": 500,
+            "data": {
+                "bookingID": bookingID
+            },
+            "message": "Booking ID not found"
+        }), 500
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5001, debug=True)

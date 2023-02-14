@@ -356,3 +356,8 @@ node_modules/proxy-from-env/package 2.json
 node_modules/proxy-from-env/README 2.md
 node_modules/proxy-from-env/test 2.js
 HUAT/backend/__pycache__/user.cpython-310.pyc
+HUAT/ios/App/Podfile 3.lock
+HUAT/ios/App/App/config 4.xml
+HUAT/ios/App/App/Info.plist
+HUAT/ios/App/App.xcodeproj/project.pbxproj
+HUAT/ios/App/App/Info.plist

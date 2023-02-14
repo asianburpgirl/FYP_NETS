@@ -1,13 +1,15 @@
 from flask import Flask, jsonify, request
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
-# from itsdangerous 
 import json
 from os import environ
+import random
+import string
+
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL') or 'mysql+mysqlconnector://root@localhost:3306/localconnect'
-# app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL') or 'mysql+mysqlconnector://root:root@localhost:8889/localconnect'
+# app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL') or 'mysql+mysqlconnector://root@localhost:3306/localconnect'
+app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL') or 'mysql+mysqlconnector://root:root@localhost:8889/localconnect'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {'pool_recycle': 299}
 
@@ -25,15 +27,17 @@ class User(db.Model):
     phoneNum = db.Column(db.Integer, nullable=False)
     username = db.Column(db.String(100), nullable=False)
     password = db.Column(db.String(100), nullable=False)
+    balance = db.Column(db.Float())
     
 
-    def __init__(self, userID, email, name, phoneNum, username, password):
+    def __init__(self, userID, email, name, phoneNum, username, password, balance):
         self.userID = userID
         self.email = email
         self.name = name
         self.phoneNum = phoneNum
         self.username = username
         self.password = password
+        self.balance = balance
 
     def json(self):
         return {
@@ -42,8 +46,12 @@ class User(db.Model):
             "name": self.name,
             "phoneNum": self.phoneNum,
             "username": self.username,
-            "password": self.password
+            "password": self.password,
+            "balance": self.balance
         }
+
+
+    
 
 #Get All Users
 @app.route("/users")
@@ -93,17 +101,19 @@ def login_by_username():
         return jsonify({"code": 500, "message": "Input is not JSON."}), 500
 
 # create user
-@app.route("/users/<int:userID>" , methods = ['POST'])
-def createUser(userID):
+@app.route("/users" , methods = ['POST'])
+def createUser():
 
     # bookingID = request.json.get('bookingID' , None)
+    userID = ''.join(random.SystemRandom().choice(string.digits) for _ in range(6))
     email = request.json.get('email' , None)
     name = request.json.get('name' , None)
     phoneNum = request.json.get('phoneNum' , None)
     username = request.json.get('username' , None)
     password = request.json.get('password' , None)
+    balance = request.json.get('balance', None)
 
-    newUser = User( userID = userID, email = email, name = name , phoneNum = phoneNum, username = username, password = password)
+    newUser = User( userID = userID, email = email, name = name , phoneNum = phoneNum, username = username, password = password, balance=balance)
     
     try:
         db.session.add(newUser)
@@ -179,6 +189,52 @@ def deleteUser(userID):
         }
     ), 404
     
+# check if user exists
+@app.route("/checkUserExist")
+def checkUser():
+    email = request.args.get('email')
+    account = request.args.get('account')
+    emailAccountCombined = email+"@"+account
+    user = User.query.filter_by(email=emailAccountCombined).first()
+    if user:
+        return jsonify(
+                    {
+                        "code": 200,
+                        "message": "User exists"
+                    }
+                )
+        
+    return jsonify(
+        {
+            "code": 200,
+            "message": "User not found"
+        }
+    )
+
+# get balance based on user ID
+@app.route("/getBalance/<int:userID>")
+def getBalance(userID):
+    user = User.query.filter_by(userID = userID).first()
+    print(user.json())
+    if user:
+        return jsonify(
+            {
+                "code": 200,
+                "data": {
+                    "userID" : userID,
+                    "balance": user.json()['balance']
+                }
+            }
+        )
+        
+    return jsonify(
+        {
+            "code": 404,
+            "message": "No such user in the database."
+        }
+    ), 404
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5002, debug=True)
+
+
