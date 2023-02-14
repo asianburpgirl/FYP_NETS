@@ -13,10 +13,16 @@
               <p>Pay</p>
             </ion-col> -->
             <ion-col>
-              <ion-button color="dark">
+              <ion-button color="dark" @click='routeTopup()'>
                  <ion-icon :icon="wallet" > </ion-icon>
               </ion-button>
               <p>Top Up</p>
+            </ion-col>
+            <ion-col>
+              <ion-button color="dark" @click="routePayment()">
+                <ion-icon :icon="wallet" > </ion-icon>
+              </ion-button>
+              <p>$10</p>
             </ion-col>
             <ion-col>
               <ion-button color="dark">
@@ -80,21 +86,20 @@ export default defineComponent({
             console.log(error.message);
             });
         },
-      purchaseBook() {
-        fetch('http://localhost:4242/create-payment-intent', {
+        topup() {
+          fetch('http://localhost:4242/create-payment-session', {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           
           body: JSON.stringify({ item:123 }),
         })
         .then((result) => result.json())
-        .then((data) => {
-          // Redirect to Stripe Checkout
-          return this.stripe.redirectToCheckout({ sessionId: 123 });
-        })
-        .then((res) => {
-          console.log(res);
-        });
+        // .then((data) => {
+        //   return this.stripe.redirectToCheckout({ sessionId: 123 });
+        // })
+        // .then((res) => {
+        //   console.log(res);
+        // });
       },
       getStripePublishableKey() {
           fetch('http://localhost:4242/config')
@@ -103,6 +108,19 @@ export default defineComponent({
               // Initialize Stripe.js
               this.stripe = Stripe(data.publicKey); // eslint-disable-line no-undef
           });
+      },
+      routeTopup() {
+        // routeUser(route: string) {
+        //     this.$router.push({
+        //         path: '/' + route,
+        //     });
+        // }
+          const routeData = 'https://buy.stripe.com/test_3csdSy0va7hXaD64gg';
+          window.open(routeData, '_blank');
+      },
+      routePayment() {
+        const routeData = 'https://buy.stripe.com/test_cN26q60va7hX4eI4gh';
+        window.open(routeData, '_blank');
       },
       created() {
           this.getStripePublishableKey();
