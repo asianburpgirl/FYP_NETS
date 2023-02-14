@@ -19,7 +19,6 @@ stripe.api_key = stripe_keys['secret_key']
 # enable CORS
 CORS(app)
 
-
 @app.route('/config')
 def get_publishable_key():
     stripe_config = {'publicKey': stripe_keys['publishable_key']}
