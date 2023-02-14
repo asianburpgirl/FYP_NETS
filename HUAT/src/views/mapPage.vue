@@ -322,20 +322,17 @@ export default defineComponent({
         "&destinations=" +
         this.userDestinations +
         "&departure_time=now&key=AIzaSyAJXGx7T2ypt5Ew5-9SbDTWF9gqloQUJwI";
-      console.log(url);
-
+    
       axios
         .get(url)
         .then((response) => {
-          console.log("response:" + response.data);
           const distance_km = (
             response.data.rows[0].elements[0].distance.value / 1000
           ).toPrecision(2);
           const duration_mins = (
             response.data.rows[0].elements[0].duration_in_traffic.value / 60
           ).toPrecision(2);
-          console.log("distance: ", distance_km);
-          console.log("duration: ", duration_mins);
+          console.log("distance: ", distance_km + "duration: ", duration_mins);
           this.distanceToLocation_km = distance_km;
           this.timeToLocation_mins = duration_mins;
         })
@@ -456,11 +453,6 @@ export default defineComponent({
       ]);
       // listener for user click
       const markerListener = newMap.setOnMarkerClickListener((event) => {
-        console.log(event);
-        // console.log(event.latitude);
-        // console.log(event.longitude);
-        // console.log(event.title);
-        // console.log(event.snippet);
         this.clickedMarkerName = event.title;
         this.clickedMarkerAddress = event.snippet;
 
