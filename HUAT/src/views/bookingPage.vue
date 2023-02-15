@@ -2,35 +2,68 @@
   <ion-page class="ion-padding">
     <ion-header>
       <ion-toolbar>
-        <ion-title size="large" class="ion-text-center">Bookings</ion-title>
+        <ion-title class="ion-text-center">Bookings</ion-title>
       </ion-toolbar>
     </ion-header>
 
-    <ion-content class="ion-padding-top">
-      <ion-button shape="round" expand="block" size="large" @click='routeUser("nearbyMe")'>Book</ion-button>
+    <ion-content class="ion-padding">
+      <ion-button shape="round" expand="block" size="large" @click='routeUser("nearbyMe")'>Near By Me</ion-button>
 
       <ion-button shape="round" expand="block" size="large" @click='routeUser("map")'
-        >Subscription</ion-button
+        >Map</ion-button
       >
     </ion-content>
   </ion-page>
 </template>
-<ion-content class="ion-padding"></ion-content>
 
-<script lang="ts">
-import {} from "@ionic/vue";
+
+<script>
+import { IonPage,
+  IonHeader,
+  IonTitle,
+  IonContent,
+  IonToolbar,
+  // IonButtons,
+  // IonBackButton,
+} from "@ionic/vue";
 import { defineComponent } from "vue";
+import axios from "axios";
 
 export default defineComponent({
-  components: {},
+  components: { IonPage,
+  IonHeader,
+  IonTitle,
+  IonContent,
+  IonToolbar,
+  // IonButtons,
+    // IonBackButton,
+  },
 
   methods: {
-    routeUser(route: string) {
+    routeUser(route) {
             this.$router.push({
                 path: '/' + route,
             });
-        }
-  }
+    },
+    getBalance() {
+      console.log("hi")
+  this.userData = JSON.parse(localStorage.getItem("userData"));
+  
+  const url = "http://127.0.0.1:5002/getBalance/" + this.userData.userID;
+  axios
+      .get(url)
+    .then((response) => {
+        console.log(response)
+      this.balance = response.data.data.balance
+      })
+      .catch((error) => {
+      console.log(error.message);
+      });
+  },
+  },
+   mounted() {
+    this.getBalance();
+  },
 });
 </script>
 
