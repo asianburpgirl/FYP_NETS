@@ -9,6 +9,7 @@ import register from '../views/registerPage.vue';
 import viewProfile from '../views/viewProfile.vue';
 import BarChart from '../views/BarChart.vue';
 import forgotPassword from '../views/forgotPasswordPage.vue';
+import mapPage from '../views/mapPage.vue';
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -42,13 +43,14 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import('@/views/plansPage.vue')
       },
       {
-        path: 'map',
-        component: () => import('@/views/mapPage.vue')
-      },
-      {
         path: 'profile',
         component: () => import('@/views/profilePage.vue')
       },
+      {
+        path: 'bookings',
+        component: () => import('@/views/bookingPage.vue')
+      },
+
     ]
   },
   {
@@ -78,6 +80,10 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/forgotPassword',
     component: forgotPassword
+  },
+  {
+    path: '/map',
+    component: mapPage
   },
 ]
 

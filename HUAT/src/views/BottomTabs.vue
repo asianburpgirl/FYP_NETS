@@ -18,9 +18,9 @@
           <ion-label> Plans</ion-label>
         </ion-tab-button>
 
-        <ion-tab-button tab="map" href="/tabs/map">
+        <ion-tab-button tab="booking" href="/tabs/bookings">
           <ion-icon :icon="map" />
-          <ion-label>Map</ion-label>
+          <ion-label>Bookings</ion-label>
         </ion-tab-button>
 
         <ion-tab-button tab="profile" href="/tabs/profile">
