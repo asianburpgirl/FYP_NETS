@@ -44,22 +44,14 @@
 
 <script lang="ts">
 import {
-  IonPage,
-  IonHeader,
-  IonToolbar,
-  IonTitle,
-  IonContent,
+
 } from "@ionic/vue";
 import { defineComponent } from "vue";
 // import ExploreContainer from '@/components/ExploreContainer.vue';
 
 export default defineComponent({
   components: {
-    IonPage,
-    IonHeader,
-    IonToolbar,
-    IonTitle,
-    IonContent,
+
     // IonRefresher,
     // IonRefresherContent,
   }

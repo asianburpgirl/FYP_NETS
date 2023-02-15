@@ -55,7 +55,7 @@ import { add, card, home, star, wallet } from 'ionicons/icons';
 import axios from "axios";
 
 export default defineComponent({
-    components: { IonGrid, IonCard, IonIcon, IonRow, IonCol, IonButton, IonList, IonItem,IonLabel,IonListHeader },
+    components: { IonGrid, IonCard, IonIcon, IonRow, IonCol, IonButton },
   setup() {
     return { card,wallet };
   },
