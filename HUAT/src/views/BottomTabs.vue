@@ -12,15 +12,15 @@
           <ion-icon :icon="card" />
           <ion-label>Wallet</ion-label>
         </ion-tab-button>
+        
+        <ion-tab-button tab="booking" href="/tabs/bookings">
+          <ion-icon :icon="map" />
+          <ion-label>Bookings</ion-label>
+        </ion-tab-button>
 
         <ion-tab-button tab="plans" href="/tabs/plans">
           <ion-icon :icon="albums" />
           <ion-label> Plans</ion-label>
-        </ion-tab-button>
-
-        <ion-tab-button tab="booking" href="/tabs/bookings">
-          <ion-icon :icon="map" />
-          <ion-label>Bookings</ion-label>
         </ion-tab-button>
 
         <ion-tab-button tab="profile" href="/tabs/profile">

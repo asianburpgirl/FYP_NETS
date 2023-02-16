@@ -9,8 +9,8 @@ from os import environ
 # import string
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL') or 'mysql+mysqlconnector://root@localhost:3306/localconnect'
-# app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL') or 'mysql+mysqlconnector://root:root@localhost:8889/localconnect'
+# app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL') or 'mysql+mysqlconnector://root@localhost:3306/localconnect'
+app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL') or 'mysql+mysqlconnector://root:root@localhost:8889/localconnect'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {'pool_recycle': 299}
 
@@ -25,6 +25,9 @@ class Carpark(db.Model):
     carparkID = db.Column(db.Integer, primary_key=True)
     carparkName = db.Column(db.String(100), nullable=False)
     carparkLocation = db.Column(db.String(100), nullable=False)
+    latitude = db.Column(db.Float, nullable=False)
+    longitude = db.Column(db.Float, nullable=False)
+    imagePath = db.Column(db.String(100), nullable=False)
     maxCapacity = db.Column(db.Integer, nullable=False)
     currentCapacity = db.Column(db.Integer, nullable=False)
     hourlyweekdaypeak = db.Column(db.Integer, nullable=False)
@@ -36,10 +39,13 @@ class Carpark(db.Model):
     seasonweekendpeak = db.Column(db.Integer, nullable=False)
     seasonweekendnonpeak = db.Column(db.Integer, nullable=False)
 
-    def __init__(self, carparkID, carparkName, carparkLocation, maxCapacity, currentCapacity, hourlyweekdaypeak, hourlyweekdaynonpeak, hourlyweekendpeak, hourlyweekendnonpeak, seasonweekdaypeak, seasonweekdaynonpeak, seasonweekendpeak, seasonweekendnonpeak):
+    def __init__(self, carparkID, carparkName, carparkLocation, latitude, longitude,imagePath, maxCapacity, currentCapacity, hourlyweekdaypeak, hourlyweekdaynonpeak, hourlyweekendpeak, hourlyweekendnonpeak, seasonweekdaypeak, seasonweekdaynonpeak, seasonweekendpeak, seasonweekendnonpeak):
         self.carparkID = carparkID
         self.carparkName = carparkName
         self.carparkLocation = carparkLocation
+        self.latitude = latitude
+        self.longitude = longitude
+        self.imagePath = imagePath
         self.maxCapacity = maxCapacity
         self.currentCapacity = currentCapacity
         self.hourlyweekdaypeak = hourlyweekdaypeak
@@ -56,6 +62,9 @@ class Carpark(db.Model):
             "carparkID": self.carparkID,
             "carparkName": self.carparkName,
             "caparkLocation": self.carparkLocation,
+            "latitude": self.latitude,
+            "longitude": self.longitude,
+            "imagePath": self.imagePath,
             "maxCapacity": self.maxCapacity,
             "currentCapacity": self.currentCapacity,
             "hourlyweekdaypeak": self.hourlyweekdaypeak,
@@ -110,8 +119,6 @@ def addCarparkCapacity(carparkID):
         )
 
 # minus carpark capacity by 1
-
-
 @app.route("/carparkCapMinus/<int:carparkID>")
 def minusCarparkCapacity(carparkID):
     carparkID = Carpark.query.filter_by(carparkID=carparkID).first()

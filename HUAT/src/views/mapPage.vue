@@ -2,7 +2,10 @@
   <ion-page>
     <ion-header>
       <ion-toolbar>
-        <ion-title>Map</ion-title>
+        <ion-buttons slot="start">
+          <ion-back-button></ion-back-button>
+        </ion-buttons>
+        <ion-title class="ion-text-center">Map</ion-title>
       </ion-toolbar>
     </ion-header>
     <ion-content :fullscreen="true" class="ion-padding">
@@ -40,7 +43,6 @@
             {{ timeToLocation_mins }} mins
             <br />
             Booking Amount: ${{ bookingAmount }}
-
           </h1>
 
           <ion-button
@@ -226,6 +228,7 @@ import {
   IonRow,
   IonList,
   IonButtons,
+  IonBackButton,
   IonButton,
   IonDatetime,
   IonIcon,
@@ -250,6 +253,7 @@ export default defineComponent({
     IonContent,
     IonModal,
     IonButtons,
+    IonBackButton,
     IonButton,
     IonDatetime,
     IonIcon,
@@ -285,7 +289,7 @@ export default defineComponent({
       userData: {},
       userOrigin: "1.2958419970838684,103.85841587741238",
       userDestinations: "1.3007033161990564,103.84528924122294",
-      bookingAmount: "5.20"
+      bookingAmount: "5.20",
     };
   },
 
@@ -319,32 +323,36 @@ export default defineComponent({
           coordinates.coords.latitude.toString() +
           "," +
           coordinates.coords.longitude.toString();
-        console.log("Your location:" + this.userOrigin)
-          const url =
-        "https://maps.googleapis.com/maps/api/distancematrix/json?origins=" +
-        this.userOrigin +
-        "&destinations=" +
-        this.userDestinations +
-        "&departure_time=now&key=AIzaSyAJXGx7T2ypt5Ew5-9SbDTWF9gqloQUJwI";
-    
-      axios
-        .get(url)
-        .then((response) => {
-          const distance_km = (
-            response.data.rows[0].elements[0].distance.value / 1000
-          ).toPrecision(2);
-          const duration_mins = (
-            response.data.rows[0].elements[0].duration_in_traffic.value / 60
-          ).toPrecision(2);
-          console.log("distance: ", distance_km + "duration: ", duration_mins);
-          this.distanceToLocation_km = distance_km;
-          this.timeToLocation_mins = duration_mins;
-        })
-        .catch((error) => {
-          console.log(error.message);
-        });
+        console.log("Your location:" + this.userOrigin);
+        const url =
+          "https://maps.googleapis.com/maps/api/distancematrix/json?origins=" +
+          this.userOrigin +
+          "&destinations=" +
+          this.userDestinations +
+          "&departure_time=now&key=AIzaSyAJXGx7T2ypt5Ew5-9SbDTWF9gqloQUJwI";
+          console.log(url)
+
+        axios
+          .get(url)
+          .then((response) => {
+            const distance_km = (
+              response.data.rows[0].elements[0].distance.value / 1000
+            ).toPrecision(2);
+            const duration_mins = (
+              response.data.rows[0].elements[0].duration_in_traffic.value / 60
+            ).toPrecision(2);
+            console.log(
+              "distance: ",
+              distance_km + "duration: ",
+              duration_mins
+            );
+            this.distanceToLocation_km = distance_km;
+            this.timeToLocation_mins = duration_mins;
+          })
+          .catch((error) => {
+            console.log(error.message);
+          });
       });
-      
     },
     setChoiceOpen(isOpen) {
       this.choiceOpen = isOpen;
@@ -439,7 +447,7 @@ export default defineComponent({
         },
         // location 2
         {
-          title: "Suntec City",
+          title: "Temasek City",
           snippet: "3 Temasek Blvd, #1, #327-328, 038983",
           coordinate: {
             lat: 1.2958419970838684,
@@ -449,9 +457,9 @@ export default defineComponent({
         {
           title: "Suntec City",
           snippet: "1 SBW Road",
-          coordinate: { 
+          coordinate: {
             lat: 1.4505038534431516,
-            lng:103.82023752816633
+            lng: 103.82023752816633,
           },
         },
       ]);
@@ -460,10 +468,11 @@ export default defineComponent({
         this.clickedMarkerName = event.title;
         this.clickedMarkerAddress = event.snippet;
 
-        this.userDestinations = event.latitude.toString() +',' + event.longitude.toString()
+        this.userDestinations =
+          event.latitude.toString() + "," + event.longitude.toString();
 
         this.setChoiceOpen(true);
-        this.calculateDistance()
+        this.calculateDistance();
       });
       //add traffic data
       const trafficDataEnable = newMap.enableTrafficLayer(true);

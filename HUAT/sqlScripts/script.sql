@@ -62,6 +62,9 @@ CREATE TABLE carparkDetails (
 	carparkID INT NOT NULL AUTO_INCREMENT,
     carparkName VARCHAR(128) NOT NULL,
 	carparkLocation VARCHAR(128) NOT NULL,
+    latitude FLOAT(15,10) NOT NULL,
+    longitude FLOAT(15,10) NOT NULL,
+    imagePath VARCHAR(128) NOT NULL,
 	maxCapacity INT NOT NULL , 
 	currentCapacity INT NOT NULL  DEFAULT '0', 
 	hourlyweekdaypeak INT NOT NULL,
@@ -74,11 +77,15 @@ CREATE TABLE carparkDetails (
     seasonweekendnonpeak INT NOT NULL,
   	PRIMARY KEY (carparkID));
 
-INSERT INTO carparkDetails(carparkName,carparkLocation,maxCapacity,currentCapacity, hourlyweekdaypeak,hourlyweekdaynonpeak,hourlyweekendpeak,hourlyweekendnonpeak,seasonweekdaypeak,seasonweekdaynonpeak,seasonweekendpeak,seasonweekendnonpeak) VALUES 
-("ION Orchard","123 Orchard Road",82, 20,200,150,300,250,165,124,135,143),
-("Funan","1 City Hall Road",85, 4,234,112,323,225,124,187,135,176),
-("Sunplaza","99 Sembawang Drive",30, 1,245,123,354,252,198,112,135,134),
-("Plaza Sing","12 Dhobby Gaut Avenue",103, 29,212,143,366,225,123,143,135,198);
+INSERT INTO carparkDetails(carparkName,carparkLocation,latitude, longitude ,imagePath,maxCapacity,currentCapacity, hourlyweekdaypeak,hourlyweekdaynonpeak,hourlyweekendpeak,hourlyweekendnonpeak,seasonweekdaypeak,seasonweekdaynonpeak,seasonweekendpeak,seasonweekendnonpeak) VALUES 
+("ION Orchard","2 Orchard Turn, Singapore 238801",1.3062193796555794, 103.83284067837033, "assets/images/ion.jpg",82, 20,200,150,300,250,165,124,135,143),
+("313@Somerset","313 Orchard Rd, Singapore 238895",1.3027040784855177, 103.83847162015051,"assets/images/313.jpg", 85, 4,234,112,323,225,124,187,135,176),
+("Paragon Shopping Centre","290 Orchard Rd, Singapore 238859",1.304487326883736, 103.83602458835058,"assets/images/paragon.jpg", 85, 4,234,112,323,225,124,187,135,176),
+("*SCAPE","2 Orchard Link, Singapore 237978",1.3021316002091397, 103.83596093628584,"assets/images/scape.jpg", 85, 4,234,112,323,225,124,187,135,176),
+("Takashimaya Shopping Centre","391 Orchard Rd, Singapore 238872",1.303263206539862, 103.83459342778606,"assets/images/takashimaya.jpeg", 85, 4,234,112,323,225,124,187,135,176),
+("Tangs Plaza","310 Orchard Road Tang Plaza, 238864",1.3056964883694633, 103.83310108195877,"assets/images/tangs.jpg", 85, 4,234,112,323,225,124,187,135,176),
+("Wheelock Place","501 Orchard Rd, Singapore 238880",1.3055296648422483, 103.83049454423592, "assets/images/Wheelock.png",30, 1,245,123,354,252,198,112,135,134),
+("Wisma Atria","435 Orchard Rd, Singapore 238877",1.304149158199214, 103.83327760043642, "assets/images/wisma.jpeg",103, 29,212,143,366,225,123,143,135,198);
 
 CREATE TABLE users (
 	userID INT(11) NOT NULL AUTO_INCREMENT,
