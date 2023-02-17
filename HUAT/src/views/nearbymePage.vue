@@ -12,7 +12,6 @@
     <ion-content>
       <ion-searchbar></ion-searchbar>
 
-  
       <ion-list class="ion-padding-top">
         <ion-radio-group v-model="pageTab">
           <ion-item>
@@ -32,7 +31,7 @@
         </ion-radio-group>
       </ion-list>
 
-      <ion-list v-if="pageTab=='nearest' || pageTab=='cheapest' ">
+      <ion-list v-if="pageTab == 'nearest'">
         <ion-item>
           <ion-select
             placeholder="I am at:"
@@ -50,7 +49,7 @@
 
       <!-- <ion-grid v-if="selectedLocation == 'orchard'"> -->
       <!-- <ion-grid v-if="pageTab=='all' && selectedLocation == 'orchard'" > -->
-      <ion-grid  class="ion-padding-top">
+      <ion-grid class="ion-padding-top">
         <ion-card v-for="carpark in carparksArray" :key="carpark">
           <ion-img :src="carpark.imagePath"></ion-img>
 
@@ -61,7 +60,7 @@
             <h3>
               <b> {{ carpark.availableLots }}</b> lots available
             </h3>
-            <h4 v-if="this.userOrigin != ''">
+            <h4 v-if="this.userOrigin != '' &&  pageTab == 'nearest' ">
               <u>{{ carpark.distance_km }},</u>
               <u>{{ carpark.duration_mins }} </u>
               away from you
@@ -136,7 +135,6 @@ export default defineComponent({
       userOrigin: "",
       combinedLatLang: "",
       googleMapDistanceUrl: "",
-
     };
   },
   methods: {
@@ -144,19 +142,23 @@ export default defineComponent({
       this.selectedLocation = msg;
     },
     getCarparks() {
-      this.googleMapDistanceUrl =
+        this.googleMapDistanceUrl =
         "https://maps.googleapis.com/maps/api/distancematrix/json?origins=";
+      this.combinedLatLang = ""
 
-      if (this.selectedLocation == "orchard") {
-        this.userOrigin = "1.3064433533620563,103.83276247871694"
+      if (this.selectedLocation == "") { 
+        console.log("empty")
       }
-      else if(this.selectedLocation == "yishun") {
-        this.userOrigin = "1.4304060903894582, 103.83515323243753"
+      else {
+         if (this.selectedLocation == "orchard") {
+        this.userOrigin = "1.3064433533620563,103.83276247871694";
+      } else if (this.selectedLocation == "yishun") {
+        this.userOrigin = "1.4304060903894582, 103.83515323243753";
+      } else if (this.selectedLocation == "somerset") {
+        this.userOrigin = "1.3016313961551784, 103.83849995957749";
       }
-       else if(this.selectedLocation == "somerset") {
-         this.userOrigin = "1.3016313961551784, 103.83849995957749"
-      }
-
+    
+      
       const url = "http://127.0.0.1:5003/carparks";
       axios
         .get(url)
@@ -168,6 +170,7 @@ export default defineComponent({
             this.combinedLatLang +=
               eachCarpark.latitude + "," + eachCarpark.longitude + "|";
           }
+       
           this.googleMapDistanceUrl +=
             this.userOrigin +
             "&destinations=" +
@@ -179,6 +182,7 @@ export default defineComponent({
         .catch((error) => {
           console.log(error.message);
         });
+      }
     },
     calculateDistance() {
       axios
@@ -196,17 +200,16 @@ export default defineComponent({
             this.carparksArray[i]["duration_mins"] =
               destinations[i].duration_in_traffic.text;
           }
-  
+
           this.carparksArray.sort(function (a, b) {
-            var keyA = a.distance_km_value
+            var keyA = a.distance_km_value;
             var keyB = b.distance_km_value;
             if (keyA < keyB) return -1;
             if (keyA > keyB) return 1;
             return 0;
           });
 
-          this.carparksArray= this.carparksArray.slice(0,4)
-          
+          this.carparksArray = this.carparksArray.slice(0, 4);
         })
         .catch((error) => {
           console.log(error.message);
