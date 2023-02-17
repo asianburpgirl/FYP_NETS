@@ -202,8 +202,8 @@ export default defineComponent({
           }
 
           this.carparksArray.sort(function (a, b) {
-            var keyA = a.distance_km_value;
-            var keyB = b.distance_km_value;
+            const keyA = a.distance_km_value;
+            const keyB = b.distance_km_value;
             if (keyA < keyB) return -1;
             if (keyA > keyB) return 1;
             return 0;

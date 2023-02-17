@@ -2,7 +2,8 @@
   <base-layout>
     <ion-grid>
       <ion-row class="ion-justify-content-center">
-        <img :src="require('../images/nets.png')" />
+        <!-- <img :src="require('../images/nets.png')" /> -->
+        <img src='assets/images/nets.png' />
       </ion-row>
 
       <ion-row class="ion-justify-content-center">
