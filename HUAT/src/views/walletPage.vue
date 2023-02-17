@@ -49,13 +49,13 @@
 </template>
 
 <script>
-import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonGrid, IonCard, IonIcon, IonRow, IonCol, IonButton } from '@ionic/vue';
+import {  IonGrid, IonCard, IonIcon, IonRow, IonCol, IonButton, IonList, IonItem, IonListHeader,IonLabel } from '@ionic/vue';
 import { defineComponent } from 'vue';
-import { add, card, home, star, wallet } from 'ionicons/icons';
+import { card, wallet } from 'ionicons/icons';
 import axios from "axios";
 
 export default defineComponent({
-    components: { IonGrid, IonCard, IonIcon, IonRow, IonCol, IonButton },
+    components: { IonGrid, IonCard, IonIcon, IonRow, IonCol, IonButton, IonList, IonItem, IonListHeader,IonLabel },
   setup() {
     return { card,wallet };
   },
@@ -107,7 +107,8 @@ export default defineComponent({
       created() {
           this.getStripePublishableKey();
       },
-      mounted(){
+    mounted() {
+        console.log("Hello")
         const recaptchaScript = document.createElement('script')
         recaptchaScript.setAttribute('src', 'https://js.stripe.com/v3/')
         document.head.appendChild(recaptchaScript)

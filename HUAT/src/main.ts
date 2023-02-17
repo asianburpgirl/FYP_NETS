@@ -25,15 +25,10 @@ import './theme/variables.css';
 
 import baseLayout from './components/baseLayout.vue';
 
-import VueGoogleMaps from '@fawmi/vue-google-maps'
+
 const app = createApp(App)
   .use(IonicVue)
   .use(router)
-  .use(VueGoogleMaps, {
-    load: {
-        key: 'AIzaSyAJXGx7T2ypt5Ew5-9SbDTWF9gqloQUJwI',
-    },
-});
 
   app.component('base-layout',baseLayout)
   
