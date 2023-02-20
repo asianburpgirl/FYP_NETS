@@ -13,7 +13,7 @@
       <ion-searchbar></ion-searchbar>
 
       <ion-list class="ion-padding-top">
-        <ion-radio-group v-model="pageTab">
+        <ion-radio-group v-model="pageTab" @ionChange="resetState()">
           <ion-item>
             <ion-label>All</ion-label>
             <ion-radio slot="end" value="all"></ion-radio>
@@ -47,9 +47,16 @@
         </ion-item>
       </ion-list>
 
+      <!-- <ion-button shape="round" @click="getCarparks()">Find</ion-button> -->
+
       <!-- <ion-grid v-if="selectedLocation == 'orchard'"> -->
       <!-- <ion-grid v-if="pageTab=='all' && selectedLocation == 'orchard'" > -->
-      <ion-grid class="ion-padding-top">
+      <div v-if="this.pageTab == 'nearest' && this.selectedLocation==''" >
+        <h1 > Select a location to view the nearest carparks to it!</h1>
+      </div>
+      
+
+      <ion-grid class="ion-padding-top" v-if="(this.pageTab == 'nearest' && this.selectedLocation!='') || this.pageTab == 'all'">
         <ion-card v-for="carpark in carparksArray" :key="carpark">
           <ion-img :src="carpark.imagePath"></ion-img>
 
@@ -60,7 +67,7 @@
             <h3>
               <b> {{ carpark.availableLots }}</b> lots available
             </h3>
-            <h4 v-if="this.userOrigin != '' &&  pageTab == 'nearest' ">
+            <h4 v-if="this.userOrigin != ''">
               <u>{{ carpark.distance_km }},</u>
               <u>{{ carpark.duration_mins }} </u>
               away from you
@@ -99,7 +106,7 @@ import {
 } from "@ionic/vue";
 import { defineComponent } from "vue";
 import axios from "axios";
-import { Geolocation } from "@capacitor/geolocation";
+// import { Geolocation } from "@capacitor/geolocation";
 
 export default defineComponent({
   components: {
@@ -121,7 +128,6 @@ export default defineComponent({
     IonSelectOption,
     IonImg,
     IonGrid,
-
     IonLabel,
     IonRadio,
     IonRadioGroup,
@@ -138,27 +144,22 @@ export default defineComponent({
     };
   },
   methods: {
+    resetState() {
+      if (this.pageTab == "all") {
+        this.userOrigin = ""
+         this.selectedLocation= ""
+      this.getCarparks()
+      }
+     
+    },
     pushLog(msg) {
       this.selectedLocation = msg;
     },
     getCarparks() {
-        this.googleMapDistanceUrl =
+      this.googleMapDistanceUrl =
         "https://maps.googleapis.com/maps/api/distancematrix/json?origins=";
-      this.combinedLatLang = ""
+      this.combinedLatLang = "";
 
-      if (this.selectedLocation == "") { 
-        console.log("empty")
-      }
-      else {
-         if (this.selectedLocation == "orchard") {
-        this.userOrigin = "1.3064433533620563,103.83276247871694";
-      } else if (this.selectedLocation == "yishun") {
-        this.userOrigin = "1.4304060903894582, 103.83515323243753";
-      } else if (this.selectedLocation == "somerset") {
-        this.userOrigin = "1.3016313961551784, 103.83849995957749";
-      }
-    
-      
       const url = "http://127.0.0.1:5003/carparks";
       axios
         .get(url)
@@ -170,19 +171,31 @@ export default defineComponent({
             this.combinedLatLang +=
               eachCarpark.latitude + "," + eachCarpark.longitude + "|";
           }
-       
+
+          if (this.selectedLocation == "") {
+            console.log("h")
+          } else {
+            if (this.selectedLocation == "orchard") {
+              this.userOrigin = "1.3064433533620563,103.83276247871694";
+            } else if (this.selectedLocation == "yishun") {
+              this.userOrigin = "1.4304060903894582, 103.83515323243753";
+            } else if (this.selectedLocation == "somerset") {
+              this.userOrigin = "1.3016313961551784, 103.83849995957749";
+            }
+          
           this.googleMapDistanceUrl +=
             this.userOrigin +
             "&destinations=" +
             this.combinedLatLang.slice(0, -1) +
             "&departure_time=now&key=AIzaSyAJXGx7T2ypt5Ew5-9SbDTWF9gqloQUJwI";
           console.log(this.googleMapDistanceUrl);
+          }
+
           this.calculateDistance();
         })
         .catch((error) => {
           console.log(error.message);
         });
-      }
     },
     calculateDistance() {
       axios
