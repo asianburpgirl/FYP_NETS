@@ -29,7 +29,8 @@ YOUR_DOMAIN = 'http://localhost:8100/tabs/wallet'
 @app.route('/create-checkout-session', methods=['POST'])
 def create_checkout_session():
     try:
-        data = json.loads(request.data)
+        checkout_session = ""
+        # data = json.loads(request.data)
         # found_item = ''
         # for item in Items:
         #     if item['id'] == data['itemId']:
@@ -49,25 +50,15 @@ def create_checkout_session():
             cancel_url=YOUR_DOMAIN + '/successPage',
             
         )
+
+        checkout_session = checkout_session.url
+
+        return checkout_session
         
     except Exception as e:
         return str(e)
     
     return redirect(checkout_session.url, code=303)
-
-
-@app.route('/create-payment-intent', methods=['POST'])
-def create_payment():
-    try:
-        # create new checkout session
-        checkout_session = create_checkout_session()
-        print(checkout_session)
-        print(stripe.Price.retrieve(
-        "price_1MYtU8EK9AxKlwWVvlseiWzF",
-        ))
-        return jsonify({'sessionId': 123})
-    except Exception as e:
-        return jsonify(error=str(e)), 403
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=4242, debug=True)

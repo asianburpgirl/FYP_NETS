@@ -8,7 +8,7 @@
             <GChart type="PieChart" :options="PieChartoptions" :data="PieChartData" />
           </ion-col>
           <ion-col>
-            <h2>Number of bookings per location</h2>
+            <h2>Current Capacity per location</h2>
             <GChart type="BarChart" :data="BarChartData" :options="BarChartOptions" />
           </ion-col>
           <ion-col>
@@ -29,7 +29,7 @@ import axios from 'axios';
 export default defineComponent({
   name: "GoogleCharts",
   components: {
-    // GChart
+    GChart
   },
   data() {
     return {
@@ -80,7 +80,8 @@ export default defineComponent({
       axios.get(url)
       .then(response => {
         pieData = response.data.data.bookings;
-        for (let i = 0; i < pieData.length; i ++) {
+        console.log(pieData)
+        for (let i = 0; i < pieData.length; i++) {
           this.PieChartData.push([pieData[i]['bookingLocation'],pieData[i]['bookingID']])
         }
         return pieData
@@ -116,8 +117,8 @@ export default defineComponent({
         console.log(columnData)
         // console.log(columnData)
         for (let i=0; i < columnData.length; i++) {
-          this.ColumnChartData.push([columnData[i]['carparkName'],parseInt(columnData[i]['hourlyweekdaypeak']),
-          parseInt(columnData[i]['hourlyweekdaynonpeak'])])
+          this.ColumnChartData.push([columnData[i]['carparkName'],columnData[i]['hourlyweekdaypeak'],
+          columnData[i]['hourlyweekdaynonpeak']])
         }
         return columnData
       })

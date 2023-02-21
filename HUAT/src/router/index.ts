@@ -30,13 +30,7 @@ const routes: Array<RouteRecordRaw> = [
       },
       {
         path: 'wallet',
-        component: () => import('@/views/walletPage.vue'),
-        children: [
-          {
-            path: '/successPage',
-            component: () => import('@/views/successPage.vue')
-          }
-        ] 
+        component: () => import('@/views/walletPage.vue')
       },
       {
         path: 'plans',
