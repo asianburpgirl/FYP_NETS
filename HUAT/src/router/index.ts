@@ -10,6 +10,9 @@ import viewProfile from '../views/viewProfile.vue';
 import BarChart from '../views/BarChart.vue';
 import forgotPassword from '../views/forgotPasswordPage.vue';
 import mapPage from '../views/mapPage.vue';
+import paymentPage from '../views/paymentPage.vue';
+import NETSPaymentPage from '../views/NETSPaymentPage.vue';
+import successPage from '../views/successPage.vue';
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -79,6 +82,18 @@ const routes: Array<RouteRecordRaw> = [
     path: '/map',
     component: mapPage
   },
+  {
+    path: '/payment',
+    component: paymentPage
+  },
+  {
+    path: '/Nets',
+    component: NETSPaymentPage
+  },
+  {
+    path: '/success',
+    component: successPage
+  }
 ]
 
 const router = createRouter({
