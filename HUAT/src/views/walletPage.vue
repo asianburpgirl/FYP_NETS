@@ -13,7 +13,7 @@
               <p>Pay</p>
             </ion-col> -->
             <ion-col>
-              <ion-button color="dark" @click='routeTopup()'>
+              <ion-button color="dark">
                  <ion-icon :icon="wallet" > </ion-icon>
               </ion-button>
               <p>Top Up</p>
@@ -33,7 +33,7 @@
               <p>Pay</p>
             </ion-col> -->
             <ion-col>
-              <ion-button color="dark" @click="routeTen()">
+              <ion-button color="dark" @click='routeTen("payment")'>
                 $10
               </ion-button>
             </ion-col>
@@ -104,23 +104,11 @@ export default defineComponent({
         console.log(error.message);
       });
     },
-    routeTen() {
-      const routeData = 'https://buy.stripe.com/test_8wMaGm2Di8m1fXq6oq';
-      window.open(routeData, '_blank');
-
-      const url = "http://localhost:5002/addTen/" + this.userData.userID + "/" + this.userData.balance;
-      axios.put(url, {
-        userID: this.userData.userID,
-        balance: this.userData.balance
-      })
-      .then((response) => {
-        // console.log(response)
-        this.balance = response.data.data
-      })
-      .catch((error) => {
-        console.log(error.message);
+    routeTen(route) {
+      this.$router.push({
+        path: '/' + route,
       });
-    }
+    },
   },
   mounted(){
     this.loadUserData(),
