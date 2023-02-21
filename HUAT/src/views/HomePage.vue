@@ -29,7 +29,7 @@ import axios from 'axios';
 export default defineComponent({
   name: "GoogleCharts",
   components: {
-    // GChart
+    GChart
   },
   data() {
     return {
