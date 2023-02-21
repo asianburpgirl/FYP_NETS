@@ -3,7 +3,7 @@
     <ion-header>
       <ion-toolbar>
         <ion-buttons slot="start">
-          <ion-back-button></ion-back-button>
+          <ion-back-button defaultHref="/tabs/bookings"></ion-back-button>
         </ion-buttons>
         <ion-title class="ion-text-center">Map</ion-title>
       </ion-toolbar>
@@ -214,6 +214,7 @@
     </ion-content>
   </ion-page>
 </template>
+
 
 <script>
 import { defineComponent, ref } from "vue";
