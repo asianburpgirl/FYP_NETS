@@ -403,33 +403,49 @@ export default defineComponent({
         .get(url)
         .then((response) => {
           const data = response.data.data.bookings;
+          console.log(data)
           for (const eachBooking of data) {
-            const startDateTime = new Date(eachBooking.bookingStartDateTime);
-            const startDateOnly =
-              startDateTime.getDate() +
-              "/" +
-              startDateTime.getMonth() +
-              1 +
-              "/" +
-              startDateTime.getFullYear();
-            const startTimeOnly =
-              startDateTime.getHours() - 8 +
-              ":" +
-              ("0" + startDateTime.getMinutes()).slice(-2);
+            // const startDateTime = new Date(eachBooking.bookingStartDateTime);
+            // const startDateTime2 = startDateTime.toUTCString()
+            // console.log(startDateTime2)
+            // console.log(startDateTime)
 
-            const endDateTime = new Date(eachBooking.bookingEndDateTime);
-            const endDateOnly =
-              endDateTime.getDate() +
-              "/" +
-              endDateTime.getMonth() +
-              1 +
-              "/" +
-              endDateTime.getFullYear();
+            let startDateTime = new Date(eachBooking.bookingStartDateTime);
+            startDateTime = startDateTime.toUTCString()
+            const startDateOnly = startDateTime.slice(5,16)
+            const startTimeOnly = startDateTime.slice(17,22)
 
-            const endTimeOnly =
-              ("0" + (endDateTime.getHours() - 8).toString()).slice(-2) +
-              ":" +
-              ("0" + endDateTime.getMinutes()).slice(-2);
+
+            let endDateTime = new Date(eachBooking.bookingEndDateTime);
+            endDateTime = endDateTime.toUTCString()
+            const endDateOnly = endDateTime.slice(5,16)
+            const endTimeOnly = endDateTime.slice(17,22)
+
+            // const startDateOnly =
+            //   startDateTime.getDate() +
+            //   "/" +
+            //   startDateTime.getMonth() +
+            //   1 +
+            //   "/" +
+            //   startDateTime.getFullYear();
+            // const startTimeOnly =
+            //   startDateTime.getHours()  +
+            //   ":" +
+            //   ("0" + startDateTime.getMinutes()).slice(-2);
+
+            // const endDateTime = new Date(eachBooking.bookingEndDateTime);
+            // const endDateOnly =
+            //   endDateTime.getDate() +
+            //   "/" +
+            //   endDateTime.getMonth() +
+            //   1 +
+            //   "/" +
+            //   endDateTime.getFullYear();
+
+            // const endTimeOnly =
+            //   ("0" + (endDateTime.getHours() ).toString()).slice(-2) +
+            //   ":" +
+            //   ("0" + endDateTime.getMinutes()).slice(-2);
 
             this.bookingDetails.push({
               bookingDate: eachBooking.bookingDateTime,
