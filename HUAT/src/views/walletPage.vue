@@ -13,7 +13,7 @@
               <p>Pay</p>
             </ion-col> -->
             <ion-col>
-              <ion-button color="dark">
+              <ion-button color="dark" @click='routeTopup()'>
                  <ion-icon :icon="wallet" > </ion-icon>
               </ion-button>
               <p>Top Up</p>
@@ -23,6 +23,29 @@
                 <ion-icon :icon="card" />
               </ion-button>
               <p>Card</p>
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <!-- <ion-col>
+              <ion-button color="dark">
+                <ion-icon :icon="addOutline" > </ion-icon>
+              </ion-button>
+              <p>Pay</p>
+            </ion-col> -->
+            <ion-col>
+              <ion-button color="dark" @click="routeTen()">
+                $10
+              </ion-button>
+            </ion-col>
+            <ion-col>
+              <ion-button color="dark" @click="routeTwenty()">
+                $20
+              </ion-button>
+            </ion-col>
+            <ion-col>
+              <ion-button color="dark" @click="routeThirty()">
+                $30
+              </ion-button>
             </ion-col>
           </ion-row>
         </ion-grid>
@@ -49,74 +72,61 @@
 </template>
 
 <script>
-import {  IonGrid, IonCard, IonIcon, IonRow, IonCol, IonButton, IonList, IonItem, IonListHeader,IonLabel } from '@ionic/vue';
+import { IonGrid, IonCard, IonIcon, IonRow, IonCol, IonButton } from '@ionic/vue';
 import { defineComponent } from 'vue';
 import { card, wallet } from 'ionicons/icons';
 import axios from "axios";
 
 export default defineComponent({
-    components: { IonGrid, IonCard, IonIcon, IonRow, IonCol, IonButton, IonList, IonItem, IonListHeader,IonLabel },
+    components: { IonGrid, IonCard, IonIcon, IonRow, IonCol, IonButton},
   setup() {
     return { card,wallet };
   },
   data() {
-      return {
-          stripe: null,
-          balance: 0,
-            userData: {}
-      }
+    return {
+      stripe: null,
+      balance: 0,
+      userData: {}
+    }
   },
   methods: {
-        getBalance() {
-        this.userData = JSON.parse(localStorage.getItem("userData"));
-        
-        const url = "http://127.0.0.1:5002/getBalance/" + this.userData.userID;
-        axios
-            .get(url)
-            .then((response) => {
-            this.balance = response.data.data.balance
-            })
-            .catch((error) => {
-            console.log(error.message);
-            });
-        },
-      purchaseBook() {
-        fetch('http://localhost:4242/create-payment-intent', {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          
-          body: JSON.stringify({ item:123 }),
-        })
-        .then((result) => result.json())
-        .then((data) => {
-          // Redirect to Stripe Checkout
-          return this.stripe.redirectToCheckout({ sessionId: 123 });
-        })
-        .then((res) => {
-          console.log(res);
-        });
-      },
-      getStripePublishableKey() {
-          fetch('http://localhost:4242/config')
-          .then((result) => result.json())
-          .then((data) => {
-              // Initialize Stripe.js
-              this.stripe = Stripe(data.publicKey); // eslint-disable-line no-undef
-          });
-      },
-      created() {
-          this.getStripePublishableKey();
-      },
-    mounted() {
-        console.log("Hello")
-        const recaptchaScript = document.createElement('script')
-        recaptchaScript.setAttribute('src', 'https://js.stripe.com/v3/')
-        document.head.appendChild(recaptchaScript)
-        this.getBalance();
-      }
+    loadUserData() {
+      this.userData = JSON.parse(localStorage.getItem("userData"));
+    },
+    getBalance() {
+      const url = "http://localhost:5002/getBalance/" + this.userData.userID;
+      axios.get(url)
+      .then((response) => {
+        // console.log(response)
+        this.balance = response.data.data.balance
+      })
+      .catch((error) => {
+        console.log(error.message);
+      });
+    },
+    routeTen() {
+      const routeData = 'https://buy.stripe.com/test_8wMaGm2Di8m1fXq6oq';
+      window.open(routeData, '_blank');
+
+      const url = "http://localhost:5002/addTen/" + this.userData.userID + "/" + this.userData.balance;
+      axios.put(url, {
+        userID: this.userData.userID,
+        balance: this.userData.balance
+      })
+      .then((response) => {
+        // console.log(response)
+        this.balance = response.data.data
+      })
+      .catch((error) => {
+        console.log(error.message);
+      });
+    }
+  },
+  mounted(){
+    this.loadUserData(),
+    this.getBalance()
   }
 })
-
 </script>
 
 <style>
@@ -124,4 +134,3 @@ h1 {
   font-size: 50px;
 }
 </style>
-
