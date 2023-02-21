@@ -55,7 +55,8 @@
         class="ion-padding-top"
         v-if="
           (this.pageTab == 'nearest' && this.selectedLocation != '') ||
-          this.pageTab == 'all'
+          this.pageTab == 'all' || (this.pageTab =='cheapest' && this.startTime != '' &&
+          this.endTime !='' && this.bookingDate != '' )
         "
       >
         <ion-card v-for="carpark in carparksArray" :key="carpark">
@@ -68,6 +69,9 @@
             <h3>
               <b> {{ carpark.availableLots }}</b> lots available
             </h3>
+            <h3  v-if="pageTab == 'cheapest'">
+              <b> Total: ${{ carpark.totalFee }}</b>
+            </h3>
             <h4 v-if="this.userOrigin != ''">
               <u>{{ carpark.distance_km }},</u>
               <u>{{ carpark.duration_mins }} </u>
@@ -76,7 +80,7 @@
           </ion-card-header>
         </ion-card>
       </ion-grid>
-      <ion-row class="ion-justify-content-center ion-padding">
+      <ion-row class="ion-justify-content-center ion-padding"  v-if="pageTab == 'cheapest'">
         <ion-button shape="round" expand="block" @click="setDateTimeOpen(true)"
           >Select Date and Time</ion-button
         >
@@ -204,13 +208,9 @@ export default defineComponent({
       googleMapDistanceUrl: "",
 
       // for cheapest carparks
-      // startTime: "",
-      // endTime: "",
-      // bookingDate: "",
-
-      startTime: "2023-02-20T17:51:00+08:00",
-      endTime: "2023-02-20T21:49:00+08:00",
-      bookingDate: "2023-02-21T15:19:00+08:00",
+      startTime: "",
+      endTime: "",
+      bookingDate: "",
     };
   },
   methods: {
@@ -235,6 +235,10 @@ export default defineComponent({
           this.carparksArray = response.data.data.carparks;
           let fee = 0
           for (const eachCarpark of response.data.data.carparks) {
+          // add carpark lots vacacy
+            eachCarpark["availableLots"] =
+              eachCarpark.maxCapacity - eachCarpark.currentCapacity;
+
           // weekend
             if (startDateTime == 6 || startDateTime == 0) {
               console.log("weekend");
@@ -487,7 +491,7 @@ export default defineComponent({
 
   mounted() {
     this.getCarparks();
-    this.confirmDateTime();
+    // this.confirmDateTime();
   },
 });
 </script>
