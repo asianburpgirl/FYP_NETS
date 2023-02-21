@@ -51,17 +51,6 @@ export default defineComponent({
     loadUserData() {
       this.userData = JSON.parse(localStorage.getItem("userData"));
     },
-    getBalance() {
-      const url = "http://localhost:5002/getBalance/" + this.userData.userID;
-      axios.get(url)
-      .then((response) => {
-        // console.log(response)
-        this.balance = response.data.data.balance
-      })
-      .catch((error) => {
-        console.log(error.message);
-      });
-    },
     routeNets(route) {
       this.$router.push({
         path: '/' + route,
