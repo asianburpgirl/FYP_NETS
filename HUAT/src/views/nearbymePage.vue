@@ -28,6 +28,11 @@
             <ion-label>Cheapest</ion-label>
             <ion-radio slot="end" value="cheapest"></ion-radio>
           </ion-item>
+
+          <ion-item>
+            <ion-label>Lots Available</ion-label>
+            <ion-radio slot="end" value="lotsAvail"></ion-radio>
+          </ion-item>
         </ion-radio-group>
       </ion-list>
 
@@ -56,7 +61,7 @@
         v-if="
           (this.pageTab == 'nearest' && this.selectedLocation != '') ||
           this.pageTab == 'all' || (this.pageTab =='cheapest' && this.startTime != '' &&
-          this.endTime !='' && this.bookingDate != '' )
+          this.endTime !='' && this.bookingDate != '' ) || this.pageTab=='lotsAvail'
         "
       >
         <ion-card v-for="carpark in carparksArray" :key="carpark">
@@ -69,7 +74,8 @@
             <h3>
               <b> {{ carpark.availableLots }}</b> lots available
             </h3>
-            <h3  v-if="pageTab == 'cheapest'">
+            <h3  v-if="pageTab == 'cheapest' && this.startTime != '' &&
+          this.endTime !='' && this.bookingDate != '' ">
               <b> Total: ${{ carpark.totalFee }}</b>
             </h3>
             <h4 v-if="this.userOrigin != ''">
@@ -407,11 +413,30 @@ export default defineComponent({
       this.dateTimeModal = isOpen;
     },
     resetState() {
+      
       if (this.pageTab == "all") {
         this.userOrigin = "";
         this.selectedLocation = "";
         this.getCarparks();
       }
+      if (this.pageTab == "lotsAvail") {
+        this.userOrigin = "";
+        this.selectedLocation = "";
+        this.startTime= "",
+        this.endTime= "",
+        this.bookingDate=  "",
+        this.carparksArray.sort(function (a, b) {
+            const keyA = a.availableLots;
+            const keyB = b.availableLots;
+            if (keyA < keyB) return 1;
+            if (keyA > keyB) return -1;
+            return 0;
+          });
+        console.log(this.carparksArray)
+        this.carparksArray = this.carparksArray.slice(0, 4);
+
+      }
+      
     },
     pushLog(msg) {
       this.selectedLocation = msg;
