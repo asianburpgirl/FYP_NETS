@@ -8,8 +8,8 @@ import string
 
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL') or 'mysql+mysqlconnector://root@localhost:3306/localconnect'
-# app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL') or 'mysql+mysqlconnector://root:root@localhost:8889/localconnect'
+# app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL') or 'mysql+mysqlconnector://root@localhost:3306/localconnect'
+app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL') or 'mysql+mysqlconnector://root:root@localhost:8889/localconnect'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {'pool_recycle': 299}
 
@@ -28,9 +28,10 @@ class User(db.Model):
     username = db.Column(db.String(100), nullable=False)
     password = db.Column(db.String(100), nullable=False)
     balance = db.Column(db.Float())
+    role = db.Column(db.String(100))
     
 
-    def __init__(self, userID, email, name, phoneNum, username, password, balance):
+    def __init__(self, userID, email, name, phoneNum, username, password, balance,role):
         self.userID = userID
         self.email = email
         self.name = name
@@ -38,6 +39,7 @@ class User(db.Model):
         self.username = username
         self.password = password
         self.balance = balance
+        self.role = role
 
     def json(self):
         return {
@@ -47,11 +49,10 @@ class User(db.Model):
             "phoneNum": self.phoneNum,
             "username": self.username,
             "password": self.password,
-            "balance": self.balance
+            "balance": self.balance,
+            "role": self.role
         }
 
-
-    
 
 #Get All Users
 @app.route("/users")
@@ -112,8 +113,13 @@ def createUser():
     username = request.json.get('username' , None)
     password = request.json.get('password' , None)
     balance = request.json.get('balance', None)
+    # if role is given, must be Admin. Else, default is User
+    if request.get_json().get("role") != None:
+        role = "Admin"
+    else: 
+        role = "User"
 
-    newUser = User( userID = userID, email = email, name = name , phoneNum = phoneNum, username = username, password = password, balance=balance)
+    newUser = User( userID = userID, email = email, name = name , phoneNum = phoneNum, username = username, password = password, balance=balance, role= role)
     
     try:
         db.session.add(newUser)

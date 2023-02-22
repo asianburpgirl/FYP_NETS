@@ -16,15 +16,11 @@ CREATE TABLE bookings(
     PRIMARY KEY (bookingID));
 	
 INSERT INTO `bookings` (`bookingID`, `bookingDateTime`, `bookingLocation`, `locationName`,`bookingStartDateTime`, `bookingEndDateTime`, `status`, `bookingRef`, `bookingAmt`, `userID`) 
-VALUES (NULL, CURRENT_TIMESTAMP,  'Funan','99 City Hall Street, Singapore 755666', '2023-02-01 15:30:00', '2023-02-01 11:30:00', 'Booked', 'aasS234Fa3Af3ff319fD', 1.50, '1');
-INSERT INTO `bookings` (`bookingID`, `bookingDateTime`, `bookingLocation`, `locationName`,`bookingStartDateTime`, `bookingEndDateTime`, `status`, `bookingRef`, `bookingAmt`, `userID`) 
-VALUES (NULL, '2023-01-27 12:33:10', 'ION Orchard', '123 Orchard Street, Singapore 712345', '2023-01-30 12:30:00', '2023-01-30 12:30:00', 'Booked', 'S124fdf13Rafdf', 3.01, '2');
-INSERT INTO `bookings` (`bookingID`, `bookingDateTime`, `bookingLocation`, `locationName`, `bookingStartDateTime`, `bookingEndDateTime`, `status`, `bookingRef`, `bookingAmt`, `userID`) 
-VALUES (NULL, '2023-01-27 12:43:10', 'ION Orchard', '123 Orchard Street, Singapore 712345', '2023-01-28 12:00:00', '2023-01-28 01:00:00', 'Booked', '22afsadsf4df13Rafdf', 2.51, '1');
-INSERT INTO `bookings` (`bookingID`, `bookingDateTime`, `bookingLocation`, `locationName`, `bookingStartDateTime`, `bookingEndDateTime`, `status`, `bookingRef`, `bookingAmt`, `userID`) 
-VALUES (NULL, '2023-01-27 12:43:10', 'ION Orchard', '123 Orchard Street, Singapore 712345', '2023-01-28 12:00:00', '2023-01-28 01:00:00', 'Booked', '22afsadsf4df13Rafdf', 12.10, '2');
-INSERT INTO `bookings` (`bookingID`, `bookingDateTime`, `bookingLocation`, `locationName`, `bookingStartDateTime`, `bookingEndDateTime`, `status`, `bookingRef`, `bookingAmt`, `userID`) 
-VALUES (NULL, '2023-01-27 12:43:10', 'ION Orchard', '123 Orchard Street, Singapore 712345', '2023-01-28 12:00:00', '2023-01-28 01:00:00', 'Booked', '22afsadsf4df13Rafdf', 0.51, '2');
+VALUES (NULL, CURRENT_TIMESTAMP,  'Funan','99 City Hall Street, Singapore 755666', '2023-02-01 15:30:00', '2023-02-01 11:30:00', 'Booked', 'aasS234Fa3Af3ff319fD', 1.50, '1'),
+(NULL, '2023-01-27 12:33:10', 'ION Orchard', '123 Orchard Street, Singapore 712345', '2023-01-30 12:30:00', '2023-01-30 12:30:00', 'Booked', 'S124fdf13Rafdf', 3.01, '2'),
+(NULL, '2023-01-27 12:43:10', 'ION Orchard', '123 Orchard Street, Singapore 712345', '2023-01-28 12:00:00', '2023-01-28 01:00:00', 'Booked', '22afsadsf4df13Rafdf', 2.51, '1'),
+(NULL, '2023-01-27 12:43:10', 'ION Orchard', '123 Orchard Street, Singapore 712345', '2023-01-28 12:00:00', '2023-01-28 01:00:00', 'Booked', '22afsadsf4df13Rafdf', 12.10, '2'),
+(NULL, '2023-01-27 12:43:10', 'ION Orchard', '123 Orchard Street, Singapore 712345', '2023-01-28 12:00:00', '2023-01-28 01:00:00', 'Booked', '22afsadsf4df13Rafdf', 0.51, '2');
 
 CREATE TABLE subscriptions( 
 	subscriptionID INT(11) NOT NULL AUTO_INCREMENT , 
@@ -43,18 +39,10 @@ INSERT INTO `subscriptions` (`subscriptionID`, `subscriptionType`, `subscription
 `subscriptionsEndTime`, `bookingLocation`, `locationName`, 
 `status`,  `subscriptionRef`, `subscriptionAmt`, `userID`) 
 VALUES (NULL, 'Hourly','2023-02-01 15:30:00', '2023-02-05 15:30:00',
-'Funan','99 City Hall Street, Singapore 755666', 'Subscribed', 'aasS234Fa3Af3ff319fD', 1.00, '1');
-
-INSERT INTO `subscriptions` (`subscriptionID`, `subscriptionType`,`subscriptionsStartTime`, 
-`subscriptionsEndTime`, `bookingLocation`, `locationName`, 
- `status`,  `subscriptionRef`, `subscriptionAmt`, `userID`) 
-VALUES (NULL, 'Complmentary','2023-02-01 12:30:00', '2023-02-05 15:30:00',
-'Funan','99 City Hall Street, Singapore 755666', 'Subscribed', 'b1sS2a4FA5Af3f5d19fT', 100.51, '1');
-
-INSERT INTO `subscriptions` (`subscriptionID`, `subscriptionType`,`subscriptionsStartTime`, 
-`subscriptionsEndTime`, `bookingLocation`, `locationName`, 
- `status`,  `subscriptionRef`, `subscriptionAmt`, `userID`) 
-VALUES (NULL, 'Complmentary','2023-02-01 12:30:00', '2023-02-15 17:00:00',
+'Funan','99 City Hall Street, Singapore 755666', 'Subscribed', 'aasS234Fa3Af3ff319fD', 1.00, '1'),
+(NULL, 'Complmentary','2023-02-01 12:30:00', '2023-02-05 15:30:00',
+'Funan','99 City Hall Street, Singapore 755666', 'Subscribed', 'b1sS2a4FA5Af3f5d19fT', 100.51, '1'),
+(NULL, 'Complmentary','2023-02-01 12:30:00', '2023-02-15 17:00:00',
 'Funan','99 City Hall Street, Singapore 755666', 'Subscribed', '1SsS26A4A5Af3Ufd19Y3', 0, '2');
 
 
@@ -96,11 +84,10 @@ CREATE TABLE users (
 	username VARCHAR(128) NOT NULL,
 	password VARCHAR(128) NOT NULL,
 	balance FLOAT(5,2),
+    role VARCHAR(128) NOT NULL,
   	PRIMARY KEY (userID));
 
-INSERT INTO users(email, name, phoneNum, username, password, balance) VALUES
-("johntan99@gmail.com","John Tan", 91234567, "johntan99", "admin123", 1.23);
-INSERT INTO users(email, name, phoneNum, username, password, balance) VALUES
-("testLimIsSmart@gmail.com","Test Lim", 92345678, "test", "test", 92.42);
-INSERT INTO users(email, name, phoneNum, username, password, balance) VALUES
-("testtest@gmail.com","Test Tan", 91234567, "test2", "test2", 9.10);
+INSERT INTO users(email, name, phoneNum, username, password, balance,role) VALUES
+("johntan99@gmail.com","John Tan", 91234567, "johntan99", "admin123", 1.23 , "Admin"),
+("testLimIsSmart@gmail.com","Test Lim", 92345678, "test", "test", 92.42, "Admin"),
+("testtest@gmail.com","Test Tan", 91234567, "test2", "test2", 9.10, "User");
