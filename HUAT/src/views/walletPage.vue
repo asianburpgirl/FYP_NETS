@@ -25,29 +25,6 @@
               <p>Card</p>
             </ion-col>
           </ion-row>
-          <ion-row>
-            <!-- <ion-col>
-              <ion-button color="dark">
-                <ion-icon :icon="addOutline" > </ion-icon>
-              </ion-button>
-              <p>Pay</p>
-            </ion-col> -->
-            <ion-col>
-              <ion-button color="dark">
-                $10
-              </ion-button>
-            </ion-col>
-            <ion-col>
-              <ion-button color="dark">
-                $20
-              </ion-button>
-            </ion-col>
-            <ion-col>
-              <ion-button color="dark">
-                $30
-              </ion-button>
-            </ion-col>
-          </ion-row>
         </ion-grid>
       </ion-card>
       <ion-list lines="none">
