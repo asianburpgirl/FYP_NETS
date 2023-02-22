@@ -486,7 +486,7 @@ export default defineComponent({
 });
 </script>
 
-<style>
+<style scoped>
 capacitor-google-map {
   display: inline-block;
   width: 330px;
