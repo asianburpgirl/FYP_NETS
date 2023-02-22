@@ -10,8 +10,9 @@ import viewProfile from '../views/viewProfile.vue';
 import BarChart from '../views/BarChart.vue';
 import forgotPassword from '../views/forgotPasswordPage.vue';
 import mapPage from '../views/mapPage.vue';
-import paymentPage from '../views/paymentPage.vue';
-import NETSPaymentPage from '../views/NETSPaymentPage.vue';
+import selectpaymentPage from '../views/selectpaymentPage.vue';
+import NETSAmountPage from '../views/NETSAmountPage.vue';
+import StripeAmountPage from '../views/StripeAmountPage.vue';
 import successPage from '../views/successPage.vue';
 
 const routes: Array<RouteRecordRaw> = [
@@ -84,11 +85,15 @@ const routes: Array<RouteRecordRaw> = [
   },
   {
     path: '/payment',
-    component: paymentPage
+    component: selectpaymentPage
   },
   {
     path: '/Nets',
-    component: NETSPaymentPage
+    component: NETSAmountPage
+  },
+  {
+    path: '/Stripe',
+    component: StripeAmountPage
   },
   {
     path: '/success',
