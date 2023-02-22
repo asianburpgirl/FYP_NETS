@@ -13,7 +13,7 @@
               <p>Pay</p>
             </ion-col> -->
             <ion-col>
-              <ion-button color="dark">
+              <ion-button color="dark" @click='routeUser("payment")'>
                  <ion-icon :icon="wallet" > </ion-icon>
               </ion-button>
               <p>Top Up</p>
@@ -33,17 +33,17 @@
               <p>Pay</p>
             </ion-col> -->
             <ion-col>
-              <ion-button color="dark" @click='routeTen("payment")'>
+              <ion-button color="dark">
                 $10
               </ion-button>
             </ion-col>
             <ion-col>
-              <ion-button color="dark" @click="routeTwenty()">
+              <ion-button color="dark">
                 $20
               </ion-button>
             </ion-col>
             <ion-col>
-              <ion-button color="dark" @click="routeThirty()">
+              <ion-button color="dark">
                 $30
               </ion-button>
             </ion-col>
@@ -104,7 +104,7 @@ export default defineComponent({
         console.log(error.message);
       });
     },
-    routeTen(route) {
+    routeUser(route) {
       this.$router.push({
         path: '/' + route,
       });
