@@ -43,26 +43,21 @@ export default defineComponent({
         ['Carpark Name', 'Subscription Plan', 'No. of Subscribers']
       ],
       PieChartoptions: {
-        chart: {
-          title: "Percentage of bookings per location",
-          pieHole: 0.4,
-        },
+        pieHole: 0.1,
         // width: 400,
         // height: 400
       },
       BarChartOptions: {
-        chart: {
-          title: "Number of bookings per location",
-          pieHole: 0.4,
-        },
+        legend: {
+          position: 'bottom'
+        }
         // width: 400,
         // height: 400
       },
       ColumnChartOptions: {
-        chart: {
-          title: "Number of bookings per subscription",
-          pieHole: 0.4,
-        },
+        legend: {
+          position: 'bottom'
+        }
         // width: 400,
         // height: 400
       },
@@ -114,10 +109,8 @@ export default defineComponent({
       .then(response => {
         columnData = response.data.data.carparks;
         console.log(columnData)
-        // console.log(columnData)
         for (let i=0; i < columnData.length; i++) {
-          this.ColumnChartData.push([columnData[i]['carparkName'],parseInt(columnData[i]['hourlyweekdaypeak']),
-          parseInt(columnData[i]['hourlyweekdaynonpeak'])])
+          this.ColumnChartData.push([columnData[i]['carparkName'],columnData[i]['hourlyweekdaypeak'],columnData[i]['hourlyweekdaynonpeak']])
         }
         return columnData
       })
