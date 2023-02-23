@@ -10,9 +10,9 @@
     </ion-header>
     <ion-content class="ion-padding">
         <img src='assets/images/stripe.png' />
-        <ion-button shape="round" expand="block" size="large" @click="routeTen()">$10</ion-button>
-        <ion-button shape="round" expand="block" size="large" @click="routeTwenty()">$20</ion-button>
-        <ion-button shape="round" expand="block" size="large" @click="routeThirty()">$30</ion-button>
+        <ion-button shape="round" expand="block" size="large" @click="routeTen('success')">$10</ion-button>
+        <ion-button shape="round" expand="block" size="large" @click="routeTwenty('success')">$20</ion-button>
+        <ion-button shape="round" expand="block" size="large" @click="routeThirty('success')">$30</ion-button>
     </ion-content>
 </ion-page>
 </template>
@@ -52,7 +52,7 @@ export default defineComponent({
         loadUserData() {
             this.userData = JSON.parse(localStorage.getItem("userData"));
         },
-        routeTen() {
+        routeTen(route) {
             const routeData = 'https://buy.stripe.com/test_8wMaGm2Di8m1fXq6oq';
             window.open(routeData, '_blank');
             
@@ -69,8 +69,12 @@ export default defineComponent({
             .catch((error) => {
                 console.log(error.message);
             });
+
+            this.$router.push({
+                path: '/' + route,
+            });
         },
-        routeTwenty() {
+        routeTwenty(route) {
             const routeData = 'https://buy.stripe.com/test_5kA6q60va0TzbHaaEH';
             window.open(routeData, '_blank');
             
@@ -87,8 +91,12 @@ export default defineComponent({
             .catch((error) => {
                 console.log(error.message);
             });
+
+            this.$router.push({
+                path: '/' + route,
+            });
         },
-        routeThirty() {
+        routeThirty(route) {
             const routeData = 'https://buy.stripe.com/test_6oEbKq2DifOt12w4gk';
             window.open(routeData, '_blank');
             
@@ -104,6 +112,10 @@ export default defineComponent({
             })
             .catch((error) => {
                 console.log(error.message);
+            });
+
+            this.$router.push({
+                path: '/' + route,
             });
         },
     },
