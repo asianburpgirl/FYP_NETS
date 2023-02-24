@@ -397,7 +397,7 @@ export default defineComponent({
       this.userData = JSON.parse(localStorage.getItem("userData"));
       const userID = this.userData.userID;
 
-      const url = "http://127.0.0.1:5001/bookings"; // hardcoded
+      const url = "http://127.0.0.1:5001/bookings";
 
       axios
         .post(url, {
@@ -411,12 +411,29 @@ export default defineComponent({
           bookingAmt: this.bookingAmount,
         })
         .then((response) => {
+          console.log(response.data.data.bookingID)
+          this.deductFromUser(response.data.data.bookingID)
           this.setBookingOpen(false); // close booking window
           this.setBookingSuccessOpen(true); // open booking sucess window
         })
         .catch((error) => {
           console.log(error.message);
         });
+    },
+    deductFromUser(bookingID){
+      // updateBalance
+      const url = "http://127.0.0.1:5001/updateBalance/" + bookingID
+      axios
+        .put(url, {
+          bookingID: bookingID,
+        })
+        .then((response) => {
+          console.log(response)
+        })
+        .catch((error) => {
+          console.log(error.message);
+        });
+
     },
 
     async createMap() {
