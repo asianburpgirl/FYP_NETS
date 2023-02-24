@@ -67,20 +67,19 @@
 
     <ion-searchbar></ion-searchbar>
     <ion-card v-for="eachBooking in bookingDetails" :key="eachBooking">
-      <img src="/assets/images/ion.jpg" />
+      <ion-img :src="eachBooking.imagePath"></ion-img>
       <ion-grid>
         <ion-card-header>
           <ion-row>
             <ion-col>
               <ion-card-subtitle
-                >Booking Ref:<u>
+                >Booking Ref: <u>
                   {{ eachBooking.bookingRef }}
                 </u></ion-card-subtitle
               >
 
               <ion-card-subtitle v-if="eachBooking.status == 'Booked'"
-                >Booking Amount: $
-                {{ eachBooking.amount }}
+                >Booking Amount: ${{ eachBooking.amount }}
               </ion-card-subtitle>
               <ion-card-subtitle v-if="eachBooking.status == 'Cancelled'"
                 >Refunded Amount: $
@@ -328,7 +327,7 @@ export default defineComponent({
     editBooking(bookingInfo) {
       this.setEditBookingOpen(true)
       this.bookingInfo = bookingInfo
-      console.log(this.bookingInfo)
+      // console.log(this.bookingInfo)
     },
     saveEditBooking() {
       // const startDateTimeFormatted = this.bookingDate.substring(0, 10) + " " + this.startTime.substring(11, 19);
@@ -374,7 +373,7 @@ export default defineComponent({
           bookingEndDateTime: newEndDateTime
         })
         .then((response) => {
-          console.log(response)
+          // console.log(response)
         })
         .catch((error) => {
           console.log(error.message);
@@ -389,13 +388,29 @@ export default defineComponent({
       axios
         .delete(url)
         .then((response) => {
-          console.log(response);
+          // console.log(response);
           location.reload();
         })
         .catch((error) => {
           console.log(error.message);
         });
     },
+    // getCarparkImagePath(carparkName){
+    //   const url = "http://127.0.0.1:5003/carparkImage" 
+    //   axios
+    //     .post(url,{
+    //       carparkName: carparkName
+    //     })
+    //     .then((response) => {
+          
+    //       return (response.data.data.imagePath)
+        
+    //     })
+    //     .catch((error) => {
+    //       console.log(error.message);
+    //     });
+      
+    // },
     getUserBooking() {
       this.userData = JSON.parse(localStorage.getItem("userData"));
       const url = "http://127.0.0.1:5001/bookings/" + this.userData.userID;
@@ -403,7 +418,7 @@ export default defineComponent({
         .get(url)
         .then((response) => {
           const data = response.data.data.bookings;
-          console.log(data)
+          
           for (const eachBooking of data) {
             // const startDateTime = new Date(eachBooking.bookingStartDateTime);
             // const startDateTime2 = startDateTime.toUTCString()
@@ -420,6 +435,40 @@ export default defineComponent({
             endDateTime = endDateTime.toUTCString()
             const endDateOnly = endDateTime.slice(5,16)
             const endTimeOnly = endDateTime.slice(17,22)
+
+            let imagePath = ""
+
+            const url = "http://127.0.0.1:5003/carparkImage" 
+            axios
+              .post(url,{
+                carparkName: eachBooking.bookingLocation
+              })
+              .then((response) => {
+                
+                imagePath = response.data.data.imagePath
+
+                this.bookingDetails.push({
+                  bookingDate: eachBooking.bookingDateTime,
+                  bookingID: eachBooking.bookingID,
+                  bookingLocation: eachBooking.bookingLocation,
+                  locationName: eachBooking.locationName,
+                  startDate: startDateOnly,
+                  startTime: startTimeOnly,
+                  endDate: endDateOnly,
+                  amount: eachBooking.bookingAmt,
+                  endTime: endTimeOnly,
+                  status: eachBooking.status,
+                  bookingRef: eachBooking.bookingRef,
+                  userID: eachBooking.userID,
+                  imagePath : imagePath
+                });
+                console.log(this.bookingDetails)
+
+              
+              })
+              .catch((error) => {
+                console.log(error.message);
+              });
 
             // const startDateOnly =
             //   startDateTime.getDate() +
@@ -447,20 +496,6 @@ export default defineComponent({
             //   ":" +
             //   ("0" + endDateTime.getMinutes()).slice(-2);
 
-            this.bookingDetails.push({
-              bookingDate: eachBooking.bookingDateTime,
-              bookingID: eachBooking.bookingID,
-              bookingLocation: eachBooking.bookingLocation,
-              locationName: eachBooking.locationName,
-              startDate: startDateOnly,
-              startTime: startTimeOnly,
-              endDate: endDateOnly,
-              amount: eachBooking.bookingAmt,
-              endTime: endTimeOnly,
-              status: eachBooking.status,
-              bookingRef: eachBooking.bookingRef,
-              userID: eachBooking.userID,
-            });
           }
         })
         .catch((error) => {
@@ -470,7 +505,8 @@ export default defineComponent({
   },
 
   mounted() {
-    this.getUserBooking();
+    this.getUserBooking()
+    
   },
 });
 </script>

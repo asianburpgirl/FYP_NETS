@@ -139,6 +139,27 @@ def minusCarparkCapacity(carparkID):
             }
         )
 
-
+# get carpark image path
+@app.route("/carparkImage",methods= ['POST'])
+def getCarparkImage():
+    carparkNameInput = request.json.get('carparkName', None)
+    carparkName = Carpark.query.filter_by(carparkName=carparkNameInput).first()
+    
+    if carparkName:
+        return jsonify(
+            {
+                "code": 200,
+                "data": {
+                    "imagePath": carparkName.json()['imagePath']
+                }
+            }
+        )
+    return jsonify(
+        {
+            "code": 404,
+            "message": "There are no such carparks."
+        }
+    ), 404
+    
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5003, debug=True)
