@@ -100,7 +100,8 @@ export default defineComponent({
       axios
         .get(url)
         .then((response) => {
-          const data = response.data.data.bookings;
+          let data = response.data.data.bookings;
+          data= data.reverse()
           for (const eachBooking of data) {
               this.transactionDetails.push({
               bookingDate: eachBooking.bookingDateTime.slice(4,17),

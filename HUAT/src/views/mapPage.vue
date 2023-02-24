@@ -331,7 +331,6 @@ export default defineComponent({
           "&destinations=" +
           this.userDestinations +
           "&departure_time=now&key=AIzaSyAJXGx7T2ypt5Ew5-9SbDTWF9gqloQUJwI";
-          console.log(url)
 
         axios
           .get(url)
@@ -411,7 +410,6 @@ export default defineComponent({
           bookingAmt: this.bookingAmount,
         })
         .then((response) => {
-          console.log(response.data.data.bookingID)
           this.deductFromUser(response.data.data.bookingID)
           this.setBookingOpen(false); // close booking window
           this.setBookingSuccessOpen(true); // open booking sucess window
