@@ -198,6 +198,7 @@ import {
   IonRow,
   IonCol,
   IonGrid,
+  IonImg
 
 } from "@ionic/vue";
 import { defineComponent, ref } from "vue";
@@ -225,7 +226,8 @@ export default defineComponent({
   IonRow,
   IonCol,
     IonGrid,
-  IonIcon
+  IonIcon,
+  IonImg
   },
 
   setup() {
@@ -324,6 +326,15 @@ export default defineComponent({
     };
   },
   methods: {
+    formatMoney(myFloat){ // money in DB store in 1 dp (eg. 12.1), to change to 2 dp (12.10)
+      myFloat = myFloat.toString()
+      let newFloat = myFloat.split(".")
+      if ((newFloat[1]).length ==1){
+        newFloat[1] += "0"
+      }
+      newFloat = newFloat.join(".")
+      return newFloat
+    },
     editBooking(bookingInfo) {
       this.setEditBookingOpen(true)
       this.bookingInfo = bookingInfo
@@ -395,22 +406,7 @@ export default defineComponent({
           console.log(error.message);
         });
     },
-    // getCarparkImagePath(carparkName){
-    //   const url = "http://127.0.0.1:5003/carparkImage" 
-    //   axios
-    //     .post(url,{
-    //       carparkName: carparkName
-    //     })
-    //     .then((response) => {
-          
-    //       return (response.data.data.imagePath)
-        
-    //     })
-    //     .catch((error) => {
-    //       console.log(error.message);
-    //     });
-      
-    // },
+
     getUserBooking() {
       this.userData = JSON.parse(localStorage.getItem("userData"));
       const url = "http://127.0.0.1:5001/bookings/" + this.userData.userID;
@@ -420,10 +416,6 @@ export default defineComponent({
           const data = response.data.data.bookings;
           
           for (const eachBooking of data) {
-            // const startDateTime = new Date(eachBooking.bookingStartDateTime);
-            // const startDateTime2 = startDateTime.toUTCString()
-            // console.log(startDateTime2)
-            // console.log(startDateTime)
 
             let startDateTime = new Date(eachBooking.bookingStartDateTime);
             startDateTime = startDateTime.toUTCString()
@@ -455,7 +447,7 @@ export default defineComponent({
                   startDate: startDateOnly,
                   startTime: startTimeOnly,
                   endDate: endDateOnly,
-                  amount: eachBooking.bookingAmt,
+                  amount: this.formatMoney(eachBooking.bookingAmt),
                   endTime: endTimeOnly,
                   status: eachBooking.status,
                   bookingRef: eachBooking.bookingRef,
@@ -470,31 +462,6 @@ export default defineComponent({
                 console.log(error.message);
               });
 
-            // const startDateOnly =
-            //   startDateTime.getDate() +
-            //   "/" +
-            //   startDateTime.getMonth() +
-            //   1 +
-            //   "/" +
-            //   startDateTime.getFullYear();
-            // const startTimeOnly =
-            //   startDateTime.getHours()  +
-            //   ":" +
-            //   ("0" + startDateTime.getMinutes()).slice(-2);
-
-            // const endDateTime = new Date(eachBooking.bookingEndDateTime);
-            // const endDateOnly =
-            //   endDateTime.getDate() +
-            //   "/" +
-            //   endDateTime.getMonth() +
-            //   1 +
-            //   "/" +
-            //   endDateTime.getFullYear();
-
-            // const endTimeOnly =
-            //   ("0" + (endDateTime.getHours() ).toString()).slice(-2) +
-            //   ":" +
-            //   ("0" + endDateTime.getMinutes()).slice(-2);
 
           }
         })
