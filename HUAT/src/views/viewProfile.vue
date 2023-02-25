@@ -45,7 +45,7 @@ import { add, card, home, star, wallet } from 'ionicons/icons';
 // });
 </script>
 
-<style>
+<style scoped>
 h1 {
     font-size: 50px;
 }

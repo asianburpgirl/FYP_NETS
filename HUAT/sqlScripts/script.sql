@@ -16,11 +16,11 @@ CREATE TABLE bookings(
     PRIMARY KEY (bookingID));
 	
 INSERT INTO `bookings` (`bookingID`, `bookingDateTime`, `bookingLocation`, `locationName`,`bookingStartDateTime`, `bookingEndDateTime`, `status`, `bookingRef`, `bookingAmt`, `userID`) 
-VALUES (NULL, CURRENT_TIMESTAMP,  'Funan','99 City Hall Street, Singapore 755666', '2023-02-01 15:30:00', '2023-02-01 11:30:00', 'Booked', 'aasS234Fa3Af3ff319fD', 1.50, '1'),
-(NULL, '2023-01-27 12:33:10', 'ION Orchard', '123 Orchard Street, Singapore 712345', '2023-01-30 12:30:00', '2023-01-30 12:30:00', 'Booked', 'S124fdf13Rafdf', 3.01, '2'),
-(NULL, '2023-01-27 12:43:10', 'ION Orchard', '123 Orchard Street, Singapore 712345', '2023-01-28 12:00:00', '2023-01-28 01:00:00', 'Booked', '22afsadsf4df13Rafdf', 2.51, '1'),
-(NULL, '2023-01-27 12:43:10', 'ION Orchard', '123 Orchard Street, Singapore 712345', '2023-01-28 12:00:00', '2023-01-28 01:00:00', 'Booked', '22afsadsf4df13Rafdf', 12.10, '2'),
-(NULL, '2023-01-27 12:43:10', 'ION Orchard', '123 Orchard Street, Singapore 712345', '2023-01-28 12:00:00', '2023-01-28 01:00:00', 'Booked', '22afsadsf4df13Rafdf', 0.51, '2');
+VALUES (NULL, CURRENT_TIMESTAMP,  'ION Orchard','2 Orchard Turn, Singapore 238801', '2023-02-01 15:30:00', '2023-02-01 11:30:00', 'Booked', 'aasS234Fa3Af3ff319fD', 1.50, '1'),
+(NULL, '2023-01-28 11:30:00', 'ION Orchard', '2 Orchard Turn, Singapore 238801', '2023-01-30 12:30:00', '2023-01-30 12:30:00', 'Booked', 'S124fdf13Rafdf', 3.01, '2'),
+(NULL, '2023-01-30 16:03:12', 'Paragon Shopping Centre','290 Orchard Rd, Singapore 238859', '2023-01-28 12:00:00', '2023-01-28 01:00:00', 'Booked', '22afsadsf4df13Rafdf', 2.51, '1'),
+(NULL, '2023-02-01 12:43:50', '*SCAPE', '2 Orchard Link, Singapore 237978', '2023-01-28 12:00:00', '2023-01-28 01:00:00', 'Booked', '22afsadsf4df13Rafdf', 12.10, '2'),
+(NULL, '2023-01-05 12:44:10', 'Wisma Atria', '435 Orchard Rd, Singapore 238877', '2023-01-28 12:00:00', '2023-01-28 01:00:00', 'Booked', '22afsadsf4df13Rafdf', 0.51, '2');
 
 CREATE TABLE subscriptions( 
 	subscriptionID INT(11) NOT NULL AUTO_INCREMENT , 
