@@ -13,7 +13,7 @@
               <p>Pay</p>
             </ion-col> -->
             <ion-col>
-              <ion-button color="dark" @click='routeTopup()'>
+              <ion-button color="dark" @click='routeUser("payment")'>
                  <ion-icon :icon="wallet" > </ion-icon>
               </ion-button>
               <p>Top Up</p>
@@ -23,29 +23,6 @@
                 <ion-icon :icon="card" />
               </ion-button>
               <p>Card</p>
-            </ion-col>
-          </ion-row>
-          <ion-row>
-            <!-- <ion-col>
-              <ion-button color="dark">
-                <ion-icon :icon="addOutline" > </ion-icon>
-              </ion-button>
-              <p>Pay</p>
-            </ion-col> -->
-            <ion-col>
-              <ion-button color="dark" @click="routeTen()">
-                $10
-              </ion-button>
-            </ion-col>
-            <ion-col>
-              <ion-button color="dark" @click="routeTwenty()">
-                $20
-              </ion-button>
-            </ion-col>
-            <ion-col>
-              <ion-button color="dark" @click="routeThirty()">
-                $30
-              </ion-button>
             </ion-col>
           </ion-row>
         </ion-grid>
@@ -129,23 +106,11 @@ export default defineComponent({
         console.log(error.message);
       });
     },
-    routeTen() {
-      const routeData = 'https://buy.stripe.com/test_8wMaGm2Di8m1fXq6oq';
-      window.open(routeData, '_blank');
-
-      const url = "http://localhost:5002/addTen/" + this.userData.userID + "/" + this.userData.balance;
-      axios.put(url, {
-        userID: this.userData.userID,
-        balance: this.userData.balance
-      })
-      .then((response) => {
-        // console.log(response)
-        this.balance = response.data.data
-      })
-      .catch((error) => {
-        console.log(error.message);
+    routeUser(route) {
+      this.$router.push({
+        path: '/' + route,
       });
-    }
+    },
   },
   mounted(){
     this.loadUserData(),

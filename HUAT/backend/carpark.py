@@ -20,7 +20,7 @@ CORS(app)
 
 
 class Carpark(db.Model):
-    __tablename__ = 'carparkDetails'
+    __tablename__ = 'carparkdetails'
 
     carparkID = db.Column(db.Integer, primary_key=True)
     carparkName = db.Column(db.String(100), nullable=False)

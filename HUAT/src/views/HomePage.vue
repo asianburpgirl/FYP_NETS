@@ -80,26 +80,24 @@ export default defineComponent({
         ["Carpark Name", "Subscription Plan", "No. of Subscribers"],
       ],
       PieChartoptions: {
-        chart: {
-          title: "Percentage of bookings per location",
-          pieHole: 0.4,
-        },
+        title: "Percentage of bookings per location",
+        pieHole: 0.1,
         // width: 400,
         // height: 400
       },
       BarChartOptions: {
-        chart: {
-          title: "Number of bookings per location",
-          pieHole: 0.4,
-        },
+        title: "Number of bookings per location",
+        legend: {
+          position: 'bottom'
+        }
         // width: 400,
         // height: 400
       },
       ColumnChartOptions: {
-        chart: {
-          title: "Number of bookings per subscription",
-          pieHole: 0.4,
-        },
+        title: "Number of bookings per subscription",
+        legend: {
+          position: 'bottom'
+        }
         // width: 400,
         // height: 400
       },
