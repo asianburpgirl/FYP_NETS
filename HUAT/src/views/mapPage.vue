@@ -451,34 +451,47 @@ export default defineComponent({
       });
 
       //add markers
-      const markers = await newMap.addMarkers([
-        //location 1
-        {
-          title: "Plaza Sing",
-          snippet: "68 Orchard Rd, Singapore 238839",
-          coordinate: {
-            lat: 1.3007033161990564,
-            lng: 103.84528924122294,
-          },
-        },
+      const url = "http://127.0.0.1:5003/carparks";
+      axios
+        .get(url)
+        .then((response) => {
+          console.log(response.data.data.carparks)
+          for (const eachCarpark of response.data.data.carparks) {
+            const markers =  newMap.addMarkers([
+            //location 1
+            {
+              title: eachCarpark.carparkName,
+              snippet: eachCarpark.carparkLocation,
+              coordinate: {
+                // lat: 1.3007033161990564,
+                lat: eachCarpark.latitude,
+                lng: eachCarpark.longitude,
+                // lng: 103.84528924122294,
+              },
+            },
         // location 2
-        {
-          title: "Temasek City",
-          snippet: "3 Temasek Blvd, #1, #327-328, 038983",
-          coordinate: {
-            lat: 1.2958419970838684,
-            lng: 103.85841587741238,
-          },
-        },
-        {
-          title: "Suntec City",
-          snippet: "1 SBW Road",
-          coordinate: {
-            lat: 1.4505038534431516,
-            lng: 103.82023752816633,
-          },
-        },
+        // {
+        //   title: "Temasek City",
+        //   snippet: "3 Temasek Blvd, #1, #327-328, 038983",
+        //   coordinate: {
+        //     lat: 1.2958419970838684,
+        //     lng: 103.85841587741238,
+        //   },
+        // },
+        // {
+        //   title: "Suntec City",
+        //   snippet: "1 SBW Road",
+        //   coordinate: {
+        //     lat: 1.4505038534431516,
+        //     lng: 103.82023752816633,
+        //   },
+        // },
       ]);
+            
+          }
+
+          // const markers = await newMap.addMarkers([
+         
       // listener for user click
       const markerListener = newMap.setOnMarkerClickListener((event) => {
         this.clickedMarkerName = event.title;
@@ -496,6 +509,10 @@ export default defineComponent({
       // enable current location
       const currentLocationEnable = newMap.enableCurrentLocation(true);
       return newMap;
+        })
+        .catch((error) => {
+          console.log(error.message);
+        });
     },
   },
 });
