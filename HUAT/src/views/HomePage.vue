@@ -81,7 +81,7 @@ export default defineComponent({
       ],
       PieChartoptions: {
         title: "Percentage of bookings per location",
-        pieHole: 0.4,
+        pieHole: 0.1,
         // width: 400,
         // height: 400
       },
