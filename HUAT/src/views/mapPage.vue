@@ -99,12 +99,14 @@
             <ion-datetime
               presentation="date"
               v-model="bookingDate"
+              :min = minDate
+              
             ></ion-datetime>
 
             <ion-label position="stacked"> Start Time:</ion-label>
             <ion-datetime
               presentation="time"
-              v-model="startTime"
+              v-model="startTime"  
             ></ion-datetime>
 
             <ion-label position="stacked"> End Time:</ion-label>
@@ -285,6 +287,7 @@ export default defineComponent({
       timeToLocation_mins: "",
       startTime: "",
       endTime: "",
+      minDate: "",
       bookingDate: "",
 
       userData: {},
@@ -296,9 +299,19 @@ export default defineComponent({
 
   mounted() {
     this.createMap();
+    this.getCurrentDateTime()
   },
 
   methods: {
+    getCurrentDateTime(){
+      const currentDateTime = new Date()
+      const date = ("0" +currentDateTime.getDate()).slice(-2)
+      const month = ("0" +currentDateTime.getMonth()+1).slice(-2)
+
+      this.minDate =  currentDateTime.getFullYear() +"-" + month+"-" + date +"T"+
+      currentDateTime.getHours() + ":" + currentDateTime.getMinutes() + ":" + currentDateTime.getSeconds()
+      console.log("TIME",this.minDate)
+    },
     routeToMyBookings() {
       this.setBookingSuccessOpen(false);
       this.$router
@@ -324,7 +337,7 @@ export default defineComponent({
           coordinates.coords.latitude.toString() +
           "," +
           coordinates.coords.longitude.toString();
-        console.log("Your location:" + this.userOrigin);
+        // console.log("Your location:" + this.userOrigin);
         const url =
           "https://maps.googleapis.com/maps/api/distancematrix/json?origins=" +
           this.userOrigin +
@@ -341,11 +354,11 @@ export default defineComponent({
             const duration_mins = (
               response.data.rows[0].elements[0].duration_in_traffic.value / 60
             ).toPrecision(2);
-            console.log(
-              "distance: ",
-              distance_km + "duration: ",
-              duration_mins
-            );
+            // console.log(
+            //   "distance: ",
+            //   distance_km + "duration: ",
+            //   duration_mins
+            // );
             this.distanceToLocation_km = distance_km;
             this.timeToLocation_mins = duration_mins;
           })
@@ -426,7 +439,7 @@ export default defineComponent({
           bookingID: bookingID,
         })
         .then((response) => {
-          console.log(response)
+          // console.log(response)
         })
         .catch((error) => {
           console.log(error.message);
@@ -455,7 +468,7 @@ export default defineComponent({
       axios
         .get(url)
         .then((response) => {
-          console.log(response.data.data.carparks)
+          // console.log(response.data.data.carparks)
           for (const eachCarpark of response.data.data.carparks) {
             const markers =  newMap.addMarkers([
             //location 1
@@ -469,31 +482,13 @@ export default defineComponent({
                 // lng: 103.84528924122294,
               },
             },
-        // location 2
-        // {
-        //   title: "Temasek City",
-        //   snippet: "3 Temasek Blvd, #1, #327-328, 038983",
-        //   coordinate: {
-        //     lat: 1.2958419970838684,
-        //     lng: 103.85841587741238,
-        //   },
-        // },
-        // {
-        //   title: "Suntec City",
-        //   snippet: "1 SBW Road",
-        //   coordinate: {
-        //     lat: 1.4505038534431516,
-        //     lng: 103.82023752816633,
-        //   },
-        // },
+        
       ]);
-            
           }
-
-          // const markers = await newMap.addMarkers([
          
       // listener for user click
       const markerListener = newMap.setOnMarkerClickListener((event) => {
+        this.getCurrentDateTime()
         this.clickedMarkerName = event.title;
         this.clickedMarkerAddress = event.snippet;
 
