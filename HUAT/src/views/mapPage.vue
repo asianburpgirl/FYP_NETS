@@ -111,13 +111,14 @@
 
             <ion-label position="stacked"> End Time:</ion-label>
             <ion-datetime presentation="time" v-model="endTime"></ion-datetime>
-
-            <!-- 
-            <ion-datetime presentation="time"></ion-datetime>
-            <ion-datetime presentation="date"></ion-datetime>
-
-            <ion-label position="stacked">End Time:</ion-label>
-            <ion-datetime v-model="endTime"></ion-datetime> -->
+            
+            <ion-text color="danger" class="ion-padding-top">
+              <li v-for="error in errorMessage" :key="error">
+                {{ error }}
+              </li>
+              
+            </ion-text>
+          
           </ion-item>
 
           <ion-row
@@ -294,6 +295,8 @@ export default defineComponent({
       userOrigin: "1.2958419970838684,103.85841587741238",
       userDestinations: "1.3007033161990564,103.84528924122294",
       bookingAmount: "5.20",
+
+      errorMessage : [],
     };
   },
 
@@ -310,7 +313,6 @@ export default defineComponent({
 
       this.minDate =  currentDateTime.getFullYear() +"-" + month+"-" + date +"T"+
       currentDateTime.getHours() + ":" + currentDateTime.getMinutes() + ":" + currentDateTime.getSeconds()
-      console.log("TIME",this.minDate)
     },
     routeToMyBookings() {
       this.setBookingSuccessOpen(false);
@@ -380,6 +382,23 @@ export default defineComponent({
       this.subscriptionIsOpen = isOpen;
     },
     makeBoooking() {
+      this.errorMessage = []
+      if (this.startTime >= this.endTime && this.startTime !="" && this.endTime !="" ){
+        this.errorMessage.push("End Time must be later than Start Time!")
+      }
+      if(this.bookingDate ==""){
+        this.errorMessage.push("You need to indicate booking Date!")
+      }
+      if(this.startTime ==""){
+        
+        this.errorMessage.push("You need to indicate start time !")
+      }
+      if(this.endTime ==""){
+        this.errorMessage.push("You need to indicate end time !")
+      }
+
+      if (this.errorMessage.length == 0) {
+        console.log("time")
       const currentDateTime = new Date();
       const date = currentDateTime.getDate();
       const month = currentDateTime.getMonth() + 1;
@@ -430,6 +449,8 @@ export default defineComponent({
         .catch((error) => {
           console.log(error.message);
         });
+      }
+      
     },
     deductFromUser(bookingID){
       // updateBalance
@@ -476,16 +497,12 @@ export default defineComponent({
               title: eachCarpark.carparkName,
               snippet: eachCarpark.carparkLocation,
               coordinate: {
-                // lat: 1.3007033161990564,
                 lat: eachCarpark.latitude,
                 lng: eachCarpark.longitude,
-                // lng: 103.84528924122294,
               },
             },
-        
       ]);
           }
-         
       // listener for user click
       const markerListener = newMap.setOnMarkerClickListener((event) => {
         this.getCurrentDateTime()
