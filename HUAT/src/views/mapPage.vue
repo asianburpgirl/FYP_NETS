@@ -42,7 +42,7 @@
             Time taken from your current location:
             {{ timeToLocation_mins }} mins
             <br />
-            Booking Amount: ${{ bookingAmount }}
+            Booking Amount: ${{ bookingAmount }} per hour
           </h1>
 
           <ion-button
@@ -282,6 +282,11 @@ export default defineComponent({
       subscriptionIsOpen: false,
       choiceOpen: false,
 
+      //setting peak hours. can make it such that admin can change this value. value in 24 hours.
+      startPeak: "09:00:00",
+      endPeak: "17:00:00",
+
+      carparkPrices: [],
       clickedMarkerName: "",
       clickedMarkerAddress: "",
       distanceToLocation_km: "",
@@ -294,7 +299,7 @@ export default defineComponent({
       userData: {},
       userOrigin: "1.2958419970838684,103.85841587741238",
       userDestinations: "1.3007033161990564,103.84528924122294",
-      bookingAmount: "5.20",
+      bookingAmount: "",
 
       errorMessage : [],
     };
@@ -306,6 +311,26 @@ export default defineComponent({
   },
 
   methods: {
+    formatMoney(myFloat){ // money in DB store in 1 dp (eg. 12.1), to change to 2 dp (12.10)
+      myFloat = myFloat.toString()
+      const dotExists = myFloat.includes('.')
+      let newFloat= myFloat
+      if (dotExists){
+        newFloat = myFloat.split(".")
+        if ((newFloat[1]).length ==1){
+          newFloat[1] += "0"
+        }
+        else if ((newFloat[1]).length ==0){
+          newFloat[1] += "00"
+        }
+        newFloat = newFloat.join(".")
+      }
+      else{
+        newFloat += ".00"
+      }
+      
+      return newFloat
+    },
     getCurrentDateTime(){
       const currentDateTime = new Date()
       const date = ("0" +currentDateTime.getDate()).slice(-2)
@@ -500,14 +525,55 @@ export default defineComponent({
                 lat: eachCarpark.latitude,
                 lng: eachCarpark.longitude,
               },
-            },
-      ]);
+            },   
+            ]);
+            this.carparkPrices.push({
+              carparkname: eachCarpark.carparkName,
+              hourlyweekdaypeak : eachCarpark.hourlyweekdaypeak,
+              hourlyweekendpeak : eachCarpark.hourlyweekendpeak,
+              hourlyweekdaynonpeak : eachCarpark.hourlyweekdaynonpeak,
+              hourlyweekendnonpeak : eachCarpark.hourlyweekendnonpeak
+
+            })
           }
       // listener for user click
       const markerListener = newMap.setOnMarkerClickListener((event) => {
+        
         this.getCurrentDateTime()
         this.clickedMarkerName = event.title;
-        this.clickedMarkerAddress = event.snippet;
+        this.clickedMarkerAddress = event.snippet; 
+        
+        for (const eachcarpark of this.carparkPrices ){
+          
+          if (eachcarpark.carparkname ==this.clickedMarkerName){
+            const currentDayOfWeek = new Date()
+
+            // weekend
+            if (currentDayOfWeek.getDay() == 6 || currentDayOfWeek.getDay() == 0) {
+              // peak
+              if ( this.startPeak.split(":")[0] <currentDayOfWeek.getHours() <  this.endPeak.split(":")[0]){
+                this.bookingAmount = this.formatMoney(eachcarpark.hourlyweekendpeak)
+              }
+              //non peak
+              else{
+                this.bookingAmount = this.formatMoney(eachcarpark.hourlyweekendnonpeak)
+              }
+            }
+            // weekdays
+            else{
+              // peak
+              if ( this.startPeak.split(":")[0] <currentDayOfWeek.getHours() <  this.endPeak.split(":")[0]){
+                this.bookingAmount = this.formatMoney(eachcarpark.hourlyweekdaypeak)
+              }
+              //non peak
+              else{
+                this.bookingAmount = this.formatMoney(eachcarpark.hourlyweekdaynonpeak)
+              }
+
+            }
+            
+          }
+        }
 
         this.userDestinations =
           event.latitude.toString() + "," + event.longitude.toString();
