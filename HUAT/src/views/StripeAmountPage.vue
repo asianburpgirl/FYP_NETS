@@ -56,7 +56,7 @@ export default defineComponent({
             const routeData = 'https://buy.stripe.com/test_8wMaGm2Di8m1fXq6oq';
             window.open(routeData, '_blank');
             
-            const url = "http://localhost:5002/addTen/" + this.userData.userID + "/" + this.userData.balance;
+            const url = "http://localhost:5002/addTen/" + this.userData.userID + "/" + parseInt(this.userData.balance);
             axios.put(url, {
                 userID: this.userData.userID,
                 balance: this.userData.balance
@@ -78,7 +78,7 @@ export default defineComponent({
             const routeData = 'https://buy.stripe.com/test_5kA6q60va0TzbHaaEH';
             window.open(routeData, '_blank');
             
-            const url = "http://localhost:5002/addTwenty/" + this.userData.userID + "/" + this.userData.balance;
+            const url = "http://localhost:5002/addTwenty/" + this.userData.userID + "/" + parseInt(this.userData.balance);
             axios.put(url, {
                 userID: this.userData.userID,
                 balance: this.userData.balance
@@ -100,7 +100,7 @@ export default defineComponent({
             const routeData = 'https://buy.stripe.com/test_6oEbKq2DifOt12w4gk';
             window.open(routeData, '_blank');
             
-            const url = "http://localhost:5002/addThirty/" + this.userData.userID + "/" + this.userData.balance;
+            const url = "http://localhost:5002/addThirty/" + this.userData.userID + "/" + parseInt(this.userData.balance);
             axios.put(url, {
                 userID: this.userData.userID,
                 balance: this.userData.balance

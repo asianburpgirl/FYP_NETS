@@ -268,6 +268,7 @@ def addTen(userID, balance):
 def addTwenty(userID, balance):
     user = User.query.filter_by(userID = userID).first()
     balance = user.json()['balance'] 
+    print(balance)
     if user:
         balance = balance + 20
         user.balance = balance
