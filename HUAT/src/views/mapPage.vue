@@ -334,10 +334,11 @@ export default defineComponent({
     getCurrentDateTime(){
       const currentDateTime = new Date()
       const date = ("0" +currentDateTime.getDate()).slice(-2)
-      const month = ("0" +currentDateTime.getMonth()+1).slice(-2)
+      const month = ("0" + (parseInt(currentDateTime.getMonth())+parseInt(1))).slice(-2)
 
       this.minDate =  currentDateTime.getFullYear() +"-" + month+"-" + date +"T"+
       currentDateTime.getHours() + ":" + currentDateTime.getMinutes() + ":" + currentDateTime.getSeconds()
+
     },
     routeToMyBookings() {
       this.setBookingSuccessOpen(false);
