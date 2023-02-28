@@ -10,9 +10,9 @@
     </ion-header>
     <ion-content class="ion-padding">
         <img src='assets/images/nets.png' />
-        <ion-button shape="round" expand="block" size="large" @click="routeTen('success')">$10</ion-button>
-        <ion-button shape="round" expand="block" size="large" @click="routeTwenty('success')">$20</ion-button>
-        <ion-button shape="round" expand="block" size="large" @click="routeThirty('success')">$30</ion-button>
+        <ion-button shape="round" expand="block" size="large" @click="routeTen()">$10</ion-button>
+        <ion-button shape="round" expand="block" size="large" @click="routeTwenty()">$20</ion-button>
+        <ion-button shape="round" expand="block" size="large" @click="routeThirty()">$30</ion-button>
     </ion-content>
 </ion-page>
 </template>
@@ -52,61 +52,52 @@ export default defineComponent({
         loadUserData() {
             this.userData = JSON.parse(localStorage.getItem("userData"));
         },
-        routeTen(route) {
-            const url = "http://localhost:5002/addTen/" + this.userData.userID + "/" + this.userData.balance;
+        routeTen() {
+            const url = "http://localhost:5002/addTen/" + parseInt(this.userData.userID) + "/" + parseInt(this.userData.balance);
             axios.put(url, {
-                userID: this.userData.userID,
-                balance: this.userData.balance
+                userID: parseInt(this.userData.userID),
+                balance: parseInt(this.userData.balance)
             })
             .then((response) => {
                 this.userData = JSON.parse(localStorage.getItem("userData"));
                 this.userData.balance = response.data.data
                 localStorage.setItem("userData", JSON.stringify(this.userData));
+                this.$router.push('/success').then(() => window.location.reload())
             })
             .catch((error) => {
                 console.log(error.message);
-            });
-        
-            this.$router.push({
-                path: '/' + route,
             });
         },
-        routeTwenty(route) {
-            const url = "http://localhost:5002/addTwenty/" + this.userData.userID + "/" + this.userData.balance;
+        routeTwenty() {
+            const url = "http://localhost:5002/addTwenty/" + parseInt(this.userData.userID) + "/" + parseInt(this.userData.balance);
             axios.put(url, {
-                userID: this.userData.userID,
-                balance: this.userData.balance
+                userID: parseInt(this.userData.userID),
+                balance: parseInt(this.userData.balance)
             })
             .then((response) => {
                 this.userData = JSON.parse(localStorage.getItem("userData"));
                 this.userData.balance = response.data.data
                 localStorage.setItem("userData", JSON.stringify(this.userData));
+                this.$router.push('/success').then(() => window.location.reload())
             })
             .catch((error) => {
                 console.log(error.message);
-            });
-        
-            this.$router.push({
-                path: '/' + route,
             });
         },
-        routeThirty(route) {
-            const url = "http://localhost:5002/addThirty/" + this.userData.userID + "/" + this.userData.balance;
+        routeThirty() {
+            const url = "http://localhost:5002/addThirty/" + parseInt(this.userData.userID) + "/" + parseInt(this.userData.balance);
             axios.put(url, {
-                userID: this.userData.userID,
-                balance: this.userData.balance
+                userID: parseInt(this.userData.userID),
+                balance: parseInt(this.userData.balance)
             })
             .then((response) => {
                 this.userData = JSON.parse(localStorage.getItem("userData"));
                 this.userData.balance = response.data.data
                 localStorage.setItem("userData", JSON.stringify(this.userData));
+                this.$router.push('/success').then(() => window.location.reload())
             })
             .catch((error) => {
                 console.log(error.message);
-            });
-        
-            this.$router.push({
-                path: '/' + route,
             });
         },
     },
