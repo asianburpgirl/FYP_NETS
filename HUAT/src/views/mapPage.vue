@@ -3,7 +3,7 @@
     <ion-header>
       <ion-toolbar>
         <ion-buttons slot="start">
-          <ion-back-button></ion-back-button>
+          <ion-back-button defaultHref="/tabs/bookings"></ion-back-button>
         </ion-buttons>
         <ion-title class="ion-text-center">Map</ion-title>
       </ion-toolbar>
@@ -42,7 +42,7 @@
             Time taken from your current location:
             {{ timeToLocation_mins }} mins
             <br />
-            Booking Amount: ${{ bookingAmount }}
+            Booking Amount: ${{ bookingAmount }} per hour
           </h1>
 
           <ion-button
@@ -99,23 +99,26 @@
             <ion-datetime
               presentation="date"
               v-model="bookingDate"
+              :min = minDate
+              
             ></ion-datetime>
 
             <ion-label position="stacked"> Start Time:</ion-label>
             <ion-datetime
               presentation="time"
-              v-model="startTime"
+              v-model="startTime"  
             ></ion-datetime>
 
             <ion-label position="stacked"> End Time:</ion-label>
             <ion-datetime presentation="time" v-model="endTime"></ion-datetime>
-
-            <!-- 
-            <ion-datetime presentation="time"></ion-datetime>
-            <ion-datetime presentation="date"></ion-datetime>
-
-            <ion-label position="stacked">End Time:</ion-label>
-            <ion-datetime v-model="endTime"></ion-datetime> -->
+            
+            <ion-text color="danger" class="ion-padding-top">
+              <li v-for="error in errorMessage" :key="error">
+                {{ error }}
+              </li>
+              
+            </ion-text>
+          
           </ion-item>
 
           <ion-row
@@ -215,6 +218,7 @@
   </ion-page>
 </template>
 
+
 <script>
 import { defineComponent, ref } from "vue";
 import axios from "axios";
@@ -278,26 +282,63 @@ export default defineComponent({
       subscriptionIsOpen: false,
       choiceOpen: false,
 
+      //setting peak hours. can make it such that admin can change this value. value in 24 hours.
+      startPeak: "09:00:00",
+      endPeak: "17:00:00",
+
+      carparkPrices: [],
       clickedMarkerName: "",
       clickedMarkerAddress: "",
       distanceToLocation_km: "",
       timeToLocation_mins: "",
       startTime: "",
       endTime: "",
+      minDate: "",
       bookingDate: "",
 
       userData: {},
       userOrigin: "1.2958419970838684,103.85841587741238",
       userDestinations: "1.3007033161990564,103.84528924122294",
-      bookingAmount: "5.20",
+      bookingAmount: "",
+
+      errorMessage : [],
     };
   },
 
   mounted() {
     this.createMap();
+    this.getCurrentDateTime()
   },
 
   methods: {
+    formatMoney(myFloat){ // money in DB store in 1 dp (eg. 12.1), to change to 2 dp (12.10)
+      myFloat = myFloat.toString()
+      const dotExists = myFloat.includes('.')
+      let newFloat= myFloat
+      if (dotExists){
+        newFloat = myFloat.split(".")
+        if ((newFloat[1]).length ==1){
+          newFloat[1] += "0"
+        }
+        else if ((newFloat[1]).length ==0){
+          newFloat[1] += "00"
+        }
+        newFloat = newFloat.join(".")
+      }
+      else{
+        newFloat += ".00"
+      }
+      
+      return newFloat
+    },
+    getCurrentDateTime(){
+      const currentDateTime = new Date()
+      const date = ("0" +currentDateTime.getDate()).slice(-2)
+      const month = ("0" +currentDateTime.getMonth()+1).slice(-2)
+
+      this.minDate =  currentDateTime.getFullYear() +"-" + month+"-" + date +"T"+
+      currentDateTime.getHours() + ":" + currentDateTime.getMinutes() + ":" + currentDateTime.getSeconds()
+    },
     routeToMyBookings() {
       this.setBookingSuccessOpen(false);
       this.$router
@@ -323,14 +364,13 @@ export default defineComponent({
           coordinates.coords.latitude.toString() +
           "," +
           coordinates.coords.longitude.toString();
-        console.log("Your location:" + this.userOrigin);
+        // console.log("Your location:" + this.userOrigin);
         const url =
           "https://maps.googleapis.com/maps/api/distancematrix/json?origins=" +
           this.userOrigin +
           "&destinations=" +
           this.userDestinations +
           "&departure_time=now&key=AIzaSyAJXGx7T2ypt5Ew5-9SbDTWF9gqloQUJwI";
-          console.log(url)
 
         axios
           .get(url)
@@ -341,11 +381,11 @@ export default defineComponent({
             const duration_mins = (
               response.data.rows[0].elements[0].duration_in_traffic.value / 60
             ).toPrecision(2);
-            console.log(
-              "distance: ",
-              distance_km + "duration: ",
-              duration_mins
-            );
+            // console.log(
+            //   "distance: ",
+            //   distance_km + "duration: ",
+            //   duration_mins
+            // );
             this.distanceToLocation_km = distance_km;
             this.timeToLocation_mins = duration_mins;
           })
@@ -367,6 +407,23 @@ export default defineComponent({
       this.subscriptionIsOpen = isOpen;
     },
     makeBoooking() {
+      this.errorMessage = []
+      if (this.startTime >= this.endTime && this.startTime !="" && this.endTime !="" ){
+        this.errorMessage.push("End Time must be later than Start Time!")
+      }
+      if(this.bookingDate ==""){
+        this.errorMessage.push("You need to indicate booking Date!")
+      }
+      if(this.startTime ==""){
+        
+        this.errorMessage.push("You need to indicate start time !")
+      }
+      if(this.endTime ==""){
+        this.errorMessage.push("You need to indicate end time !")
+      }
+
+      if (this.errorMessage.length == 0) {
+        console.log("time")
       const currentDateTime = new Date();
       const date = currentDateTime.getDate();
       const month = currentDateTime.getMonth() + 1;
@@ -396,7 +453,7 @@ export default defineComponent({
       this.userData = JSON.parse(localStorage.getItem("userData"));
       const userID = this.userData.userID;
 
-      const url = "http://127.0.0.1:5001/bookings"; // hardcoded
+      const url = "http://127.0.0.1:5001/bookings";
 
       axios
         .post(url, {
@@ -410,12 +467,30 @@ export default defineComponent({
           bookingAmt: this.bookingAmount,
         })
         .then((response) => {
+          this.deductFromUser(response.data.data.bookingID)
           this.setBookingOpen(false); // close booking window
           this.setBookingSuccessOpen(true); // open booking sucess window
         })
         .catch((error) => {
           console.log(error.message);
         });
+      }
+      
+    },
+    deductFromUser(bookingID){
+      // updateBalance
+      const url = "http://127.0.0.1:5001/updateBalance/" + bookingID
+      axios
+        .put(url, {
+          bookingID: bookingID,
+        })
+        .then((response) => {
+          // console.log(response)
+        })
+        .catch((error) => {
+          console.log(error.message);
+        });
+
     },
 
     async createMap() {
@@ -435,38 +510,70 @@ export default defineComponent({
       });
 
       //add markers
-      const markers = await newMap.addMarkers([
-        //location 1
-        {
-          title: "Plaza Sing",
-          snippet: "68 Orchard Rd, Singapore 238839",
-          coordinate: {
-            lat: 1.3007033161990564,
-            lng: 103.84528924122294,
-          },
-        },
-        // location 2
-        {
-          title: "Temasek City",
-          snippet: "3 Temasek Blvd, #1, #327-328, 038983",
-          coordinate: {
-            lat: 1.2958419970838684,
-            lng: 103.85841587741238,
-          },
-        },
-        {
-          title: "Suntec City",
-          snippet: "1 SBW Road",
-          coordinate: {
-            lat: 1.4505038534431516,
-            lng: 103.82023752816633,
-          },
-        },
-      ]);
+      const url = "http://127.0.0.1:5003/carparks";
+      axios
+        .get(url)
+        .then((response) => {
+          // console.log(response.data.data.carparks)
+          for (const eachCarpark of response.data.data.carparks) {
+            const markers =  newMap.addMarkers([
+            //location 1
+            {
+              title: eachCarpark.carparkName,
+              snippet: eachCarpark.carparkLocation,
+              coordinate: {
+                lat: eachCarpark.latitude,
+                lng: eachCarpark.longitude,
+              },
+            },   
+            ]);
+            this.carparkPrices.push({
+              carparkname: eachCarpark.carparkName,
+              hourlyweekdaypeak : eachCarpark.hourlyweekdaypeak,
+              hourlyweekendpeak : eachCarpark.hourlyweekendpeak,
+              hourlyweekdaynonpeak : eachCarpark.hourlyweekdaynonpeak,
+              hourlyweekendnonpeak : eachCarpark.hourlyweekendnonpeak
+
+            })
+          }
       // listener for user click
       const markerListener = newMap.setOnMarkerClickListener((event) => {
+        
+        this.getCurrentDateTime()
         this.clickedMarkerName = event.title;
-        this.clickedMarkerAddress = event.snippet;
+        this.clickedMarkerAddress = event.snippet; 
+        
+        for (const eachcarpark of this.carparkPrices ){
+          
+          if (eachcarpark.carparkname ==this.clickedMarkerName){
+            const currentDayOfWeek = new Date()
+
+            // weekend
+            if (currentDayOfWeek.getDay() == 6 || currentDayOfWeek.getDay() == 0) {
+              // peak
+              if ( this.startPeak.split(":")[0] <currentDayOfWeek.getHours() <  this.endPeak.split(":")[0]){
+                this.bookingAmount = this.formatMoney(eachcarpark.hourlyweekendpeak)
+              }
+              //non peak
+              else{
+                this.bookingAmount = this.formatMoney(eachcarpark.hourlyweekendnonpeak)
+              }
+            }
+            // weekdays
+            else{
+              // peak
+              if ( this.startPeak.split(":")[0] <currentDayOfWeek.getHours() <  this.endPeak.split(":")[0]){
+                this.bookingAmount = this.formatMoney(eachcarpark.hourlyweekdaypeak)
+              }
+              //non peak
+              else{
+                this.bookingAmount = this.formatMoney(eachcarpark.hourlyweekdaynonpeak)
+              }
+
+            }
+            
+          }
+        }
 
         this.userDestinations =
           event.latitude.toString() + "," + event.longitude.toString();
@@ -480,12 +587,16 @@ export default defineComponent({
       // enable current location
       const currentLocationEnable = newMap.enableCurrentLocation(true);
       return newMap;
+        })
+        .catch((error) => {
+          console.log(error.message);
+        });
     },
   },
 });
 </script>
 
-<style>
+<style scoped>
 capacitor-google-map {
   display: inline-block;
   width: 330px;

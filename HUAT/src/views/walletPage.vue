@@ -13,7 +13,7 @@
               <p>Pay</p>
             </ion-col> -->
             <ion-col>
-              <ion-button color="dark">
+              <ion-button color="dark" @click='routeUser("payment")'>
                  <ion-icon :icon="wallet" > </ion-icon>
               </ion-button>
               <p>Top Up</p>
@@ -29,19 +29,13 @@
       </ion-card>
       <ion-list lines="none">
         <ion-list-header align="left">
-          <ion-label>Transaction History</ion-label>
+          <ion-label><h2> Transaction History</h2></ion-label>
         </ion-list-header>
-        <ion-item>
-          <ion-label>Top Up Account</ion-label>
-          <ion-label align="end">$5</ion-label>
-        </ion-item>
-        <ion-item>
-          <ion-label>Top Up Account</ion-label>
-          <ion-label align="end">$20</ion-label>
-        </ion-item>
-        <ion-item>
-          <ion-label>Top Up Account</ion-label>
-          <ion-label align="end">$25</ion-label>
+        <ion-item v-for="eachBooking in transactionDetails" :key="eachBooking" >
+          <!-- <ion-label color="{{ eachBooking.color }}">Booking</ion-label> -->
+          <ion-label :color="eachBooking.color">Booking</ion-label>
+          <ion-label :color="eachBooking.color" class="ion-text-center">{{ eachBooking.bookingDate }}</ion-label>
+          <ion-label :color="eachBooking.color" class="ion-text-right">- ${{ eachBooking.amount }}</ion-label>
         </ion-item>
       </ion-list>
     </div>
@@ -49,79 +43,85 @@
 </template>
 
 <script>
-import {  IonGrid, IonCard, IonIcon, IonRow, IonCol, IonButton, IonList, IonItem, IonListHeader,IonLabel } from '@ionic/vue';
+import { IonGrid, IonCard, IonIcon, IonRow, IonCol, IonButton, IonLabel, IonList, IonItem, IonListHeader } from '@ionic/vue';
 import { defineComponent } from 'vue';
 import { card, wallet } from 'ionicons/icons';
 import axios from "axios";
 
 export default defineComponent({
-    components: { IonGrid, IonCard, IonIcon, IonRow, IonCol, IonButton, IonList, IonItem, IonListHeader,IonLabel },
+    components: { IonGrid, IonCard, IonIcon, IonRow, IonCol, IonButton, IonLabel, IonList, IonItem, IonListHeader },
   setup() {
     return { card,wallet };
   },
   data() {
-      return {
-          stripe: null,
-          balance: 0,
-            userData: {}
-      }
+    return {
+      stripe: null,
+      balance: 0,
+      userData: {},
+      transactionDetails: []
+    }
   },
   methods: {
-        getBalance() {
-        this.userData = JSON.parse(localStorage.getItem("userData"));
-        
-        const url = "http://127.0.0.1:5002/getBalance/" + this.userData.userID;
-        axios
-            .get(url)
-            .then((response) => {
-            this.balance = response.data.data.balance
-            })
-            .catch((error) => {
-            console.log(error.message);
-            });
-        },
-      purchaseBook() {
-        fetch('http://localhost:4242/create-payment-intent', {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          
-          body: JSON.stringify({ item:123 }),
-        })
-        .then((result) => result.json())
-        .then((data) => {
-          // Redirect to Stripe Checkout
-          return this.stripe.redirectToCheckout({ sessionId: 123 });
-        })
-        .then((res) => {
-          console.log(res);
-        });
-      },
-      getStripePublishableKey() {
-          fetch('http://localhost:4242/config')
-          .then((result) => result.json())
-          .then((data) => {
-              // Initialize Stripe.js
-              this.stripe = Stripe(data.publicKey); // eslint-disable-line no-undef
-          });
-      },
-      created() {
-          this.getStripePublishableKey();
-      },
-    mounted() {
-        console.log("Hello")
-        const recaptchaScript = document.createElement('script')
-        recaptchaScript.setAttribute('src', 'https://js.stripe.com/v3/')
-        document.head.appendChild(recaptchaScript)
-        this.getBalance();
+    formatMoney(myFloat){ // money in DB store in 1 dp (eg. 12.1), to change to 2 dp (12.10)
+      myFloat = myFloat.toString()
+      let newFloat = myFloat.split(".")
+      if ((newFloat[1]).length ==1){
+        newFloat[1] += "0"
       }
+      newFloat = newFloat.join(".")
+      return newFloat
+    },
+    getUserBooking() {
+      this.userData = JSON.parse(localStorage.getItem("userData"));
+      const url = "http://127.0.0.1:5001/bookings/" + this.userData.userID;
+      axios
+        .get(url)
+        .then((response) => {
+          let data = response.data.data.bookings;
+          data= data.reverse()
+          for (const eachBooking of data) {
+              this.transactionDetails.push({
+              bookingDate: eachBooking.bookingDateTime.slice(4,17),
+              bookingID: eachBooking.bookingID,
+              amount: this.formatMoney(eachBooking.bookingAmt),
+              color: "danger" // for dynamically chaning of color. maybe top up can use "success"
+            });
+          }
+        })
+        .catch((error) => {
+          console.log(error.message);
+        });
+    },
+    loadUserData() {
+      this.userData = JSON.parse(localStorage.getItem("userData"));
+    },
+    getBalance() {
+      const url = "http://localhost:5002/getBalance/" + this.userData.userID;
+      axios.get(url)
+      .then((response) => {
+        // console.log(response)
+        this.balance = response.data.data.balance
+      })
+      .catch((error) => {
+        console.log(error.message);
+      });
+    },
+    routeUser(route) {
+      this.$router.push({
+        path: '/' + route,
+      });
+    },
+  },
+  mounted(){
+    this.loadUserData(),
+    this.getBalance()
+    this.getUserBooking()
   }
 })
-
 </script>
 
-<style>
+<style scoped >
 h1 {
   font-size: 50px;
 }
 </style>
-

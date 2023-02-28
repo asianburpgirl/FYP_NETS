@@ -10,6 +10,10 @@ import viewProfile from '../views/viewProfile.vue';
 import BarChart from '../views/BarChart.vue';
 import forgotPassword from '../views/forgotPasswordPage.vue';
 import mapPage from '../views/mapPage.vue';
+import selectpaymentPage from '../views/selectpaymentPage.vue';
+import NETSAmountPage from '../views/NETSAmountPage.vue';
+import StripeAmountPage from '../views/StripeAmountPage.vue';
+import successPage from '../views/successPage.vue';
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -30,13 +34,7 @@ const routes: Array<RouteRecordRaw> = [
       },
       {
         path: 'wallet',
-        component: () => import('@/views/walletPage.vue'),
-        children: [
-          {
-            path: '/successPage',
-            component: () => import('@/views/successPage.vue')
-          }
-        ] 
+        component: () => import('@/views/walletPage.vue')
       },
       {
         path: 'plans',
@@ -85,6 +83,22 @@ const routes: Array<RouteRecordRaw> = [
     path: '/map',
     component: mapPage
   },
+  {
+    path: '/payment',
+    component: selectpaymentPage
+  },
+  {
+    path: '/Nets',
+    component: NETSAmountPage
+  },
+  {
+    path: '/Stripe',
+    component: StripeAmountPage
+  },
+  {
+    path: '/success',
+    component: successPage
+  }
 ]
 
 const router = createRouter({

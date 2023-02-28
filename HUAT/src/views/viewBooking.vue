@@ -67,20 +67,19 @@
 
     <ion-searchbar></ion-searchbar>
     <ion-card v-for="eachBooking in bookingDetails" :key="eachBooking">
-      <img src="/assets/images/ion.jpg" />
+      <ion-img :src="eachBooking.imagePath"></ion-img>
       <ion-grid>
         <ion-card-header>
           <ion-row>
             <ion-col>
               <ion-card-subtitle
-                >Booking Ref:<u>
+                >Booking Ref: <u>
                   {{ eachBooking.bookingRef }}
                 </u></ion-card-subtitle
               >
 
               <ion-card-subtitle v-if="eachBooking.status == 'Booked'"
-                >Booking Amount: $
-                {{ eachBooking.amount }}
+                >Booking Amount: ${{ eachBooking.amount }}
               </ion-card-subtitle>
               <ion-card-subtitle v-if="eachBooking.status == 'Cancelled'"
                 >Refunded Amount: $
@@ -199,6 +198,7 @@ import {
   IonRow,
   IonCol,
   IonGrid,
+  IonImg
 
 } from "@ionic/vue";
 import { defineComponent, ref } from "vue";
@@ -226,7 +226,8 @@ export default defineComponent({
   IonRow,
   IonCol,
     IonGrid,
-  IonIcon
+  IonIcon,
+  IonImg
   },
 
   setup() {
@@ -325,10 +326,19 @@ export default defineComponent({
     };
   },
   methods: {
+    formatMoney(myFloat){ // money in DB store in 1 dp (eg. 12.1), to change to 2 dp (12.10)
+      myFloat = myFloat.toString()
+      let newFloat = myFloat.split(".")
+      if ((newFloat[1]).length ==1){
+        newFloat[1] += "0"
+      }
+      newFloat = newFloat.join(".")
+      return newFloat
+    },
     editBooking(bookingInfo) {
       this.setEditBookingOpen(true)
       this.bookingInfo = bookingInfo
-      console.log(this.bookingInfo)
+      // console.log(this.bookingInfo)
     },
     saveEditBooking() {
       // const startDateTimeFormatted = this.bookingDate.substring(0, 10) + " " + this.startTime.substring(11, 19);
@@ -374,7 +384,7 @@ export default defineComponent({
           bookingEndDateTime: newEndDateTime
         })
         .then((response) => {
-          console.log(response)
+          // console.log(response)
         })
         .catch((error) => {
           console.log(error.message);
@@ -389,13 +399,14 @@ export default defineComponent({
       axios
         .delete(url)
         .then((response) => {
-          console.log(response);
+          // console.log(response);
           location.reload();
         })
         .catch((error) => {
           console.log(error.message);
         });
     },
+
     getUserBooking() {
       this.userData = JSON.parse(localStorage.getItem("userData"));
       const url = "http://127.0.0.1:5001/bookings/" + this.userData.userID;
@@ -403,48 +414,55 @@ export default defineComponent({
         .get(url)
         .then((response) => {
           const data = response.data.data.bookings;
+          
           for (const eachBooking of data) {
-            const startDateTime = new Date(eachBooking.bookingStartDateTime);
-            const startDateOnly =
-              startDateTime.getDate() +
-              "/" +
-              startDateTime.getMonth() +
-              1 +
-              "/" +
-              startDateTime.getFullYear();
-            const startTimeOnly =
-              startDateTime.getHours() - 8 +
-              ":" +
-              ("0" + startDateTime.getMinutes()).slice(-2);
 
-            const endDateTime = new Date(eachBooking.bookingEndDateTime);
-            const endDateOnly =
-              endDateTime.getDate() +
-              "/" +
-              endDateTime.getMonth() +
-              1 +
-              "/" +
-              endDateTime.getFullYear();
+            let startDateTime = new Date(eachBooking.bookingStartDateTime);
+            startDateTime = startDateTime.toUTCString()
+            const startDateOnly = startDateTime.slice(5,16)
+            const startTimeOnly = startDateTime.slice(17,22)
 
-            const endTimeOnly =
-              ("0" + (endDateTime.getHours() - 8).toString()).slice(-2) +
-              ":" +
-              ("0" + endDateTime.getMinutes()).slice(-2);
 
-            this.bookingDetails.push({
-              bookingDate: eachBooking.bookingDateTime,
-              bookingID: eachBooking.bookingID,
-              bookingLocation: eachBooking.bookingLocation,
-              locationName: eachBooking.locationName,
-              startDate: startDateOnly,
-              startTime: startTimeOnly,
-              endDate: endDateOnly,
-              amount: eachBooking.bookingAmt,
-              endTime: endTimeOnly,
-              status: eachBooking.status,
-              bookingRef: eachBooking.bookingRef,
-              userID: eachBooking.userID,
-            });
+            let endDateTime = new Date(eachBooking.bookingEndDateTime);
+            endDateTime = endDateTime.toUTCString()
+            const endDateOnly = endDateTime.slice(5,16)
+            const endTimeOnly = endDateTime.slice(17,22)
+
+            let imagePath = ""
+
+            const url = "http://127.0.0.1:5003/carparkImage" 
+            axios
+              .post(url,{
+                carparkName: eachBooking.bookingLocation
+              })
+              .then((response) => {
+                
+                imagePath = response.data.data.imagePath
+
+                this.bookingDetails.push({
+                  bookingDate: eachBooking.bookingDateTime,
+                  bookingID: eachBooking.bookingID,
+                  bookingLocation: eachBooking.bookingLocation,
+                  locationName: eachBooking.locationName,
+                  startDate: startDateOnly,
+                  startTime: startTimeOnly,
+                  endDate: endDateOnly,
+                  amount: this.formatMoney(eachBooking.bookingAmt),
+                  endTime: endTimeOnly,
+                  status: eachBooking.status,
+                  bookingRef: eachBooking.bookingRef,
+                  userID: eachBooking.userID,
+                  imagePath : imagePath
+                });
+                console.log(this.bookingDetails)
+
+              
+              })
+              .catch((error) => {
+                console.log(error.message);
+              });
+
+
           }
         })
         .catch((error) => {
@@ -454,7 +472,8 @@ export default defineComponent({
   },
 
   mounted() {
-    this.getUserBooking();
+    this.getUserBooking()
+    
   },
 });
 </script>

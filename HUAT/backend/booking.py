@@ -73,9 +73,10 @@ class User(db.Model):
     username = db.Column(db.String(100), nullable=False)
     password = db.Column(db.String(100), nullable=False)
     balance = db.Column(db.Float())
+    role = db.Column(db.String(100))
     
 
-    def __init__(self, userID, email, name, phoneNum, username, password, balance):
+    def __init__(self, userID, email, name, phoneNum, username, password, balance,role):
         self.userID = userID
         self.email = email
         self.name = name
@@ -83,6 +84,7 @@ class User(db.Model):
         self.username = username
         self.password = password
         self.balance = balance
+        self.role = role
 
     def json(self):
         return {
@@ -92,12 +94,12 @@ class User(db.Model):
             "phoneNum": self.phoneNum,
             "username": self.username,
             "password": self.password,
-            "balance": self.balance
+            "balance": self.balance,
+            "role": self.role
         }
 
     def getUserId(userID):
         user = User.query.filter_by(userID=userID).first()
-        
         return user.json()
 
 
