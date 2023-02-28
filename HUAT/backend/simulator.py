@@ -31,13 +31,13 @@ CORS(app)
 # details to be updated in jar file
 @app.route("/getCarpark/<int:carparkid>", methods=["POST","GET"])
 def getCarparkDetails(carparkid):
-    print("hi")
     payload = {
     "requesttype": 1000,
     "carparkid": carparkid
     }
     headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
     r = requests.post('https://127.0.0.1:9000', json.dumps(payload), headers=headers, verify=False)
+    print("hi")
     print (r.json())
     # p = Popen(['java', '-jar', 'HUAT/backend/smuxserver.jar','127.0.0.1','8989'],stdout=subprocess.PIPE, stderr=STDOUT)
     # for line in p.stdout.read():

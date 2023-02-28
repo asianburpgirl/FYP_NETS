@@ -64,15 +64,15 @@
           this.endTime !='' && this.bookingDate != '' ) || this.pageTab=='lotsAvail'
         "
       >
-        <ion-card v-for="carpark in carparksArray" :key="carpark">
-          <ion-img :src="carpark.imagePath"></ion-img>
+        <ion-card v-for="carpark in carparksArraySimu" :key="carpark">
+          <ion-img :src="carpark.image"></ion-img>
 
           <ion-card-header>
-            <ion-card-title>{{ carpark.carparkName }}</ion-card-title>
+            <ion-card-title>{{ carpark.data.carparklocation }}</ion-card-title>
             <ion-card-subtitle></ion-card-subtitle>
-            <ion-card-subtitle>{{ carpark.caparkLocation }}</ion-card-subtitle>
+            <ion-card-subtitle>{{ carpark.data.carparkaddress }}</ion-card-subtitle>
             <h3>
-              <b> {{ carpark.availableLots }}</b> lots available
+              <b> {{ carpark.data.lotbalancehourly }}</b> lots available
             </h3>
             <h3  v-if="pageTab == 'cheapest' && this.startTime != '' &&
           this.endTime !='' && this.bookingDate != '' ">
@@ -201,6 +201,7 @@ export default defineComponent({
     return {
       selectedLocation: "",
       carparksArray: [],
+      carparksArraySimu: [],
       cheapestCarparks: [],
       pageTab: "all",
       dateTimeModal: false,
@@ -512,10 +513,121 @@ export default defineComponent({
           console.log(error.message);
         });
     },
+    getSimualtor() {
+      
+        let url = "http://127.0.0.1:5004/getCarpark/1";
+        axios
+          .post(url,{
+            "requesttype": 1000,
+            "carparkid": 1
+          })
+          .then((response) => {
+            this.carparksArraySimu.push({
+              data :response.data.data,
+              image: "assets/images/paragon.jpg"})
+            url = "http://127.0.0.1:5004/getCarpark/2";
+            axios
+              .post(url,{
+                "requesttype": 1000,
+                "carparkid": 2
+              })
+              .then((response) => {
+                this.carparksArraySimu.push({
+                    data :response.data.data,
+                    image: "assets/images/ion.jpg"})
+                url = "http://127.0.0.1:5004/getCarpark/3";
+                console.log(url)
+                axios
+                  .post(url,{
+                    "requesttype": 1000,
+                    "carparkid": 3
+                  })
+                  .then((response) => {
+                    this.carparksArraySimu.push({
+                      data :response.data.data,
+                      image: "assets/images/takashimaya.jpeg"})
+                    url = "http://127.0.0.1:5004/getCarpark/4";
+                    axios
+                      .post(url,{
+                        "requesttype": 1000,
+                        "carparkid": 4
+                      })
+                      .then((response) => {
+                        this.carparksArraySimu.push({
+                          data :response.data.data,
+                          image: "assets/images/tangs.jpg"})
+                        url = "http://127.0.0.1:5004/getCarpark/5";
+                        axios
+                          .post(url,{
+                            "requesttype": 1000,
+                            "carparkid": 5
+                          })
+                          .then((response) => {
+                            this.carparksArraySimu.push({
+                            data :response.data.data,
+                            image: "assets/images/Wheelock.png"})
+                            url = "http://127.0.0.1:5004/getCarpark/6";
+                            axios
+                              .post(url,{
+                                "requesttype": 1000,
+                                "carparkid": 6
+                              })
+                              .then((response) => {
+                                this.carparksArraySimu.push({
+                                data :response.data.data,
+                                image: "assets/images/313.jpg"})
+                                url = "http://127.0.0.1:5004/getCarpark/7";
+                                axios
+                                  .post(url,{
+                                    "requesttype": 1000,
+                                    "carparkid": 7
+                                  })
+                                  .then((response) => {
+                                    this.carparksArraySimu.push({
+                                  data :response.data.data,
+                                  image: "assets/images/scape.jpg"})
+                                    url = "http://127.0.0.1:5004/getCarpark/8";
+                                    axios
+                                      .post(url,{
+                                        "requesttype": 1000,
+                                        "carparkid": 8
+                                      })
+                                      .then((response) => {
+                                        this.carparksArraySimu.push({
+                                        data :response.data.data,
+                                        image: "assets/images/wisma.jpeg"})
+
+                                        console.log(this.carparksArraySimu)
+                                      })
+                                  })
+                              })
+                          })
+                      })
+                  })
+              })
+            
+          })
+
+        
+
+
+    
+      },
+      // getSimu2(){
+      //   const url2 = "http://127.0.0.1:5004/getCarpark/2";
+      //   console.log(url2)
+      //   axios
+      //     .get(url2)
+      //     .then((response) => {
+      //       console.log(response)
+      //     })
+      // }
   },
 
   mounted() {
     this.getCarparks();
+    this.getSimualtor()
+    // this.getSimu2()
     // this.confirmDateTime();
   },
 });
