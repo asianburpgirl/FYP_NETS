@@ -11,6 +11,7 @@
 
     <ion-content>
       <ion-searchbar></ion-searchbar>
+      
 
       <ion-list class="ion-padding-top">
         <ion-radio-group v-model="pageTab" @ionChange="resetState()">
@@ -55,6 +56,11 @@
       <div v-if="this.pageTab == 'nearest' && this.selectedLocation == ''">
         <h1>Select a location to view the nearest carparks to it!</h1>
       </div>
+      <ion-button @click="runSthBitch()">
+                RUN STH BITCH
+              </ion-button>
+
+              {{ test }}
 
       <ion-grid
         class="ion-padding-top"
@@ -91,6 +97,8 @@
           >Select Date and Time</ion-button
         >
       </ion-row>
+
+
 
       <ion-modal :is-open="dateTimeModal" class="ion-padding">
         <ion-header>
@@ -217,9 +225,25 @@ export default defineComponent({
       startTime: "",
       endTime: "",
       bookingDate: "",
+
+      test: ""
     };
   },
   methods: {
+    runSthBitch(){
+      console.log("Ta")
+      const url = "http://127.0.0.1:5009/getCoords";
+      axios
+        .get(url)
+        .then((response) => {
+          console.log(response)
+          this.test = response 
+        })
+        .catch((error) => {
+          console.log(error.message);
+        });
+
+    },
     confirmDateTime() {
       this.setDateTimeOpen(false);
       // const startTimeFormatted = this.startTime.substring(11, 19)
