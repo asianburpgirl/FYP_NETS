@@ -19,10 +19,7 @@
       <ion-modal :is-open="choiceOpen" class="ion-padding">
         <ion-header>
           <ion-toolbar>
-            <ion-title class="ion-text-center">
-              {{ clickedMarkerName }}</ion-title
-            >
-
+            <ion-title> {{ clickedMarkerName }}</ion-title>
             <ion-buttons slot="start">
               <ion-button @click="setChoiceOpen(false)">
                 <ion-icon :icon="arrowBackOutline"></ion-icon>
@@ -31,40 +28,41 @@
           </ion-toolbar>
         </ion-header>
 
-        <ion-content class="ion-padding-top ion-padding">
-          <h2>
-            Address: <u> {{ clickedMarkerAddress }}</u>
-          </h2>
-          <h1>
-            Distance from your current location:
-            {{ distanceToLocation_km }} km
-            <br />
-            Time taken from your current location:
-            {{ timeToLocation_mins }} mins
-            <br />
-            Booking Amount: ${{ bookingAmount }} per hour
-          </h1>
+        <ion-content class="ion-padding ion-justify-content-center">
+          <div>
+            <p>
+              Distance from current location:
+              {{ distanceToLocation_km }} km
+            </p>
+            <p>
+              Time taken from current location:
+              {{ timeToLocation_mins }} mins
+            </p>
+            <p>Booking Amount: ${{ bookingAmount }} per hour</p>
+          </div>
 
-          <ion-button
-            shape="round"
-            @click="
-              setBookingOpen(true);
-              setChoiceOpen(false);
-            "
-            expand="block"
-            size="large"
-            >Book</ion-button
-          >
-          <ion-button
-            shape="round"
-            @click="
-              setSubscriptionOpen(true);
-              setChoiceOpen(false);
-            "
-            expand="block"
-            size="large"
-            >Subscription</ion-button
-          >
+          <ion-row>
+            <ion-col md="6">
+              <ion-button
+                @click="
+                  setBookingOpen(true);
+                  setChoiceOpen(false);
+                "
+                expand="block"
+                >Book</ion-button
+              >
+            </ion-col>
+            <ion-col md="6">
+              <ion-button
+                @click="
+                  setSubscriptionOpen(true);
+                  setChoiceOpen(false);
+                "
+                expand="block"
+                >Subscription</ion-button
+              >
+            </ion-col>
+          </ion-row>
         </ion-content>
       </ion-modal>
 
@@ -99,26 +97,23 @@
             <ion-datetime
               presentation="date"
               v-model="bookingDate"
-              :min = minDate
-              
+              :min="minDate"
             ></ion-datetime>
 
             <ion-label position="stacked"> Start Time:</ion-label>
             <ion-datetime
               presentation="time"
-              v-model="startTime"  
+              v-model="startTime"
             ></ion-datetime>
 
             <ion-label position="stacked"> End Time:</ion-label>
             <ion-datetime presentation="time" v-model="endTime"></ion-datetime>
-            
+
             <ion-text color="danger" class="ion-padding-top">
               <li v-for="error in errorMessage" :key="error">
                 {{ error }}
               </li>
-              
             </ion-text>
-          
           </ion-item>
 
           <ion-row
@@ -137,6 +132,12 @@
           </ion-toolbar>
         </ion-header>
         <ion-content class="ion-padding">
+
+        
+            
+            <ion-img :src="clickedMarkerImage"></ion-img>
+          
+
           <ion-row>
             Your booking at {{ clickedMarkerName }} is successful!
             <br />
@@ -218,7 +219,6 @@
   </ion-page>
 </template>
 
-
 <script>
 import { defineComponent, ref } from "vue";
 import axios from "axios";
@@ -295,50 +295,75 @@ export default defineComponent({
       endTime: "",
       minDate: "",
       bookingDate: "",
-
-      userData: {},
+      carparksArraySimu:[],
       userOrigin: "1.2958419970838684,103.85841587741238",
       userDestinations: "1.3007033161990564,103.84528924122294",
       bookingAmount: "",
 
-      errorMessage : [],
+      errorMessage: [],
+
+      // bookingDetails: [],
+      // userData: {},
+      // editBookingOpen: false,
+
+      // //for editing booking
+      // bookingInfo: {},
+      // newDate: "",
+      // newStartTime: "",
+      // newEndTime: "",
+
+      // //to open editing windows
+      // editDate: false,
+      // editStartTime: false,
+      // editEndTime: false,
     };
   },
 
   mounted() {
     this.createMap();
-    this.getCurrentDateTime()
+    this.getCurrentDateTime();
   },
 
   methods: {
-    formatMoney(myFloat){ // money in DB store in 1 dp (eg. 12.1), to change to 2 dp (12.10)
-      myFloat = myFloat.toString()
-      const dotExists = myFloat.includes('.')
-      let newFloat= myFloat
-      if (dotExists){
-        newFloat = myFloat.split(".")
-        if ((newFloat[1]).length ==1){
-          newFloat[1] += "0"
+    formatMoney(myFloat) {
+      // money in DB store in 1 dp (eg. 12.1), to change to 2 dp (12.10)
+      myFloat = myFloat.toString();
+      const dotExists = myFloat.includes(".");
+      let newFloat = myFloat;
+      if (dotExists) {
+        newFloat = myFloat.split(".");
+        if (newFloat[1].length == 1) {
+          newFloat[1] += "0";
+        } else if (newFloat[1].length == 0) {
+          newFloat[1] += "00";
         }
-        else if ((newFloat[1]).length ==0){
-          newFloat[1] += "00"
-        }
-        newFloat = newFloat.join(".")
+        newFloat = newFloat.join(".");
+      } else {
+        newFloat += ".00";
       }
-      else{
-        newFloat += ".00"
-      }
-      
-      return newFloat
+
+      return newFloat;
     },
-    getCurrentDateTime(){
-      const currentDateTime = new Date()
-      const date = ("0" +currentDateTime.getDate()).slice(-2)
-      const month = ("0" + (parseInt(currentDateTime.getMonth())+parseInt(1))).slice(-2)
+    getCurrentDateTime() {
+      const currentDateTime = new Date();
+      const date = ("0" + currentDateTime.getDate()).slice(-2);
+      const month = (
+        "0" +
+        (parseInt(currentDateTime.getMonth()) + parseInt(1))
+      ).slice(-2);
 
-      this.minDate =  currentDateTime.getFullYear() +"-" + month+"-" + date +"T"+
-      currentDateTime.getHours() + ":" + currentDateTime.getMinutes() + ":" + currentDateTime.getSeconds()
-
+      this.minDate =
+        currentDateTime.getFullYear() +
+        "-" +
+        month +
+        "-" +
+        date +
+        "T" +
+        currentDateTime.getHours() +
+        ":" +
+        currentDateTime.getMinutes() +
+        ":" +
+        currentDateTime.getSeconds();
     },
     routeToMyBookings() {
       this.setBookingSuccessOpen(false);
@@ -408,79 +433,81 @@ export default defineComponent({
       this.subscriptionIsOpen = isOpen;
     },
     makeBoooking() {
-      this.errorMessage = []
-      if (this.startTime >= this.endTime && this.startTime !="" && this.endTime !="" ){
-        this.errorMessage.push("End Time must be later than Start Time!")
+      this.errorMessage = [];
+      if (
+        this.startTime >= this.endTime &&
+        this.startTime != "" &&
+        this.endTime != ""
+      ) {
+        this.errorMessage.push("End Time must be later than Start Time!");
       }
-      if(this.bookingDate ==""){
-        this.errorMessage.push("You need to indicate booking Date!")
+      if (this.bookingDate == "") {
+        this.errorMessage.push("You need to indicate booking Date!");
       }
-      if(this.startTime ==""){
-        
-        this.errorMessage.push("You need to indicate start time !")
+      if (this.startTime == "") {
+        this.errorMessage.push("You need to indicate start time !");
       }
-      if(this.endTime ==""){
-        this.errorMessage.push("You need to indicate end time !")
+      if (this.endTime == "") {
+        this.errorMessage.push("You need to indicate end time !");
       }
 
       if (this.errorMessage.length == 0) {
-        console.log("time")
-      const currentDateTime = new Date();
-      const date = currentDateTime.getDate();
-      const month = currentDateTime.getMonth() + 1;
-      const year = currentDateTime.getFullYear();
+        console.log("time");
+        const currentDateTime = new Date();
+        const date = currentDateTime.getDate();
+        const month = currentDateTime.getMonth() + 1;
+        const year = currentDateTime.getFullYear();
 
-      const hour = currentDateTime.getHours();
-      const min = currentDateTime.getMinutes();
-      const sec = currentDateTime.getSeconds();
+        const hour = currentDateTime.getHours();
+        const min = currentDateTime.getMinutes();
+        const sec = currentDateTime.getSeconds();
 
-      const currentDateTimeFormatted =
-        year + "-" + month + "-" + date + " " + hour + ":" + min + ":" + sec;
+        const currentDateTimeFormatted =
+          year + "-" + month + "-" + date + " " + hour + ":" + min + ":" + sec;
 
-      this.bookingDate = this.bookingDate.substring(0, 10);
+        this.bookingDate = this.bookingDate.substring(0, 10);
 
-      const startDateTimeFormatted =
-        this.bookingDate.substring(0, 10) +
-        " " +
-        this.startTime.substring(11, 19);
-      this.startTime = this.startTime.substring(11, 19);
+        const startDateTimeFormatted =
+          this.bookingDate.substring(0, 10) +
+          " " +
+          this.startTime.substring(11, 19);
+        this.startTime = this.startTime.substring(11, 19);
 
-      const endDateTimeFormatted =
-        this.bookingDate.substring(0, 10) +
-        " " +
-        this.endTime.substring(11, 19);
-      this.endTime = this.endTime.substring(11, 19);
+        const endDateTimeFormatted =
+          this.bookingDate.substring(0, 10) +
+          " " +
+          this.endTime.substring(11, 19);
+        this.endTime = this.endTime.substring(11, 19);
 
-      this.userData = JSON.parse(localStorage.getItem("userData"));
-      const userID = this.userData.userID;
+        this.userData = JSON.parse(localStorage.getItem("userData"));
+        const userID = this.userData.userID;
 
-      const url = "http://127.0.0.1:5001/bookings";
+        const url = "http://127.0.0.1:5001/bookings";
 
-      axios
-        .post(url, {
-          bookingDateTime: currentDateTimeFormatted,
-          bookingLocation: this.clickedMarkerName,
-          locationName: this.clickedMarkerAddress,
-          bookingStartDateTime: startDateTimeFormatted,
-          bookingEndDateTime: endDateTimeFormatted,
-          userID: userID,
-          status: "Booked",
-          bookingAmt: this.bookingAmount,
-        })
-        .then((response) => {
-          this.deductFromUser(response.data.data.bookingID)
-          this.setBookingOpen(false); // close booking window
-          this.setBookingSuccessOpen(true); // open booking sucess window
-        })
-        .catch((error) => {
-          console.log(error.message);
-        });
+        axios
+          .post(url, {
+            bookingDateTime: currentDateTimeFormatted,
+            bookingLocation: this.clickedMarkerName,
+            locationName: this.clickedMarkerAddress,
+            bookingStartDateTime: startDateTimeFormatted,
+            bookingEndDateTime: endDateTimeFormatted,
+            userID: userID,
+            status: "Booked",
+            bookingAmt: this.bookingAmount,
+          })
+          .then((response) => {
+            this.deductFromUser(response.data.data.bookingID);
+            this.setBookingOpen(false); // close booking window
+            this.setBookingSuccessOpen(true); // open booking sucess window
+          })
+          .catch((error) => {
+            console.log(error.message);
+          });
       }
-      
     },
-    deductFromUser(bookingID){
+    deductFromUser(bookingID) {
       // updateBalance
-      const url = "http://127.0.0.1:5001/updateBalance/" + bookingID
+      const url = "http://127.0.0.1:5001/updateBalance/" + bookingID;
       axios
         .put(url, {
           bookingID: bookingID,
@@ -491,7 +518,6 @@ export default defineComponent({
         .catch((error) => {
           console.log(error.message);
         });
-
     },
 
     async createMap() {
@@ -517,81 +543,311 @@ export default defineComponent({
         .then((response) => {
           // console.log(response.data.data.carparks)
           for (const eachCarpark of response.data.data.carparks) {
-            const markers =  newMap.addMarkers([
-            //location 1
-            {
-              title: eachCarpark.carparkName,
-              snippet: eachCarpark.carparkLocation,
-              coordinate: {
-                lat: eachCarpark.latitude,
-                lng: eachCarpark.longitude,
+            const markers = newMap.addMarkers([
+              //location 1
+              {
+                title: eachCarpark.carparkName,
+                snippet: eachCarpark.carparkLocation,
+                coordinate: {
+                  lat: eachCarpark.latitude,
+                  lng: eachCarpark.longitude,
+                },
               },
-            },   
             ]);
             this.carparkPrices.push({
               carparkname: eachCarpark.carparkName,
-              hourlyweekdaypeak : eachCarpark.hourlyweekdaypeak,
-              hourlyweekendpeak : eachCarpark.hourlyweekendpeak,
-              hourlyweekdaynonpeak : eachCarpark.hourlyweekdaynonpeak,
-              hourlyweekendnonpeak : eachCarpark.hourlyweekendnonpeak
-
-            })
+              hourlyweekdaypeak: eachCarpark.hourlyweekdaypeak,
+              hourlyweekendpeak: eachCarpark.hourlyweekendpeak,
+              hourlyweekdaynonpeak: eachCarpark.hourlyweekdaynonpeak,
+              hourlyweekendnonpeak: eachCarpark.hourlyweekendnonpeak,
+            });
           }
-      // listener for user click
-      const markerListener = newMap.setOnMarkerClickListener((event) => {
-        
-        this.getCurrentDateTime()
-        this.clickedMarkerName = event.title;
-        this.clickedMarkerAddress = event.snippet; 
-        
-        for (const eachcarpark of this.carparkPrices ){
-          
-          if (eachcarpark.carparkname ==this.clickedMarkerName){
-            const currentDayOfWeek = new Date()
+          // listener for user click
+          const markerListener = newMap.setOnMarkerClickListener((event) => {
+            this.getCurrentDateTime();
+            this.clickedMarkerName = event.title;
+            // this.clickedMarkerAddress = event.snippet;
 
-            // weekend
-            if (currentDayOfWeek.getDay() == 6 || currentDayOfWeek.getDay() == 0) {
-              // peak
-              if ( this.startPeak.split(":")[0] <currentDayOfWeek.getHours() <  this.endPeak.split(":")[0]){
-                this.bookingAmount = this.formatMoney(eachcarpark.hourlyweekendpeak)
-              }
-              //non peak
-              else{
-                this.bookingAmount = this.formatMoney(eachcarpark.hourlyweekendnonpeak)
+            for (const eachcarpark of this.carparkPrices) {
+              if (eachcarpark.carparkname == this.clickedMarkerName) {
+                const currentDayOfWeek = new Date();
+
+                // weekend
+                if (
+                  currentDayOfWeek.getDay() == 6 ||
+                  currentDayOfWeek.getDay() == 0
+                ) {
+                  // peak
+                  if (
+                    this.startPeak.split(":")[0] <
+                    currentDayOfWeek.getHours() <
+                    this.endPeak.split(":")[0]
+                  ) {
+                    this.bookingAmount = this.formatMoney(
+                      eachcarpark.hourlyweekendpeak
+                    );
+                  }
+                  //non peak
+                  else {
+                    this.bookingAmount = this.formatMoney(
+                      eachcarpark.hourlyweekendnonpeak
+                    );
+                  }
+                }
+                // weekdays
+                else {
+                  // peak
+                  if (
+                    this.startPeak.split(":")[0] <
+                    currentDayOfWeek.getHours() <
+                    this.endPeak.split(":")[0]
+                  ) {
+                    this.bookingAmount = this.formatMoney(
+                      eachcarpark.hourlyweekdaypeak
+                    );
+                  }
+                  //non peak
+                  else {
+                    this.bookingAmount = this.formatMoney(
+                      eachcarpark.hourlyweekdaynonpeak
+                    );
+                  }
+                }
               }
             }
-            // weekdays
-            else{
-              // peak
-              if ( this.startPeak.split(":")[0] <currentDayOfWeek.getHours() <  this.endPeak.split(":")[0]){
-                this.bookingAmount = this.formatMoney(eachcarpark.hourlyweekdaypeak)
-              }
-              //non peak
-              else{
-                this.bookingAmount = this.formatMoney(eachcarpark.hourlyweekdaynonpeak)
-              }
 
-            }
-            
-          }
-        }
+            this.userDestinations =
+              event.latitude.toString() + "," + event.longitude.toString();
 
-        this.userDestinations =
-          event.latitude.toString() + "," + event.longitude.toString();
+            this.setChoiceOpen(true);
+            this.calculateDistance();
+          });
+          //add traffic data
+          const trafficDataEnable = newMap.enableTrafficLayer(true);
 
-        this.setChoiceOpen(true);
-        this.calculateDistance();
-      });
-      //add traffic data
-      const trafficDataEnable = newMap.enableTrafficLayer(true);
-
-      // enable current location
-      const currentLocationEnable = newMap.enableCurrentLocation(true);
-      return newMap;
+          // enable current location
+          const currentLocationEnable = newMap.enableCurrentLocation(true);
+          return newMap;
         })
         .catch((error) => {
           console.log(error.message);
         });
+    },
+    getSimulator() {
+      this.carparksArraySimu = []
+      this.googleMapDistanceUrl ="https://maps.googleapis.com/maps/api/distancematrix/json?origins=";
+      this.combinedLatLang = "";
+      
+      let url = "http://127.0.0.1:5004/getCarpark/1";
+      axios
+        .post(url,{
+          "requesttype": 1000,
+          "carparkid": 1
+        })
+        .then((response) => {
+          this.carparksArraySimu.push({
+            data :response.data.data,
+            image: "assets/images/paragon.jpg",
+            // lat: 1.3040258775031617,
+            // long: 103.83608284915861
+          })
+          this.combinedLatLang +="1.3040258775031617" + "," + "103.83608284915861" + "|";
+          url = "http://127.0.0.1:5004/getCarpark/2";
+          axios
+            .post(url,{
+              "requesttype": 1000,
+              "carparkid": 2
+            })
+            .then((response) => {
+              this.carparksArraySimu.push({
+                  data :response.data.data,
+                  image: "assets/images/ion.jpg",
+                  // lat: 1.3040258775031617,
+                  // long: 103.83608284915861
+          })
+          this.combinedLatLang +="1.3040258775031617" + "," + "103.83608284915861" + "|";
+              url = "http://127.0.0.1:5004/getCarpark/3";
+              console.log(url)
+              axios
+                .post(url,{
+                  "requesttype": 1000,
+                  "carparkid": 3
+                })
+                .then((response) => {
+                  this.carparksArraySimu.push({
+                    data :response.data.data,
+                    image: "assets/images/takashimaya.jpeg",
+            //         lat: 1.3033454254185042,
+            // long: 103.83455711763565
+          })
+            this.combinedLatLang +="1.3033454254185042" + "," + "103.83455711763565" + "|";
+                  url = "http://127.0.0.1:5004/getCarpark/4";
+                  axios
+                    .post(url,{
+                      "requesttype": 1000,
+                      "carparkid": 4
+                    })
+                    .then((response) => {
+                      this.carparksArraySimu.push({
+                        data :response.data.data,
+                        image: "assets/images/tangs.jpg",
+            //             lat: 1.3040258775031617,
+            // long: 103.83608284915861
+          })
+            this.combinedLatLang +="1.3040258775031617" + "," + "103.83608284915861" + "|";
+                      url = "http://127.0.0.1:5004/getCarpark/5";
+                      axios
+                        .post(url,{
+                          "requesttype": 1000,
+                          "carparkid": 5
+                        })
+                        .then((response) => {
+                          this.carparksArraySimu.push({
+                          data :response.data.data,
+                          image: "assets/images/Wheelock.png",
+            //               lat: 1.3050314731714412,
+            // long: 103.83297614415605
+          })
+            this.combinedLatLang +="1.3050314731714412" + "," + "103.83297614415605" + "|";
+                          url = "http://127.0.0.1:5004/getCarpark/6";
+                          axios
+                            .post(url,{
+                              "requesttype": 1000,
+                              "carparkid": 6
+                            })
+                            .then((response) => {
+                              this.carparksArraySimu.push({
+                              data :response.data.data,
+                              image: "assets/images/313.jpg",
+            //                   lat: 1.301171207812743,
+            // long: 103.8386220085623
+          })
+            this.combinedLatLang +="1.301171207812743" + "," + "103.8386220085623" + "|";
+                              url = "http://127.0.0.1:5004/getCarpark/7";
+                              axios
+                                .post(url,{
+                                  "requesttype": 1000,
+                                  "carparkid": 7
+                                })
+                                .then((response) => {
+                                  this.carparksArraySimu.push({
+                                data :response.data.data,
+                                image: "assets/images/scape.jpg",
+            //                     lat: 1.3010677408660067,
+            // long: 103.83576204980196
+          })
+            this.combinedLatLang +="1.3010677408660067" + "," + "103.83576204980196" + "|";
+                                  url = "http://127.0.0.1:5004/getCarpark/8";
+                                  axios
+                                    .post(url,{
+                                      "requesttype": 1000,
+                                      "carparkid": 8
+                                    })
+                                    .then((response) => {
+                                      this.carparksArraySimu.push({
+                                      data :response.data.data,
+                                      image: "assets/images/wisma.jpeg",
+                                      // lat: 1.303842974291844,
+                                      // long: 103.8333226716273
+                                    })
+                                      this.combinedLatLang +="1.303842974291844" + "," + "103.8333226716273" + "|";
+
+                                      if (this.selectedLocation == "") {
+                                        console.log("no location selected");
+                                      } else {
+                                        if (this.selectedLocation == "orchard") {
+                                          this.userOrigin = "1.3064433533620563,103.83276247871694";
+                                        } else if (this.selectedLocation == "yishun") {
+                                          this.userOrigin = "1.4304060903894582, 103.83515323243753";
+                                        } else if (this.selectedLocation == "somerset") {
+                                          this.userOrigin = "1.3016313961551784, 103.83849995957749";
+                                        }
+                                      
+
+                                      this.googleMapDistanceUrl +=
+                                      this.userOrigin +
+                                      "&destinations=" +
+                                      this.combinedLatLang.slice(0, -1) +
+                                      "&departure_time=now&key=AIzaSyAJXGx7T2ypt5Ew5-9SbDTWF9gqloQUJwI";
+                                      // this.calculateDistance();
+
+                                      console.log(this.userOrigin, "HEREEEE")
+                                      // this.userOrigin = "1.3064433533620563,103.83276247871694"
+                                      // console.log("HERE2")
+                                      const url = "http://127.0.0.1:5009/getCoords";
+                                      axios
+                                        .post(url,{
+                                          "origin": this.userOrigin
+                                        })
+                                        .then((response) => {
+                                          console.log(response.data.rows[0].elements)
+                                          const destinations = response.data.rows[0].elements
+                                          for (let i = 0; i < this.carparksArraySimu.length; i++) {
+                                            this.carparksArraySimu[i]["distance_km"] = destinations[i].distance.text;
+                                            this.carparksArraySimu[i]["distance_km_value"] = destinations[i].distance.text;
+                                            this.carparksArraySimu[i]["duration_mins"] =destinations[i].duration_in_traffic.text;
+                                          }
+                                          if (this.userOrigin != ""){
+                                             this.carparksArraySimu.sort(function (a, b) {
+                                            const keyA = a.distance_km_value;
+                                            const keyB = b.distance_km_value;
+                                            if (keyA < keyB) return -1;
+                                            if (keyA > keyB) return 1;
+                                            return 0;
+                                          });
+
+                                          this.carparksArraySimu = this.carparksArraySimu.slice(0, 4);
+                                          }
+
+                                          // this.test = response 
+                                        })
+                                        .catch((error) => {
+                                          console.log(error);
+                                        });
+                                      }                                      
+                                      
+                                    })
+                                })
+                            })
+                        })
+                    })
+                })
+            })
+          
+        })
+
+      // this.calculateDistance()
+
+      // this.googleMapDistanceUrl =
+      //   "https://maps.googleapis.com/maps/api/distancematrix/json?origins=";
+      // this.combinedLatLang = "";
+      
+      // for (const eachCarpark in this.carparksArraySimu){
+      //     console.log(this.carparksArraySimu[eachCarpark])
+      //     this.combinedLatLang +=
+      //         eachCarpark.lat + "," + eachCarpark.long + "|";
+      // }
+
+      //   if (this.selectedLocation == "") {
+      //       console.log("no location selected");
+      //     } else {
+      //       if (this.selectedLocation == "orchard") {
+      //         this.userOrigin = "1.3064433533620563,103.83276247871694";
+      //       } else if (this.selectedLocation == "yishun") {
+      //         this.userOrigin = "1.4304060903894582, 103.83515323243753";
+      //       } else if (this.selectedLocation == "somerset") {
+      //         this.userOrigin = "1.3016313961551784, 103.83849995957749";
+      //       }
+
+      //       this.googleMapDistanceUrl +=
+      //         this.userOrigin +
+      //         "&destinations=" +
+      //         this.combinedLatLang.slice(0, -1) +
+      //         "&departure_time=now&key=AIzaSyAJXGx7T2ypt5Ew5-9SbDTWF9gqloQUJwI";
+      //       this.calculateDistance();
+      //       console.log(this.googleMapDistanceUrl)
+      //     }
+  
     },
   },
 });
