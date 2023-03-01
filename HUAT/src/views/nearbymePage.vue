@@ -60,7 +60,7 @@
                 RUN STH BITCH
               </ion-button>
 
-              {{ test }}
+              
 
       <ion-grid
         class="ion-padding-top"
@@ -232,16 +232,20 @@ export default defineComponent({
   },
   methods: {
     runSthBitch(){
-      console.log("Ta")
+      console.log(this.userOrigin, "HEREEEE")
+      // this.userOrigin = "1.3064433533620563,103.83276247871694"
+      // console.log("HERE2")
       const url = "http://127.0.0.1:5009/getCoords";
       axios
-        .get(url)
+        .post(url,{
+          "origin": this.userOrigin
+        })
         .then((response) => {
           console.log(response)
-          this.test = response 
+          // this.test = response 
         })
         .catch((error) => {
-          console.log(error.message);
+          console.log(error);
         });
 
     },
@@ -507,8 +511,9 @@ export default defineComponent({
     //     });
     // },
     calculateDistance() {
+      const url = "http://127.0.0.1:5009/getCoords"
       axios
-        .get(this.googleMapDistanceUrl)
+        .get(url)
         .then((response) => {
           const destinations = response.data.rows[0].elements;
 
@@ -539,12 +544,46 @@ export default defineComponent({
           console.log(error.message);
         });
     },
+    // calculateDistance() {
+    //   axios
+    //     .get(this.googleMapDistanceUrl)
+    //     .then((response) => {
+    //       const destinations = response.data.rows[0].elements;
+
+    //       for (let i = 0; i < this.carparksArraySimu.length; i++) {
+    //         // this.carparksArray[i]["distance_km"] = (destinations[i].distance.value / 1000).toPrecision(2)
+    //         // this.carparksArray[i]["duration_mins"] = (destinations[i].duration_in_traffic.value / 60).toPrecision(2)
+    //         this.carparksArraySimu[i]["distance_km"] =
+    //           destinations[i].distance.text;
+    //         this.carparksArraySimu[i]["distance_km_value"] =
+    //           destinations[i].distance.value;
+    //         this.carparksArraySimu[i]["duration_mins"] =
+    //           destinations[i].duration_in_traffic.text;
+    //       }
+    //       console.log(this.carparksArraySimu)
+    //       console.log(response)
+
+    //       this.carparksArraySimu.sort(function (a, b) {
+    //         const keyA = a.distance_km_value;
+    //         const keyB = b.distance_km_value;
+    //         if (keyA < keyB) return -1;
+    //         if (keyA > keyB) return 1;
+    //         return 0;
+    //       });
+
+    //       this.carparksArraySimu = this.carparksArraySimu.slice(0, 4);
+    //     })
+    //     .catch((error) => {
+    //       console.log(error.message);
+    //     });
+    // },
     getSimulator() {
       this.carparksArraySimu = []
       this.googleMapDistanceUrl ="https://maps.googleapis.com/maps/api/distancematrix/json?origins=";
       this.combinedLatLang = "";
       
       let url = "http://127.0.0.1:5004/getCarpark/1";
+      
       axios
         .post(url,{
           "requesttype": 1000,
@@ -668,22 +707,49 @@ export default defineComponent({
                                         } else if (this.selectedLocation == "somerset") {
                                           this.userOrigin = "1.3016313961551784, 103.83849995957749";
                                         }
-
-                                        console.log("SDfa")
-
-                                        console.log(this.carparksArraySimu)
+                                      
 
                                       this.googleMapDistanceUrl +=
                                       this.userOrigin +
                                       "&destinations=" +
                                       this.combinedLatLang.slice(0, -1) +
                                       "&departure_time=now&key=AIzaSyAJXGx7T2ypt5Ew5-9SbDTWF9gqloQUJwI";
+                                      // this.calculateDistance();
 
-                                      console.log(this.googleMapDistanceUrl)
-                                      
-                                      this.calculateDistance();
-                                      }
-                                      
+                                      console.log(this.userOrigin, "HEREEEE")
+                                      // this.userOrigin = "1.3064433533620563,103.83276247871694"
+                                      // console.log("HERE2")
+                                      const url = "http://127.0.0.1:5009/getCoords";
+                                      axios
+                                        .post(url,{
+                                          "origin": this.userOrigin
+                                        })
+                                        .then((response) => {
+                                          console.log(response.data.rows[0].elements)
+                                          const destinations = response.data.rows[0].elements
+                                          for (let i = 0; i < this.carparksArraySimu.length; i++) {
+                                            this.carparksArraySimu[i]["distance_km"] = destinations[i].distance.text;
+                                            this.carparksArraySimu[i]["distance_km_value"] = destinations[i].distance.text;
+                                            this.carparksArraySimu[i]["duration_mins"] =destinations[i].duration_in_traffic.text;
+                                          }
+                                          if (this.userOrigin != ""){
+                                             this.carparksArraySimu.sort(function (a, b) {
+                                            const keyA = a.distance_km_value;
+                                            const keyB = b.distance_km_value;
+                                            if (keyA < keyB) return -1;
+                                            if (keyA > keyB) return 1;
+                                            return 0;
+                                          });
+
+                                          this.carparksArraySimu = this.carparksArraySimu.slice(0, 4);
+                                          }
+
+                                          // this.test = response 
+                                        })
+                                        .catch((error) => {
+                                          console.log(error);
+                                        });
+                                      }                                      
                                       
                                     })
                                 })

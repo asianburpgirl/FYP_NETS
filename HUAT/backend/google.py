@@ -1,4 +1,5 @@
 import requests
+from flask import Flask, jsonify, request
 import carpark
 import json
 from flask import Flask
@@ -7,7 +8,6 @@ from flask_cors import CORS
 from os import environ
 
 api_key = "AIzaSyAJXGx7T2ypt5Ew5-9SbDTWF9gqloQUJwI"
-origin = "1.3064433533620563,103.83276247871694" 
 url ='https://maps.googleapis.com/maps/api/distancematrix/json?'
 
 app = Flask(__name__)
@@ -31,13 +31,15 @@ def getCoord():
     return locationList
 
 # http://127.0.0.1:5009/getCoords
-@app.route('/getCoords')
+@app.route('/getCoords',  methods = ['POST'])
 def getLatLong():
     latitude = ''
     longitude = ''
     destination = getCoord()
     locationList = []
     myString = "" 
+    origin = request.json.get('origin',None)
+    # origin = "1.3064433533620563,103.83276247871694" 
 
     # to get lat and long from the data
     for i in json.loads(destination.data): 
@@ -54,6 +56,7 @@ def getLatLong():
     # to remove the last pipeline
     myString = myString[0:-1]
 
+    print(url + 'origins=' + origin +'&destinations=' + myString + '&departure_time=now&key=AIzaSyAJXGx7T2ypt5Ew5-9SbDTWF9gqloQUJwI')
     # to request to the google map api
     r = requests.get(url + 'origins=' + origin +'&destinations=' + myString + '&departure_time=now&key=AIzaSyAJXGx7T2ypt5Ew5-9SbDTWF9gqloQUJwI')
          
