@@ -4,7 +4,7 @@
             <ion-row class="ion-justify-content-center">
               <img src='assets/images/nets.png'/>
             </ion-row>
-            <div class="ion-padding">
+            <div class="ion-padding ion-text-center">
               <p class="pageHeader">Login</p>
             </div>
 
@@ -22,7 +22,7 @@
             </ion-list>
             <!-- username -->
     
-            <div class="myLine ion-justify-content-end">
+            <div class="myLine ion-justify-content-center">
               <a href="/forgotPassword" class=""><i>Forgot password?</i></a>
             </div>
             <!-- <ion-row class="ion-padding-top">
