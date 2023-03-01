@@ -8,7 +8,7 @@
         <ion-title class="ion-text-center">Map</ion-title>
       </ion-toolbar>
     </ion-header>
-    <ion-content :fullscreen="true" class="ion-padding">
+    <ion-content>
       <!--   <ion-refresher slot="fixed" @ionRefresh="handleRefresh()">
         <ion-refresher-content></ion-refresher-content>
       </ion-refresher> -->
@@ -600,8 +600,8 @@ export default defineComponent({
 <style scoped>
 capacitor-google-map {
   display: inline-block;
-  width: 330px;
-  height: 690px;
+  width: 100%;
+  height: 100%;
 }
 .addPaddingBottom {
   padding-bottom: 300px;
