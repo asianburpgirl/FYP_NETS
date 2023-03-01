@@ -1,5 +1,5 @@
 <template>
-  <ion-page class="ion-padding">
+  <ion-page>
     <ion-header>
       <ion-toolbar>
         <ion-title class="ion-text-center">Bookings</ion-title>
