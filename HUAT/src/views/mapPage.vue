@@ -156,9 +156,9 @@
             <ion-button shape="round" @click="setBookingSuccessOpen(false)"
               >Back to Map</ion-button
             >
-            <ion-button shape="round" @click="routeToMyBookings()"
+            <!-- <ion-button shape="round" @click="routeToMyBookings()"
               >View My Bookings</ion-button
-            >
+            > -->
           </ion-row>
         </ion-content>
       </ion-modal>
