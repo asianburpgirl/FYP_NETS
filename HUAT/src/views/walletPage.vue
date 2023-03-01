@@ -1,8 +1,16 @@
 <template>
   <base-layout pageTitle="My Wallet" needToolBar="y">
-    <div class="ion-text-center">
-      <h2>Amount</h2>
-      <h1>${{ balance }}</h1>
+    <div>
+      <!-- <h2>Amount</h2> -->
+      <ion-card>
+        <ion-card-header>
+          <ion-card-title>${{ balance }}</ion-card-title>
+          <ion-card-subtitle>Top up easily with our in-built payment</ion-card-subtitle>
+        </ion-card-header>
+        <!-- <h1 class="ion-padding">${{ balance }}</h1>
+        <p><i>Top up easily with our in-built payment</i></p> -->
+      </ion-card>
+      
       <ion-card>
         <ion-grid>
           <ion-row>
@@ -13,13 +21,13 @@
               <p>Pay</p>
             </ion-col> -->
             <ion-col>
-              <ion-button color="dark" @click='routeUser("payment")'>
+              <ion-button expand="block" color="primary" @click='routeUser("payment")'>
                  <ion-icon :icon="wallet" > </ion-icon>
               </ion-button>
               <p>Top Up</p>
             </ion-col>
             <ion-col>
-              <ion-button color="dark">
+              <ion-button expand="block" color="primary">
                 <ion-icon :icon="card" />
               </ion-button>
               <p>Card</p>
