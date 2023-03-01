@@ -12,7 +12,7 @@
                 <ion-label @click='routeUser("viewBooking")'>View Bookings</ion-label>
             </ion-item>
 
-            <ion-item button detail="true">
+            <!-- <ion-item button detail="true">
                 <ion-label>Setting</ion-label>
             </ion-item>
             <ion-item button detail="true">
@@ -23,7 +23,7 @@
             </ion-item>
             <ion-item button detail="true">
                 <ion-label>Help Centre</ion-label>
-            </ion-item>
+            </ion-item> -->
             <ion-item button detail="true" href="/">
                 <ion-label>Log Out</ion-label>
             </ion-item>
