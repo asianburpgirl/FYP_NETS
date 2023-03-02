@@ -5,15 +5,21 @@
         <ion-buttons slot="start">
           <ion-back-button defaultHref="/tabs/bookings"></ion-back-button>
         </ion-buttons>
-        <ion-title class="ion-text-center">Nearby Me</ion-title>
+        <ion-title class="ion-text-center">Nearby Me!</ion-title>
       </ion-toolbar>
     </ion-header>
 
     <ion-content>
       <ion-searchbar></ion-searchbar>
-      
 
-      <ion-list class="ion-padding-top">
+      <ion-row class="ion-justify-content-center ion-padding">
+        <ion-button shape="round" expand="block" @click="setDateTimeOpen(true)"
+          >Change Booking Date and Time</ion-button
+        >
+      </ion-row>
+
+      <!-- <ion-list class="ion-padding-top" v-if="endTime != '' && startTime!= '' &&bookingDate!= ''"> -->
+        <ion-list class="ion-padding-top">
         <ion-radio-group v-model="pageTab" @ionChange="resetState()">
           <ion-item>
             <ion-label>All</ion-label>
@@ -56,12 +62,7 @@
       <div v-if="this.pageTab == 'nearest' && this.selectedLocation == ''">
         <h1>Select a location to view the nearest carparks to it!</h1>
       </div>
-      <ion-button @click="runSthBitch()">
-                RUN STH BITCH
-              </ion-button>
-
               
-
       <ion-grid
         class="ion-padding-top"
         v-if="
@@ -70,6 +71,7 @@
           this.endTime !='' && this.bookingDate != '' ) || this.pageTab=='lotsAvail'
         "
       >
+      <!-- v-if="endTime != '' && startTime!= '' &&bookingDate!= ''" -->
         <ion-card v-for="carpark in carparksArraySimu" :key="carpark">
           <ion-img :src="carpark.image"></ion-img>
 
@@ -80,23 +82,25 @@
             <h3>
               <b> {{ carpark.data.lotbalancehourly }}</b> lots available
             </h3>
-            <h3  v-if="pageTab == 'cheapest' && this.startTime != '' &&
+            <h3  v-if="this.startTime != '' &&
           this.endTime !='' && this.bookingDate != '' ">
-              <b> Total: ${{ carpark.totalFee }}</b>
+              <b> Total: ${{ carpark.data.totalFee }}</b>
             </h3>
             <h4 v-if="this.userOrigin != ''">
               <u>{{ carpark.distance_km }},</u>
               <u>{{ carpark.duration_mins }} </u>
               away from you
             </h4>
+            <ion-row
+            class="ion-padding-top ion-justify-content-center ion-padding-bottom">
+            <!-- confirmationAlert(eachBooking.amount) -->
+            <ion-button shape="round" @click="confirmationAlert(carpark,this.bookingDate,this.startTime,this.endTime,this.userData)">
+              Book
+              </ion-button>
+            </ion-row>
           </ion-card-header>
         </ion-card>
       </ion-grid>
-      <ion-row class="ion-justify-content-center ion-padding"  v-if="pageTab == 'cheapest'">
-        <ion-button shape="round" expand="block" @click="setDateTimeOpen(true)"
-          >Select Date and Time</ion-button
-        >
-      </ion-row>
 
 
 
@@ -125,6 +129,14 @@
           <ion-label position="stacked"> End Time:</ion-label>
           <ion-datetime presentation="time" v-model="endTime"></ion-datetime>
 
+          <ion-row class="ion-padding-top">
+            <ion-text color="danger" class="ion-padding-top">
+              <li v-for="error in errorMessage" :key="error">
+                {{ error }}
+              </li>
+            </ion-text>
+          </ion-row>
+          
           <ion-row
             class="ion-padding-top ion-justify-content-center ion-padding-bottom addPaddingBottom"
           >
@@ -142,6 +154,7 @@
 <script>
 import { arrowBackOutline } from "ionicons/icons";
 import {
+  IonText,
   IonPage,
   IonHeader,
   IonTitle,
@@ -168,13 +181,15 @@ import {
   IonDatetime,
   IonIcon,
   IonRow,
+  alertController
 } from "@ionic/vue";
-import { defineComponent } from "vue";
+import { defineComponent,ref } from "vue";
 import axios from "axios";
 // import { Geolocation } from "@capacitor/geolocation";
 
 export default defineComponent({
   components: {
+    IonText,
     IonPage,
     IonHeader,
     IonTitle,
@@ -202,17 +217,16 @@ export default defineComponent({
     IonIcon,
     IonRow,
   },
-  setup() {
-    return { arrowBackOutline };
-  },
+  // setup() {
+  //   return { arrowBackOutline };
+  // },
   data() {
     return {
       selectedLocation: "",
       // carparksArray: [],
       carparksArraySimu: [],
-      cheapestCarparks: [],
       pageTab: "all",
-      dateTimeModal: false,
+      dateTimeModal: true,
 
       //setting peak hours. can make it such that admin can change this value. value in 24 hours.
       startPeak: "09:00:00",
@@ -223,220 +237,155 @@ export default defineComponent({
       googleMapDistanceUrl: "",
 
       // for cheapest carparks
+      // startTime: (new Date()).getHours() + ":" + (new Date()).getMinutes() ,
       startTime: "",
       endTime: "",
       bookingDate: "",
 
-      test: ""
+      test: "",
+      userData: "",
+
+      errorMessage: ""
     };
   },
-  methods: {
-    runSthBitch(){
-      console.log(this.userOrigin, "HEREEEE")
-      // this.userOrigin = "1.3064433533620563,103.83276247871694"
-      // console.log("HERE2")
-      const url = "http://127.0.0.1:5009/getCoords";
-      axios
-        .post(url,{
-          "origin": this.userOrigin
-        })
-        .then((response) => {
-          console.log(response)
-          // this.test = response 
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+  setup() {
+    const handlerMessage = ref("");
+    const confirmationAlert = async (carpark, bookingDate,startTime,endTime,userData) => {
+      
+      const alert = await alertController.create({
+        header: "Confirm your booking? ",
+        subHeader: "$" + carpark.data.totalFee + " will be deducted from your account",
+        buttons: [
+          {
+            text: "Cancel",
+            cssClass: "alert-button-cancel",
+            role: "cancel",
+            handler: () => {
+              handlerMessage.value = "Alert canceled";
+            },
+          },
+          {
+            text: "Yes",
+            cssClass: "alert-button-confirm",
+            role: "confirm",
+            handler: () => {
+              console.log(carpark)
+              handlerMessage.value = "Alert confirmed";
+            const currentDateTime = new Date();
+            const date = currentDateTime.getDate();
+            const month = currentDateTime.getMonth() + 1;
+            const year = currentDateTime.getFullYear();
 
-    },
+            const hour = currentDateTime.getHours();
+            const min = currentDateTime.getMinutes();
+            const sec = currentDateTime.getSeconds();
+
+            const currentDateTimeFormatted =
+              year + "-" + month + "-" + date + " " + hour + ":" + min + ":" + sec;
+
+              bookingDate = bookingDate.substring(0, 10);
+
+            const startDateTimeFormatted =
+            bookingDate.substring(0, 10) +
+              " " +
+              startTime.substring(11, 19);
+              startTime = startTime.substring(11, 19);
+
+            const endDateTimeFormatted =
+            bookingDate.substring(0, 10) +
+              " " +
+              endTime.substring(11, 19);
+              endTime = endTime.substring(11, 19);
+
+            const userID = userData.userID;
+
+            let url = "http://127.0.0.1:5001/bookings";
+            axios
+              .post(url, {
+                bookingDateTime: currentDateTimeFormatted,
+                bookingLocation: carpark.data.carparklocation,
+                locationName: carpark.data.carparkaddress,
+                bookingStartDateTime: startDateTimeFormatted,
+                bookingEndDateTime: endDateTimeFormatted, 
+                userID: userID,
+                status: "Booked",
+                bookingAmt: carpark.data.totalFee
+              })
+              .then((response) => {
+                console.log(response)
+                  // deduct money
+                  url = "http://127.0.0.1:5001/updateBalance/" + response.data.data.bookingID;
+                  const bookingAmount = response.data.data.bookingAmt
+                  axios
+                    .put(url, {
+                      bookingID: response.data.data.bookingID,
+                    })
+                    .then((response) => {
+                      console.log(response)
+                      sucessMsg(bookingAmount, response.data.data);
+                    })
+                    .catch((error) => {
+                      console.log(error.message);
+                    });
+               
+              })
+              .catch((error) => {
+                console.log(error.message);
+              });
+            },
+          },
+        ],
+      });
+      await alert.present();
+    };
+
+    const sucessMsg = async (amount,balance) => {
+      const alert = await alertController.create({
+        header: "Success!",
+        subHeader: "$"+ amount + " deducted. Balance is " + "$" +balance,
+        buttons: [
+          {
+            text: "Okay",
+            handler: () => {
+              location.reload();
+            },
+          },
+        ],
+      });
+
+      await alert.present();
+    };
+
+    return {
+      confirmationAlert,
+      sucessMsg,
+      arrowBackOutline
+    };
+  },
+  methods: {  
+   
     confirmDateTime() {
-      console.log("HERE")
-      this.setDateTimeOpen(false);
-      // const startTimeFormatted = this.startTime.substring(11, 19)
-      // const endTimeFormatted = this.endTime.substring(11, 19)
-      const bookingDateFormatted = this.bookingDate.substring(0, 10);
-      // const startDateTime = new Date(bookingDateFormatted + " " + this.startTime.substring(11, 19)).getDay()
-      const startDateTime = new Date(
-        bookingDateFormatted + " " + this.startTime.substring(11, 19)
-      );
-      const endDateTime = new Date(
-        bookingDateFormatted + " " + this.endTime.substring(11, 19)
-      );
 
-      // getting the hours
-      const url = "http://127.0.0.1:5003/carparks";
-      axios
-        .get(url)
-        .then((response) => {
-          this.carparksArraySimu = response.data.data.carparks;
-          let fee = 0
-          for (const eachCarpark of response.data.data.carparks) {
-          // add carpark lots vacacy
-            eachCarpark["availableLots"] =
-              eachCarpark.maxCapacity - eachCarpark.currentCapacity;
+      // error validation
+       this.errorMessage = []
+      if (this.startTime >= this.endTime && this.startTime !="" && this.endTime !="" ){
+        this.errorMessage.push("End Time must be later than Start Time!")
+      }
+      if(this.bookingDate ==""){
+        this.errorMessage.push("You need to indicate booking Date!")
+      }
+      if(this.startTime ==""){
+        this.errorMessage.push("You need to indicate start time !")
+      }
+      if(this.endTime ==""){
+        this.errorMessage.push("You need to indicate end time !")
+      }
 
-          // weekend
-            if (startDateTime == 6 || startDateTime == 0) {
-              console.log("weekend");
-              // for (const eachCarpark of response.data.data.carparks) {
-                // if booking start and end in peak
-                if (
-                  endDateTime <
-                    new Date(bookingDateFormatted + " " + this.endPeak) &&
-                  startDateTime >
-                    new Date(bookingDateFormatted + " " + this.startPeak)
-                ) {
-                  const duration =
-                    Math.floor((endDateTime - startDateTime) / 3600000) + 1;
-                  fee = duration * eachCarpark.hourlyweekendpeak;
-                }
-
-                // if booking start in non peak and end in peak
-                else if (
-                  endDateTime <
-                    new Date(bookingDateFormatted + " " + this.endPeak) &&
-                  startDateTime <
-                    new Date(bookingDateFormatted + " " + this.startPeak)
-                ) {
-                  const peakFee =
-                    (Math.floor(
-                      (new Date(bookingDateFormatted + " " + this.startPeak) -
-                        startDateTime) /
-                        3600000
-                    ) +
-                      1) *
-                    eachCarpark.hourlyweekendpeak;
-                  const nonPeakFee =(Math.floor((endDateTime -new Date(bookingDateFormatted + " " + this.startPeak)) /3600000) +1) * eachCarpark.hourlyweekendnonpeak;
-                  fee = peakFee + nonPeakFee;
-                }
-
-                // if booking start in peak and end in non peak
-                else if (
-                  endDateTime >
-                    new Date(bookingDateFormatted + " " + this.endPeak) &&
-                  startDateTime <
-                    new Date(bookingDateFormatted + " " + this.endPeak)
-                ) {
-                  const peakFee =
-                    (Math.floor(
-                      (new Date(bookingDateFormatted + " " + this.endPeak) -
-                        startDateTime) /
-                        3600000
-                    ) +
-                      1) *
-                    eachCarpark.hourlyweekendpeak;
-                  const nonPeakFee =
-                    (Math.floor(
-                      (endDateTime -
-                        new Date(bookingDateFormatted + " " + this.endPeak)) /
-                        3600000
-                    ) +
-                      1) *
-                    eachCarpark.hourlyweekendnonpeak;
-                  fee = peakFee + nonPeakFee;
-                }
-
-                // if booking start and end in non peak
-                // else if ((endDateTime > (new Date(bookingDateFormatted + " " + this.endPeak))) && (startDateTime > (new Date(bookingDateFormatted + " " + this.startPeak)))) {
-                else {
-                  const duration =
-                    Math.floor((endDateTime - startDateTime) / 3600000) + 1;
-                  fee = duration * eachCarpark.hourlyweekendnonpeak;
-                }
-                eachCarpark["totalFee"] = fee
-                console.log(eachCarpark)
-              
-            }
-
-          // weekday
-            else {
-              console.log("weekday");
-              // for (const eachCarpark of response.data.data.carparks) {
-                // if booking start and end in peak
-                if (
-                  endDateTime <
-                    new Date(bookingDateFormatted + " " + this.endPeak) &&
-                  startDateTime >
-                    new Date(bookingDateFormatted + " " + this.startPeak)
-                ) {
-                  const duration =
-                    Math.floor((endDateTime - startDateTime) / 3600000) + 1;
-                  fee = duration * eachCarpark.hourlyweekdaypeak;
-                }
-
-                // if booking start in non peak and end in peak
-                else if (
-                  endDateTime <
-                    new Date(bookingDateFormatted + " " + this.endPeak) &&
-                  startDateTime <
-                    new Date(bookingDateFormatted + " " + this.startPeak)
-                ) {
-                  const peakFee =
-                    (Math.floor(
-                      (new Date(bookingDateFormatted + " " + this.startPeak) -
-                        startDateTime) /
-                        3600000
-                    ) +
-                      1) *
-                    eachCarpark.hourlyweekdaypeak;
-                  const nonPeakFee =(Math.floor((endDateTime -new Date(bookingDateFormatted + " " + this.startPeak)) /3600000) +1) * eachCarpark.hourlyweekdaynonpeak;
-                  fee = peakFee + nonPeakFee;
-                }
-
-                // if booking start in peak and end in non peak
-                else if (
-                  endDateTime >
-                    new Date(bookingDateFormatted + " " + this.endPeak) &&
-                  startDateTime <
-                    new Date(bookingDateFormatted + " " + this.endPeak)
-                ) {
-                  const peakFee =
-                    (Math.floor(
-                      (new Date(bookingDateFormatted + " " + this.endPeak) -
-                        startDateTime) /
-                        3600000
-                    ) +
-                      1) *
-                    eachCarpark.hourlyweekdaypeak;
-                  const nonPeakFee =
-                    (Math.floor(
-                      (endDateTime -
-                        new Date(bookingDateFormatted + " " + this.endPeak)) /
-                        3600000
-                    ) +
-                      1) *
-                    eachCarpark.hourlyweekdaynonpeak;
-                  fee = peakFee + nonPeakFee;
-                }
-
-                // if booking start and end in non peak
-                // else if ((endDateTime > (new Date(bookingDateFormatted + " " + this.endPeak))) && (startDateTime > (new Date(bookingDateFormatted + " " + this.startPeak)))) {
-                else {
-                  const duration =
-                    Math.floor((endDateTime - startDateTime) / 3600000) + 1;
-                  fee = duration * eachCarpark.hourlyweekdaynonpeak;
-                }
-
-              
-            }
-            eachCarpark["totalFee"] = fee
-          }
-          console.log(this.carparksArraySimu)
-         
-          this.carparksArraySimu.sort(function (a, b) {
-            const keyA = a.totalFee;
-            const keyB = b.totalFee;
-            if (keyA < keyB) return -1;
-            if (keyA > keyB) return 1;
-            return 0;
-          });
-
-          this.carparksArraySimu = this.carparksArraySimu.slice(0, 4);
-        })
-        .catch((error) => {
-          console.log(error.message);
-        });
-
+      if (this.errorMessage.length == 0){
+        this.setDateTimeOpen(false); // close popup
+        this.getSimulator();
+      }    
+      
       // this.bookingDate.getDay()
     },
     setDateTimeOpen(isOpen) {
@@ -450,11 +399,11 @@ export default defineComponent({
         this.getSimulator();
       }
       if (this.pageTab == "lotsAvail") {
-        this.userOrigin = "";
+        // this.userOrigin = "";
         this.selectedLocation = "";
-        this.startTime= "",
-        this.endTime= "",
-        this.bookingDate=  "",
+        // this.startTime= "",
+        // this.endTime= "",
+        // this.bookingDate=  "",
         this.carparksArraySimu.sort(function (a, b) {
             const keyA = a.data.lotbalancehourly;
             const keyB = b.data.lotbalancehourly;
@@ -463,53 +412,1323 @@ export default defineComponent({
             return 0;
           });
         this.carparksArraySimu = this.carparksArraySimu.slice(0, 4);
-
+      }
+      if (this.pageTab== "cheapest"){
+        this.getCarparkPrices()
       }
       
     },
     pushLog(msg) {
       this.selectedLocation = msg;
     },
-    // getCarparks() {
-    //   this.googleMapDistanceUrl =
-    //     "https://maps.googleapis.com/maps/api/distancematrix/json?origins=";
-    //   this.combinedLatLang = "";
+    getCarparkPrices(){
+      // for (let i = 0; i < this.carparksArraySimu.length ; i++) {
+      const bookingDateFormatted = this.bookingDate.substring(0, 10);
+      const startDateTime = new Date(bookingDateFormatted + " " + this.startTime.substring(11, 19));
+      const endDateTime = new Date(
+      bookingDateFormatted + " " + this.endTime.substring(11, 19));     
+  
+      const url ="http://127.0.0.1:5004/getCarparkPrice/1" 
+      axios
+        .get(url)
+        .then((response)=> {
 
-    //   const url = "http://127.0.0.1:5003/carparks";
-    //   axios
-    //     .get(url)
-    //     .then((response) => {
-    //       this.carparksArray = response.data.data.carparks;
-    //       for (const eachCarpark of response.data.data.carparks) {
-    //         eachCarpark["availableLots"] =
-    //           eachCarpark.maxCapacity - eachCarpark.currentCapacity;
-    //         this.combinedLatLang +=
-    //           eachCarpark.latitude + "," + eachCarpark.longitude + "|";
-    //       }
+          let fee = 0
+           // weekend
+           if (startDateTime.getDay() == 6 || startDateTime.getDay() == 0) {
+              console.log("weekend");
+              // for (const eachCarpark of response.data.data.carparks) {
+                // if booking start and end in peak
+                if (
+                  endDateTime <
+                    new Date(bookingDateFormatted + " " + this.endPeak) &&
+                  startDateTime >
+                    new Date(bookingDateFormatted + " " + this.startPeak)
+                ) {
+                  const duration =
+                    Math.floor((endDateTime - startDateTime) / 3600000) + 1;
+                  fee = duration * response.data.data.weekendpeakhourly;
+                }
 
-    //       if (this.selectedLocation == "") {
-    //         console.log("no location selected");
-    //       } else {
-    //         if (this.selectedLocation == "orchard") {
-    //           this.userOrigin = "1.3064433533620563,103.83276247871694";
-    //         } else if (this.selectedLocation == "yishun") {
-    //           this.userOrigin = "1.4304060903894582, 103.83515323243753";
-    //         } else if (this.selectedLocation == "somerset") {
-    //           this.userOrigin = "1.3016313961551784, 103.83849995957749";
-    //         }
+                // if booking start in non peak and end in peak
+                else if (
+                  endDateTime <
+                    new Date(bookingDateFormatted + " " + this.endPeak) &&
+                  startDateTime <
+                    new Date(bookingDateFormatted + " " + this.startPeak)
+                ) {
+                  const peakFee =
+                    (Math.floor(
+                      (new Date(bookingDateFormatted + " " + this.startPeak) -
+                        startDateTime) /
+                        3600000
+                    ) +
+                      1) *
+                      response.data.data.weekendpeakhourly;
+                  const nonPeakFee =(Math.floor((endDateTime -new Date(bookingDateFormatted + " " + this.startPeak)) /3600000) +1) * response.data.data.weekendnonpeakhourly;
+                  fee = peakFee + nonPeakFee;
+                }
 
-    //         this.googleMapDistanceUrl +=
-    //           this.userOrigin +
-    //           "&destinations=" +
-    //           this.combinedLatLang.slice(0, -1) +
-    //           "&departure_time=now&key=AIzaSyAJXGx7T2ypt5Ew5-9SbDTWF9gqloQUJwI";
-    //         this.calculateDistance();
-    //       }
-    //     })
-    //     .catch((error) => {
-    //       console.log(error.message);
-    //     });
-    // },
+                // if booking start in peak and end in non peak
+                else if (
+                  endDateTime >
+                    new Date(bookingDateFormatted + " " + this.endPeak) &&
+                  startDateTime <
+                    new Date(bookingDateFormatted + " " + this.endPeak)
+                ) {
+                  const peakFee =
+                    (Math.floor(
+                      (new Date(bookingDateFormatted + " " + this.endPeak) -
+                        startDateTime) /
+                        3600000
+                    ) +
+                      1) *
+                    response.data.data.weekendpeakhourly;
+                  const nonPeakFee =
+                    (Math.floor(
+                      (endDateTime -
+                        new Date(bookingDateFormatted + " " + this.endPeak)) /
+                        3600000
+                    ) +
+                      1) *
+                      response.data.data.weekendpeaknonhourly;
+                  fee = peakFee + nonPeakFee;
+                }
+
+                // if booking start and end in non peak
+                // else if ((endDateTime > (new Date(bookingDateFormatted + " " + this.endPeak))) && (startDateTime > (new Date(bookingDateFormatted + " " + this.startPeak)))) {
+                else {
+                  const duration =
+                    Math.floor((endDateTime - startDateTime) / 3600000) + 1;
+                  fee = duration * response.data.data.weekendnonpeakhourly;
+                }
+                
+            }
+
+          // weekday
+            else {
+              console.log("weekday");
+              // for (const eachCarpark of response.data.data.carparks) {
+                // if booking start and end in peak
+                if (
+                  endDateTime <
+                    new Date(bookingDateFormatted + " " + this.endPeak) &&
+                  startDateTime >
+                    new Date(bookingDateFormatted + " " + this.startPeak)
+                ) {
+                  console.log("// if booking start and end in peak")
+                  const duration =
+                    Math.floor((endDateTime - startDateTime) / 3600000) + 1;
+                  fee = duration * response.data.data.weekdaypeakhourly;
+                }
+
+                // if booking start in non peak and end in peak
+                else if (
+                  new Date(bookingDateFormatted + " " + this.startPeak)<
+                  endDateTime && endDateTime <
+                    new Date(bookingDateFormatted + " " + this.endPeak) &&
+                  startDateTime <
+                    new Date(bookingDateFormatted + " " + this.startPeak)
+                ) {
+                  console.log("//  if booking start in non peak and end in peak")
+                  const peakFee =
+                    (Math.floor(
+                      (new Date(bookingDateFormatted + " " + this.startPeak) -
+                        startDateTime) /
+                        3600000
+                    ) +
+                      1) *
+                    response.data.data.weekdaypeakhourly;
+                  const nonPeakFee =(Math.floor((endDateTime -new Date(bookingDateFormatted + " " + this.startPeak)) /3600000) +1) * response.data.data.weekdaynonpeakhourly;
+                  fee = peakFee + nonPeakFee;
+                }
+
+                // if booking start in peak and end in non peak
+                else if (
+                  endDateTime >
+                    new Date(bookingDateFormatted + " " + this.endPeak) &&
+                  startDateTime <
+                    new Date(bookingDateFormatted + " " + this.endPeak)
+                ) {
+                  console.log("//  if booking start in peak and end in non peak")
+                  const peakFee =
+                    (Math.floor(
+                      (new Date(bookingDateFormatted + " " + this.endPeak) -
+                        startDateTime) /
+                        3600000
+                    ) +
+                      1) *
+                      response.data.data.weekdaypeakhourly
+                  const nonPeakFee =
+                    (Math.floor(
+                      (endDateTime -
+                        new Date(bookingDateFormatted + " " + this.endPeak)) /
+                        3600000
+                    ) +
+                      1) *
+                      response.data.data.weekdaynonpeakhourly;
+                  fee = peakFee + nonPeakFee;
+                }
+
+                // if booking start and end in non peak
+                // else if ((endDateTime > (new Date(bookingDateFormatted + " " + this.endPeak))) && (startDateTime > (new Date(bookingDateFormatted + " " + this.startPeak)))) {
+                else {
+                  console.log("else")
+                  const duration =
+                    Math.floor((endDateTime - startDateTime) / 3600000) + 1;
+                  fee = duration * response.data.data.weekdaynonpeakhourly;
+                }
+              
+            }
+          this.carparksArraySimu[0].data["totalFee"] = this.formatMoney(fee/100)
+          
+          /////////// 2
+          const url ="http://127.0.0.1:5004/getCarparkPrice/2" 
+          axios
+            .get(url)
+            .then((response)=> {
+
+              let fee = 0
+              // weekend
+              if (startDateTime.getDay() == 6 || startDateTime.getDay() == 0) {
+                  console.log("weekend");
+                  // for (const eachCarpark of response.data.data.carparks) {
+                    // if booking start and end in peak
+                    if (
+                      endDateTime <
+                        new Date(bookingDateFormatted + " " + this.endPeak) &&
+                      startDateTime >
+                        new Date(bookingDateFormatted + " " + this.startPeak)
+                    ) {
+                      const duration =
+                        Math.floor((endDateTime - startDateTime) / 3600000) + 1;
+                      fee = duration * response.data.data.weekendpeakhourly;
+                    }
+
+                    // if booking start in non peak and end in peak
+                    else if (
+                      endDateTime <
+                        new Date(bookingDateFormatted + " " + this.endPeak) &&
+                      startDateTime <
+                        new Date(bookingDateFormatted + " " + this.startPeak)
+                    ) {
+                      const peakFee =
+                        (Math.floor(
+                          (new Date(bookingDateFormatted + " " + this.startPeak) -
+                            startDateTime) /
+                            3600000
+                        ) +
+                          1) *
+                          response.data.data.weekendpeakhourly;
+                      const nonPeakFee =(Math.floor((endDateTime -new Date(bookingDateFormatted + " " + this.startPeak)) /3600000) +1) * response.data.data.weekendnonpeakhourly;
+                      fee = peakFee + nonPeakFee;
+                    }
+
+                    // if booking start in peak and end in non peak
+                    else if (
+                      endDateTime >
+                        new Date(bookingDateFormatted + " " + this.endPeak) &&
+                      startDateTime <
+                        new Date(bookingDateFormatted + " " + this.endPeak)
+                    ) {
+                      const peakFee =
+                        (Math.floor(
+                          (new Date(bookingDateFormatted + " " + this.endPeak) -
+                            startDateTime) /
+                            3600000
+                        ) +
+                          1) *
+                        response.data.data.weekendpeakhourly;
+                      const nonPeakFee =
+                        (Math.floor(
+                          (endDateTime -
+                            new Date(bookingDateFormatted + " " + this.endPeak)) /
+                            3600000
+                        ) +
+                          1) *
+                          response.data.data.weekendpeaknonhourly;
+                      fee = peakFee + nonPeakFee;
+                    }
+
+                    // if booking start and end in non peak
+                    // else if ((endDateTime > (new Date(bookingDateFormatted + " " + this.endPeak))) && (startDateTime > (new Date(bookingDateFormatted + " " + this.startPeak)))) {
+                    else {
+                      const duration =
+                        Math.floor((endDateTime - startDateTime) / 3600000) + 1;
+                      fee = duration * response.data.data.weekendnonpeakhourly;
+                    }
+                    
+                }
+
+              // weekday
+                else {
+                  console.log("weekday");
+                  // for (const eachCarpark of response.data.data.carparks) {
+                    // if booking start and end in peak
+                    if (
+                      endDateTime <
+                        new Date(bookingDateFormatted + " " + this.endPeak) &&
+                      startDateTime >
+                        new Date(bookingDateFormatted + " " + this.startPeak)
+                    ) {
+                      console.log("// if booking start and end in peak")
+                      const duration =
+                        Math.floor((endDateTime - startDateTime) / 3600000) + 1;
+                      fee = duration * response.data.data.weekdaypeakhourly;
+                    }
+
+                    // if booking start in non peak and end in peak
+                    else if (
+                      new Date(bookingDateFormatted + " " + this.startPeak)<
+                      endDateTime && endDateTime <
+                        new Date(bookingDateFormatted + " " + this.endPeak) &&
+                      startDateTime <
+                        new Date(bookingDateFormatted + " " + this.startPeak)
+                    ) {
+                      console.log("//  if booking start in non peak and end in peak")
+                      const peakFee =
+                        (Math.floor(
+                          (new Date(bookingDateFormatted + " " + this.startPeak) -
+                            startDateTime) /
+                            3600000
+                        ) +
+                          1) *
+                        response.data.data.weekdaypeakhourly;
+                      const nonPeakFee =(Math.floor((endDateTime -new Date(bookingDateFormatted + " " + this.startPeak)) /3600000) +1) * response.data.data.weekdaynonpeakhourly;
+                      fee = peakFee + nonPeakFee;
+                    }
+
+                    // if booking start in peak and end in non peak
+                    else if (
+                      endDateTime >
+                        new Date(bookingDateFormatted + " " + this.endPeak) &&
+                      startDateTime <
+                        new Date(bookingDateFormatted + " " + this.endPeak)
+                    ) {
+                      console.log("//  if booking start in peak and end in non peak")
+                      const peakFee =
+                        (Math.floor(
+                          (new Date(bookingDateFormatted + " " + this.endPeak) -
+                            startDateTime) /
+                            3600000
+                        ) +
+                          1) *
+                          response.data.data.weekdaypeakhourly
+                      const nonPeakFee =
+                        (Math.floor(
+                          (endDateTime -
+                            new Date(bookingDateFormatted + " " + this.endPeak)) /
+                            3600000
+                        ) +
+                          1) *
+                          response.data.data.weekdaynonpeakhourly;
+                      fee = peakFee + nonPeakFee;
+                    }
+
+                    // if booking start and end in non peak
+                    // else if ((endDateTime > (new Date(bookingDateFormatted + " " + this.endPeak))) && (startDateTime > (new Date(bookingDateFormatted + " " + this.startPeak)))) {
+                    else {
+                      console.log("else")
+                      const duration =
+                        Math.floor((endDateTime - startDateTime) / 3600000) + 1;
+                      fee = duration * response.data.data.weekdaynonpeakhourly;
+                    }
+                  
+                }
+              this.carparksArraySimu[1].data["totalFee"] = this.formatMoney(fee/100)
+              
+
+              ///////////////3
+          const url ="http://127.0.0.1:5004/getCarparkPrice/3" 
+          axios
+            .get(url)
+            .then((response)=> {
+              let fee = 0
+              // weekend
+              if (startDateTime.getDay() == 6 || startDateTime.getDay() == 0) {
+                  console.log("weekend");
+                  // for (const eachCarpark of response.data.data.carparks) {
+                    // if booking start and end in peak
+                    if (
+                      endDateTime <
+                        new Date(bookingDateFormatted + " " + this.endPeak) &&
+                      startDateTime >
+                        new Date(bookingDateFormatted + " " + this.startPeak)
+                    ) {
+                      const duration =
+                        Math.floor((endDateTime - startDateTime) / 3600000) + 1;
+                      fee = duration * response.data.data.weekendpeakhourly;
+                    }
+
+                    // if booking start in non peak and end in peak
+                    else if (
+                      endDateTime <
+                        new Date(bookingDateFormatted + " " + this.endPeak) &&
+                      startDateTime <
+                        new Date(bookingDateFormatted + " " + this.startPeak)
+                    ) {
+                      const peakFee =
+                        (Math.floor(
+                          (new Date(bookingDateFormatted + " " + this.startPeak) -
+                            startDateTime) /
+                            3600000
+                        ) +
+                          1) *
+                          response.data.data.weekendpeakhourly;
+                      const nonPeakFee =(Math.floor((endDateTime -new Date(bookingDateFormatted + " " + this.startPeak)) /3600000) +1) * response.data.data.weekendnonpeakhourly;
+                      fee = peakFee + nonPeakFee;
+                    }
+
+                    // if booking start in peak and end in non peak
+                    else if (
+                      endDateTime >
+                        new Date(bookingDateFormatted + " " + this.endPeak) &&
+                      startDateTime <
+                        new Date(bookingDateFormatted + " " + this.endPeak)
+                    ) {
+                      const peakFee =
+                        (Math.floor(
+                          (new Date(bookingDateFormatted + " " + this.endPeak) -
+                            startDateTime) /
+                            3600000
+                        ) +
+                          1) *
+                        response.data.data.weekendpeakhourly;
+                      const nonPeakFee =
+                        (Math.floor(
+                          (endDateTime -
+                            new Date(bookingDateFormatted + " " + this.endPeak)) /
+                            3600000
+                        ) +
+                          1) *
+                          response.data.data.weekendpeaknonhourly;
+                      fee = peakFee + nonPeakFee;
+                    }
+
+                    // if booking start and end in non peak
+                    // else if ((endDateTime > (new Date(bookingDateFormatted + " " + this.endPeak))) && (startDateTime > (new Date(bookingDateFormatted + " " + this.startPeak)))) {
+                    else {
+                      const duration =
+                        Math.floor((endDateTime - startDateTime) / 3600000) + 1;
+                      fee = duration * response.data.data.weekendnonpeakhourly;
+                    }
+                    
+                }
+
+              // weekday
+                else {
+                  console.log("weekday");
+                  // for (const eachCarpark of response.data.data.carparks) {
+                    // if booking start and end in peak
+                    if (
+                      endDateTime <
+                        new Date(bookingDateFormatted + " " + this.endPeak) &&
+                      startDateTime >
+                        new Date(bookingDateFormatted + " " + this.startPeak)
+                    ) {
+                      console.log("// if booking start and end in peak")
+                      const duration =
+                        Math.floor((endDateTime - startDateTime) / 3600000) + 1;
+                      fee = duration * response.data.data.weekdaypeakhourly;
+                    }
+
+                    // if booking start in non peak and end in peak
+                    else if (
+                      new Date(bookingDateFormatted + " " + this.startPeak)<
+                      endDateTime && endDateTime <
+                        new Date(bookingDateFormatted + " " + this.endPeak) &&
+                      startDateTime <
+                        new Date(bookingDateFormatted + " " + this.startPeak)
+                    ) {
+                      console.log("//  if booking start in non peak and end in peak")
+                      const peakFee =
+                        (Math.floor(
+                          (new Date(bookingDateFormatted + " " + this.startPeak) -
+                            startDateTime) /
+                            3600000
+                        ) +
+                          1) *
+                        response.data.data.weekdaypeakhourly;
+                      const nonPeakFee =(Math.floor((endDateTime -new Date(bookingDateFormatted + " " + this.startPeak)) /3600000) +1) * response.data.data.weekdaynonpeakhourly;
+                      fee = peakFee + nonPeakFee;
+                    }
+
+                    // if booking start in peak and end in non peak
+                    else if (
+                      endDateTime >
+                        new Date(bookingDateFormatted + " " + this.endPeak) &&
+                      startDateTime <
+                        new Date(bookingDateFormatted + " " + this.endPeak)
+                    ) {
+                      console.log("//  if booking start in peak and end in non peak")
+                      const peakFee =
+                        (Math.floor(
+                          (new Date(bookingDateFormatted + " " + this.endPeak) -
+                            startDateTime) /
+                            3600000
+                        ) +
+                          1) *
+                          response.data.data.weekdaypeakhourly
+                      const nonPeakFee =
+                        (Math.floor(
+                          (endDateTime -
+                            new Date(bookingDateFormatted + " " + this.endPeak)) /
+                            3600000
+                        ) +
+                          1) *
+                          response.data.data.weekdaynonpeakhourly;
+                      fee = peakFee + nonPeakFee;
+                    }
+
+                    // if booking start and end in non peak
+                    // else if ((endDateTime > (new Date(bookingDateFormatted + " " + this.endPeak))) && (startDateTime > (new Date(bookingDateFormatted + " " + this.startPeak)))) {
+                    else {
+                      console.log("else")
+                      const duration =
+                        Math.floor((endDateTime - startDateTime) / 3600000) + 1;
+                      fee = duration * response.data.data.weekdaynonpeakhourly;
+                    }
+                  
+                }
+              this.carparksArraySimu[2].data["totalFee"] = this.formatMoney(fee/100)
+              
+
+              /////////// 4
+          const url ="http://127.0.0.1:5004/getCarparkPrice/4" 
+          axios
+            .get(url)
+            .then((response)=> {
+              let fee = 0
+              // weekend
+              if (startDateTime.getDay() == 6 || startDateTime.getDay() == 0) {
+                  console.log("weekend");
+                  // for (const eachCarpark of response.data.data.carparks) {
+                    // if booking start and end in peak
+                    if (
+                      endDateTime <
+                        new Date(bookingDateFormatted + " " + this.endPeak) &&
+                      startDateTime >
+                        new Date(bookingDateFormatted + " " + this.startPeak)
+                    ) {
+                      const duration =
+                        Math.floor((endDateTime - startDateTime) / 3600000) + 1;
+                      fee = duration * response.data.data.weekendpeakhourly;
+                    }
+
+                    // if booking start in non peak and end in peak
+                    else if (
+                      endDateTime <
+                        new Date(bookingDateFormatted + " " + this.endPeak) &&
+                      startDateTime <
+                        new Date(bookingDateFormatted + " " + this.startPeak)
+                    ) {
+                      const peakFee =
+                        (Math.floor(
+                          (new Date(bookingDateFormatted + " " + this.startPeak) -
+                            startDateTime) /
+                            3600000
+                        ) +
+                          1) *
+                          response.data.data.weekendpeakhourly;
+                      const nonPeakFee =(Math.floor((endDateTime -new Date(bookingDateFormatted + " " + this.startPeak)) /3600000) +1) * response.data.data.weekendnonpeakhourly;
+                      fee = peakFee + nonPeakFee;
+                    }
+
+                    // if booking start in peak and end in non peak
+                    else if (
+                      endDateTime >
+                        new Date(bookingDateFormatted + " " + this.endPeak) &&
+                      startDateTime <
+                        new Date(bookingDateFormatted + " " + this.endPeak)
+                    ) {
+                      const peakFee =
+                        (Math.floor(
+                          (new Date(bookingDateFormatted + " " + this.endPeak) -
+                            startDateTime) /
+                            3600000
+                        ) +
+                          1) *
+                        response.data.data.weekendpeakhourly;
+                      const nonPeakFee =
+                        (Math.floor(
+                          (endDateTime -
+                            new Date(bookingDateFormatted + " " + this.endPeak)) /
+                            3600000
+                        ) +
+                          1) *
+                          response.data.data.weekendpeaknonhourly;
+                      fee = peakFee + nonPeakFee;
+                    }
+
+                    // if booking start and end in non peak
+                    // else if ((endDateTime > (new Date(bookingDateFormatted + " " + this.endPeak))) && (startDateTime > (new Date(bookingDateFormatted + " " + this.startPeak)))) {
+                    else {
+                      const duration =
+                        Math.floor((endDateTime - startDateTime) / 3600000) + 1;
+                      fee = duration * response.data.data.weekendnonpeakhourly;
+                    }
+                    
+                }
+
+              // weekday
+                else {
+                  console.log("weekday");
+                  // for (const eachCarpark of response.data.data.carparks) {
+                    // if booking start and end in peak
+                    if (
+                      endDateTime <
+                        new Date(bookingDateFormatted + " " + this.endPeak) &&
+                      startDateTime >
+                        new Date(bookingDateFormatted + " " + this.startPeak)
+                    ) {
+                      console.log("// if booking start and end in peak")
+                      const duration =
+                        Math.floor((endDateTime - startDateTime) / 3600000) + 1;
+                      fee = duration * response.data.data.weekdaypeakhourly;
+                    }
+
+                    // if booking start in non peak and end in peak
+                    else if (
+                      new Date(bookingDateFormatted + " " + this.startPeak)<
+                      endDateTime && endDateTime <
+                        new Date(bookingDateFormatted + " " + this.endPeak) &&
+                      startDateTime <
+                        new Date(bookingDateFormatted + " " + this.startPeak)
+                    ) {
+                      console.log("//  if booking start in non peak and end in peak")
+                      const peakFee =
+                        (Math.floor(
+                          (new Date(bookingDateFormatted + " " + this.startPeak) -
+                            startDateTime) /
+                            3600000
+                        ) +
+                          1) *
+                        response.data.data.weekdaypeakhourly;
+                      const nonPeakFee =(Math.floor((endDateTime -new Date(bookingDateFormatted + " " + this.startPeak)) /3600000) +1) * response.data.data.weekdaynonpeakhourly;
+                      fee = peakFee + nonPeakFee;
+                    }
+
+                    // if booking start in peak and end in non peak
+                    else if (
+                      endDateTime >
+                        new Date(bookingDateFormatted + " " + this.endPeak) &&
+                      startDateTime <
+                        new Date(bookingDateFormatted + " " + this.endPeak)
+                    ) {
+                      console.log("//  if booking start in peak and end in non peak")
+                      const peakFee =
+                        (Math.floor(
+                          (new Date(bookingDateFormatted + " " + this.endPeak) -
+                            startDateTime) /
+                            3600000
+                        ) +
+                          1) *
+                          response.data.data.weekdaypeakhourly
+                      const nonPeakFee =
+                        (Math.floor(
+                          (endDateTime -
+                            new Date(bookingDateFormatted + " " + this.endPeak)) /
+                            3600000
+                        ) +
+                          1) *
+                          response.data.data.weekdaynonpeakhourly;
+                      fee = peakFee + nonPeakFee;
+                    }
+
+                    // if booking start and end in non peak
+                    // else if ((endDateTime > (new Date(bookingDateFormatted + " " + this.endPeak))) && (startDateTime > (new Date(bookingDateFormatted + " " + this.startPeak)))) {
+                    else {
+                      console.log("else")
+                      const duration =
+                        Math.floor((endDateTime - startDateTime) / 3600000) + 1;
+                      fee = duration * response.data.data.weekdaynonpeakhourly;
+                    }
+                  
+                }
+              this.carparksArraySimu[3].data["totalFee"] = this.formatMoney(fee/100)
+              
+
+              /////////// 5
+          const url ="http://127.0.0.1:5004/getCarparkPrice/5" 
+          axios
+            .get(url)
+            .then((response)=> {
+              let fee = 0
+              // weekend
+              if (startDateTime.getDay() == 6 || startDateTime.getDay() == 0) {
+                  console.log("weekend");
+                  // for (const eachCarpark of response.data.data.carparks) {
+                    // if booking start and end in peak
+                    if (
+                      endDateTime <
+                        new Date(bookingDateFormatted + " " + this.endPeak) &&
+                      startDateTime >
+                        new Date(bookingDateFormatted + " " + this.startPeak)
+                    ) {
+                      const duration =
+                        Math.floor((endDateTime - startDateTime) / 3600000) + 1;
+                      fee = duration * response.data.data.weekendpeakhourly;
+                    }
+
+                    // if booking start in non peak and end in peak
+                    else if (
+                      endDateTime <
+                        new Date(bookingDateFormatted + " " + this.endPeak) &&
+                      startDateTime <
+                        new Date(bookingDateFormatted + " " + this.startPeak)
+                    ) {
+                      const peakFee =
+                        (Math.floor(
+                          (new Date(bookingDateFormatted + " " + this.startPeak) -
+                            startDateTime) /
+                            3600000
+                        ) +
+                          1) *
+                          response.data.data.weekendpeakhourly;
+                      const nonPeakFee =(Math.floor((endDateTime -new Date(bookingDateFormatted + " " + this.startPeak)) /3600000) +1) * response.data.data.weekendnonpeakhourly;
+                      fee = peakFee + nonPeakFee;
+                    }
+
+                    // if booking start in peak and end in non peak
+                    else if (
+                      endDateTime >
+                        new Date(bookingDateFormatted + " " + this.endPeak) &&
+                      startDateTime <
+                        new Date(bookingDateFormatted + " " + this.endPeak)
+                    ) {
+                      const peakFee =
+                        (Math.floor(
+                          (new Date(bookingDateFormatted + " " + this.endPeak) -
+                            startDateTime) /
+                            3600000
+                        ) +
+                          1) *
+                        response.data.data.weekendpeakhourly;
+                      const nonPeakFee =
+                        (Math.floor(
+                          (endDateTime -
+                            new Date(bookingDateFormatted + " " + this.endPeak)) /
+                            3600000
+                        ) +
+                          1) *
+                          response.data.data.weekendpeaknonhourly;
+                      fee = peakFee + nonPeakFee;
+                    }
+
+                    // if booking start and end in non peak
+                    // else if ((endDateTime > (new Date(bookingDateFormatted + " " + this.endPeak))) && (startDateTime > (new Date(bookingDateFormatted + " " + this.startPeak)))) {
+                    else {
+                      const duration =
+                        Math.floor((endDateTime - startDateTime) / 3600000) + 1;
+                      fee = duration * response.data.data.weekendnonpeakhourly;
+                    }
+                    
+                }
+
+              // weekday
+                else {
+                  console.log("weekday");
+                  // for (const eachCarpark of response.data.data.carparks) {
+                    // if booking start and end in peak
+                    if (
+                      endDateTime <
+                        new Date(bookingDateFormatted + " " + this.endPeak) &&
+                      startDateTime >
+                        new Date(bookingDateFormatted + " " + this.startPeak)
+                    ) {
+                      console.log("// if booking start and end in peak")
+                      const duration =
+                        Math.floor((endDateTime - startDateTime) / 3600000) + 1;
+                      fee = duration * response.data.data.weekdaypeakhourly;
+                    }
+
+                    // if booking start in non peak and end in peak
+                    else if (
+                      new Date(bookingDateFormatted + " " + this.startPeak)<
+                      endDateTime && endDateTime <
+                        new Date(bookingDateFormatted + " " + this.endPeak) &&
+                      startDateTime <
+                        new Date(bookingDateFormatted + " " + this.startPeak)
+                    ) {
+                      console.log("//  if booking start in non peak and end in peak")
+                      const peakFee =
+                        (Math.floor(
+                          (new Date(bookingDateFormatted + " " + this.startPeak) -
+                            startDateTime) /
+                            3600000
+                        ) +
+                          1) *
+                        response.data.data.weekdaypeakhourly;
+                      const nonPeakFee =(Math.floor((endDateTime -new Date(bookingDateFormatted + " " + this.startPeak)) /3600000) +1) * response.data.data.weekdaynonpeakhourly;
+                      fee = peakFee + nonPeakFee;
+                    }
+
+                    // if booking start in peak and end in non peak
+                    else if (
+                      endDateTime >
+                        new Date(bookingDateFormatted + " " + this.endPeak) &&
+                      startDateTime <
+                        new Date(bookingDateFormatted + " " + this.endPeak)
+                    ) {
+                      console.log("//  if booking start in peak and end in non peak")
+                      const peakFee =
+                        (Math.floor(
+                          (new Date(bookingDateFormatted + " " + this.endPeak) -
+                            startDateTime) /
+                            3600000
+                        ) +
+                          1) *
+                          response.data.data.weekdaypeakhourly
+                      const nonPeakFee =
+                        (Math.floor(
+                          (endDateTime -
+                            new Date(bookingDateFormatted + " " + this.endPeak)) /
+                            3600000
+                        ) +
+                          1) *
+                          response.data.data.weekdaynonpeakhourly;
+                      fee = peakFee + nonPeakFee;
+                    }
+
+                    // if booking start and end in non peak
+                    // else if ((endDateTime > (new Date(bookingDateFormatted + " " + this.endPeak))) && (startDateTime > (new Date(bookingDateFormatted + " " + this.startPeak)))) {
+                    else {
+                      console.log("else")
+                      const duration =
+                        Math.floor((endDateTime - startDateTime) / 3600000) + 1;
+                      fee = duration * response.data.data.weekdaynonpeakhourly;
+                    }
+                  
+                }
+              this.carparksArraySimu[4].data["totalFee"] = this.formatMoney(fee/100)
+              
+
+              ///////////////6
+          const url ="http://127.0.0.1:5004/getCarparkPrice/6" 
+          axios
+            .get(url)
+            .then((response)=> {
+              let fee = 0
+              // weekend
+              if (startDateTime.getDay() == 6 || startDateTime.getDay() == 0) {
+                  console.log("weekend");
+                  // for (const eachCarpark of response.data.data.carparks) {
+                    // if booking start and end in peak
+                    if (
+                      endDateTime <
+                        new Date(bookingDateFormatted + " " + this.endPeak) &&
+                      startDateTime >
+                        new Date(bookingDateFormatted + " " + this.startPeak)
+                    ) {
+                      const duration =
+                        Math.floor((endDateTime - startDateTime) / 3600000) + 1;
+                      fee = duration * response.data.data.weekendpeakhourly;
+                    }
+
+                    // if booking start in non peak and end in peak
+                    else if (
+                      endDateTime <
+                        new Date(bookingDateFormatted + " " + this.endPeak) &&
+                      startDateTime <
+                        new Date(bookingDateFormatted + " " + this.startPeak)
+                    ) {
+                      const peakFee =
+                        (Math.floor(
+                          (new Date(bookingDateFormatted + " " + this.startPeak) -
+                            startDateTime) /
+                            3600000
+                        ) +
+                          1) *
+                          response.data.data.weekendpeakhourly;
+                      const nonPeakFee =(Math.floor((endDateTime -new Date(bookingDateFormatted + " " + this.startPeak)) /3600000) +1) * response.data.data.weekendnonpeakhourly;
+                      fee = peakFee + nonPeakFee;
+                    }
+
+                    // if booking start in peak and end in non peak
+                    else if (
+                      endDateTime >
+                        new Date(bookingDateFormatted + " " + this.endPeak) &&
+                      startDateTime <
+                        new Date(bookingDateFormatted + " " + this.endPeak)
+                    ) {
+                      const peakFee =
+                        (Math.floor(
+                          (new Date(bookingDateFormatted + " " + this.endPeak) -
+                            startDateTime) /
+                            3600000
+                        ) +
+                          1) *
+                        response.data.data.weekendpeakhourly;
+                      const nonPeakFee =
+                        (Math.floor(
+                          (endDateTime -
+                            new Date(bookingDateFormatted + " " + this.endPeak)) /
+                            3600000
+                        ) +
+                          1) *
+                          response.data.data.weekendpeaknonhourly;
+                      fee = peakFee + nonPeakFee;
+                    }
+
+                    // if booking start and end in non peak
+                    // else if ((endDateTime > (new Date(bookingDateFormatted + " " + this.endPeak))) && (startDateTime > (new Date(bookingDateFormatted + " " + this.startPeak)))) {
+                    else {
+                      const duration =
+                        Math.floor((endDateTime - startDateTime) / 3600000) + 1;
+                      fee = duration * response.data.data.weekendnonpeakhourly;
+                    }
+                    
+                }
+
+              // weekday
+                else {
+                  console.log("weekday");
+                  // for (const eachCarpark of response.data.data.carparks) {
+                    // if booking start and end in peak
+                    if (
+                      endDateTime <
+                        new Date(bookingDateFormatted + " " + this.endPeak) &&
+                      startDateTime >
+                        new Date(bookingDateFormatted + " " + this.startPeak)
+                    ) {
+                      console.log("// if booking start and end in peak")
+                      const duration =
+                        Math.floor((endDateTime - startDateTime) / 3600000) + 1;
+                      fee = duration * response.data.data.weekdaypeakhourly;
+                    }
+
+                    // if booking start in non peak and end in peak
+                    else if (
+                      new Date(bookingDateFormatted + " " + this.startPeak)<
+                      endDateTime && endDateTime <
+                        new Date(bookingDateFormatted + " " + this.endPeak) &&
+                      startDateTime <
+                        new Date(bookingDateFormatted + " " + this.startPeak)
+                    ) {
+                      console.log("//  if booking start in non peak and end in peak")
+                      const peakFee =
+                        (Math.floor(
+                          (new Date(bookingDateFormatted + " " + this.startPeak) -
+                            startDateTime) /
+                            3600000
+                        ) +
+                          1) *
+                        response.data.data.weekdaypeakhourly;
+                      const nonPeakFee =(Math.floor((endDateTime -new Date(bookingDateFormatted + " " + this.startPeak)) /3600000) +1) * response.data.data.weekdaynonpeakhourly;
+                      fee = peakFee + nonPeakFee;
+                    }
+
+                    // if booking start in peak and end in non peak
+                    else if (
+                      endDateTime >
+                        new Date(bookingDateFormatted + " " + this.endPeak) &&
+                      startDateTime <
+                        new Date(bookingDateFormatted + " " + this.endPeak)
+                    ) {
+                      console.log("//  if booking start in peak and end in non peak")
+                      const peakFee =
+                        (Math.floor(
+                          (new Date(bookingDateFormatted + " " + this.endPeak) -
+                            startDateTime) /
+                            3600000
+                        ) +
+                          1) *
+                          response.data.data.weekdaypeakhourly
+                      const nonPeakFee =
+                        (Math.floor(
+                          (endDateTime -
+                            new Date(bookingDateFormatted + " " + this.endPeak)) /
+                            3600000
+                        ) +
+                          1) *
+                          response.data.data.weekdaynonpeakhourly;
+                      fee = peakFee + nonPeakFee;
+                    }
+
+                    // if booking start and end in non peak
+                    // else if ((endDateTime > (new Date(bookingDateFormatted + " " + this.endPeak))) && (startDateTime > (new Date(bookingDateFormatted + " " + this.startPeak)))) {
+                    else {
+                      console.log("else")
+                      const duration =
+                        Math.floor((endDateTime - startDateTime) / 3600000) + 1;
+                      fee = duration * response.data.data.weekdaynonpeakhourly;
+                    }
+                  
+                }
+              this.carparksArraySimu[5].data["totalFee"] = this.formatMoney(fee/100)
+              
+
+              ///////////////7
+          const url ="http://127.0.0.1:5004/getCarparkPrice/7" 
+          axios
+            .get(url)
+            .then((response)=> {
+              console.log(response.data.data)
+              let fee = 0
+              // weekend
+              if (startDateTime.getDay() == 6 || startDateTime.getDay() == 0) {
+                  console.log("weekend");
+                  // for (const eachCarpark of response.data.data.carparks) {
+                    // if booking start and end in peak
+                    if (
+                      endDateTime <
+                        new Date(bookingDateFormatted + " " + this.endPeak) &&
+                      startDateTime >
+                        new Date(bookingDateFormatted + " " + this.startPeak)
+                    ) {
+                      const duration =
+                        Math.floor((endDateTime - startDateTime) / 3600000) + 1;
+                      fee = duration * response.data.data.weekendpeakhourly;
+                    }
+
+                    // if booking start in non peak and end in peak
+                    else if (
+                      endDateTime <
+                        new Date(bookingDateFormatted + " " + this.endPeak) &&
+                      startDateTime <
+                        new Date(bookingDateFormatted + " " + this.startPeak)
+                    ) {
+                      const peakFee =
+                        (Math.floor(
+                          (new Date(bookingDateFormatted + " " + this.startPeak) -
+                            startDateTime) /
+                            3600000
+                        ) +
+                          1) *
+                          response.data.data.weekendpeakhourly;
+                      const nonPeakFee =(Math.floor((endDateTime -new Date(bookingDateFormatted + " " + this.startPeak)) /3600000) +1) * response.data.data.weekendnonpeakhourly;
+                      fee = peakFee + nonPeakFee;
+                    }
+
+                    // if booking start in peak and end in non peak
+                    else if (
+                      endDateTime >
+                        new Date(bookingDateFormatted + " " + this.endPeak) &&
+                      startDateTime <
+                        new Date(bookingDateFormatted + " " + this.endPeak)
+                    ) {
+                      const peakFee =
+                        (Math.floor(
+                          (new Date(bookingDateFormatted + " " + this.endPeak) -
+                            startDateTime) /
+                            3600000
+                        ) +
+                          1) *
+                        response.data.data.weekendpeakhourly;
+                      const nonPeakFee =
+                        (Math.floor(
+                          (endDateTime -
+                            new Date(bookingDateFormatted + " " + this.endPeak)) /
+                            3600000
+                        ) +
+                          1) *
+                          response.data.data.weekendpeaknonhourly;
+                      fee = peakFee + nonPeakFee;
+                    }
+
+                    // if booking start and end in non peak
+                    // else if ((endDateTime > (new Date(bookingDateFormatted + " " + this.endPeak))) && (startDateTime > (new Date(bookingDateFormatted + " " + this.startPeak)))) {
+                    else {
+                      const duration =
+                        Math.floor((endDateTime - startDateTime) / 3600000) + 1;
+                      fee = duration * response.data.data.weekendnonpeakhourly;
+                    }
+                    
+                }
+
+              // weekday
+                else {
+                  console.log("weekday");
+                  // for (const eachCarpark of response.data.data.carparks) {
+                    // if booking start and end in peak
+                    if (
+                      endDateTime <
+                        new Date(bookingDateFormatted + " " + this.endPeak) &&
+                      startDateTime >
+                        new Date(bookingDateFormatted + " " + this.startPeak)
+                    ) {
+                      console.log("// if booking start and end in peak")
+                      const duration =
+                        Math.floor((endDateTime - startDateTime) / 3600000) + 1;
+                      fee = duration * response.data.data.weekdaypeakhourly;
+                    }
+
+                    // if booking start in non peak and end in peak
+                    else if (
+                      new Date(bookingDateFormatted + " " + this.startPeak)<
+                      endDateTime && endDateTime <
+                        new Date(bookingDateFormatted + " " + this.endPeak) &&
+                      startDateTime <
+                        new Date(bookingDateFormatted + " " + this.startPeak)
+                    ) {
+                      console.log("//  if booking start in non peak and end in peak")
+                      const peakFee =
+                        (Math.floor(
+                          (new Date(bookingDateFormatted + " " + this.startPeak) -
+                            startDateTime) /
+                            3600000
+                        ) +
+                          1) *
+                        response.data.data.weekdaypeakhourly;
+                      const nonPeakFee =(Math.floor((endDateTime -new Date(bookingDateFormatted + " " + this.startPeak)) /3600000) +1) * response.data.data.weekdaynonpeakhourly;
+                      fee = peakFee + nonPeakFee;
+                    }
+
+                    // if booking start in peak and end in non peak
+                    else if (
+                      endDateTime >
+                        new Date(bookingDateFormatted + " " + this.endPeak) &&
+                      startDateTime <
+                        new Date(bookingDateFormatted + " " + this.endPeak)
+                    ) {
+                      console.log("//  if booking start in peak and end in non peak")
+                      const peakFee =
+                        (Math.floor(
+                          (new Date(bookingDateFormatted + " " + this.endPeak) -
+                            startDateTime) /
+                            3600000
+                        ) +
+                          1) *
+                          response.data.data.weekdaypeakhourly
+                      const nonPeakFee =
+                        (Math.floor(
+                          (endDateTime -
+                            new Date(bookingDateFormatted + " " + this.endPeak)) /
+                            3600000
+                        ) +
+                          1) *
+                          response.data.data.weekdaynonpeakhourly;
+                      fee = peakFee + nonPeakFee;
+                    }
+
+                    // if booking start and end in non peak
+                    // else if ((endDateTime > (new Date(bookingDateFormatted + " " + this.endPeak))) && (startDateTime > (new Date(bookingDateFormatted + " " + this.startPeak)))) {
+                    else {
+                      console.log("else")
+                      const duration =
+                        Math.floor((endDateTime - startDateTime) / 3600000) + 1;
+                      fee = duration * response.data.data.weekdaynonpeakhourly;
+                    }
+                  
+                }
+              this.carparksArraySimu[6].data["totalFee"] = this.formatMoney(fee/100)
+              
+
+              ///////////////8
+          const url ="http://127.0.0.1:5004/getCarparkPrice/8" 
+          axios
+            .get(url)
+            .then((response)=> {
+              let fee = 0
+              // weekend
+              if (startDateTime.getDay() == 6 || startDateTime.getDay() == 0) {
+                  console.log("weekend");
+                  // for (const eachCarpark of response.data.data.carparks) {
+                    // if booking start and end in peak
+                    if (
+                      endDateTime <
+                        new Date(bookingDateFormatted + " " + this.endPeak) &&
+                      startDateTime >
+                        new Date(bookingDateFormatted + " " + this.startPeak)
+                    ) {
+                      const duration =
+                        Math.floor((endDateTime - startDateTime) / 3600000) + 1;
+                      fee = duration * response.data.data.weekendpeakhourly;
+                    }
+
+                    // if booking start in non peak and end in peak
+                    else if (
+                      endDateTime <
+                        new Date(bookingDateFormatted + " " + this.endPeak) &&
+                      startDateTime <
+                        new Date(bookingDateFormatted + " " + this.startPeak)
+                    ) {
+                      const peakFee =
+                        (Math.floor(
+                          (new Date(bookingDateFormatted + " " + this.startPeak) -
+                            startDateTime) /
+                            3600000
+                        ) +
+                          1) *
+                          response.data.data.weekendpeakhourly;
+                      const nonPeakFee =(Math.floor((endDateTime -new Date(bookingDateFormatted + " " + this.startPeak)) /3600000) +1) * response.data.data.weekendnonpeakhourly;
+                      fee = peakFee + nonPeakFee;
+                    }
+
+                    // if booking start in peak and end in non peak
+                    else if (
+                      endDateTime >
+                        new Date(bookingDateFormatted + " " + this.endPeak) &&
+                      startDateTime <
+                        new Date(bookingDateFormatted + " " + this.endPeak)
+                    ) {
+                      const peakFee =
+                        (Math.floor(
+                          (new Date(bookingDateFormatted + " " + this.endPeak) -
+                            startDateTime) /
+                            3600000
+                        ) +
+                          1) *
+                        response.data.data.weekendpeakhourly;
+                      const nonPeakFee =
+                        (Math.floor(
+                          (endDateTime -
+                            new Date(bookingDateFormatted + " " + this.endPeak)) /
+                            3600000
+                        ) +
+                          1) *
+                          response.data.data.weekendpeaknonhourly;
+                      fee = peakFee + nonPeakFee;
+                    }
+
+                    // if booking start and end in non peak
+                    // else if ((endDateTime > (new Date(bookingDateFormatted + " " + this.endPeak))) && (startDateTime > (new Date(bookingDateFormatted + " " + this.startPeak)))) {
+                    else {
+                      const duration =
+                        Math.floor((endDateTime - startDateTime) / 3600000) + 1;
+                      fee = duration * response.data.data.weekendnonpeakhourly;
+                    }
+                    
+                }
+
+              // weekday
+                else {
+                  console.log("weekday");
+                  // for (const eachCarpark of response.data.data.carparks) {
+                    // if booking start and end in peak
+                    if (
+                      endDateTime <
+                        new Date(bookingDateFormatted + " " + this.endPeak) &&
+                      startDateTime >
+                        new Date(bookingDateFormatted + " " + this.startPeak)
+                    ) {
+                      console.log("// if booking start and end in peak")
+                      const duration =
+                        Math.floor((endDateTime - startDateTime) / 3600000) + 1;
+                      fee = duration * response.data.data.weekdaypeakhourly;
+                    }
+
+                    // if booking start in non peak and end in peak
+                    else if (
+                      new Date(bookingDateFormatted + " " + this.startPeak)<
+                      endDateTime && endDateTime <
+                        new Date(bookingDateFormatted + " " + this.endPeak) &&
+                      startDateTime <
+                        new Date(bookingDateFormatted + " " + this.startPeak)
+                    ) {
+                      console.log("//  if booking start in non peak and end in peak")
+                      const peakFee =
+                        (Math.floor(
+                          (new Date(bookingDateFormatted + " " + this.startPeak) -
+                            startDateTime) /
+                            3600000
+                        ) +
+                          1) *
+                        response.data.data.weekdaypeakhourly;
+                      const nonPeakFee =(Math.floor((endDateTime -new Date(bookingDateFormatted + " " + this.startPeak)) /3600000) +1) * response.data.data.weekdaynonpeakhourly;
+                      fee = peakFee + nonPeakFee;
+                    }
+
+                    // if booking start in peak and end in non peak
+                    else if (
+                      endDateTime >
+                        new Date(bookingDateFormatted + " " + this.endPeak) &&
+                      startDateTime <
+                        new Date(bookingDateFormatted + " " + this.endPeak)
+                    ) {
+                      console.log("//  if booking start in peak and end in non peak")
+                      const peakFee =
+                        (Math.floor(
+                          (new Date(bookingDateFormatted + " " + this.endPeak) -
+                            startDateTime) /
+                            3600000
+                        ) +
+                          1) *
+                          response.data.data.weekdaypeakhourly
+                      const nonPeakFee =
+                        (Math.floor(
+                          (endDateTime -
+                            new Date(bookingDateFormatted + " " + this.endPeak)) /
+                            3600000
+                        ) +
+                          1) *
+                          response.data.data.weekdaynonpeakhourly;
+                      fee = peakFee + nonPeakFee;
+                    }
+
+                    // if booking start and end in non peak
+                    // else if ((endDateTime > (new Date(bookingDateFormatted + " " + this.endPeak))) && (startDateTime > (new Date(bookingDateFormatted + " " + this.startPeak)))) {
+                    else {
+                      console.log("else")
+                      const duration =
+                        Math.floor((endDateTime - startDateTime) / 3600000) + 1;
+                      fee = duration * response.data.data.weekdaynonpeakhourly;
+                    }
+                  
+                }
+              this.carparksArraySimu[7].data["totalFee"] = this.formatMoney(fee/100)
+              console.log("Fee", this.carparksArraySimu)
+
+              if (this.pageTab == 'cheapest'){
+                this.carparksArraySimu.sort(function (a, b) {
+                const keyA = a.data.totalFee;
+                const keyB = b.data.totalFee;
+                if (keyA < keyB) return -1;
+                if (keyA > keyB) return 1;
+                return 0;
+              });
+              this.carparksArraySimu = this.carparksArraySimu.slice(0, 4);
+              }
+               
+            })
+              
+
+            })
+
+            })
+              
+
+            })
+              
+
+            })
+
+              
+
+            })
+
+
+            })
+          
+
+        })
+        .catch((error)=> {
+          console.log(error)
+        })
+      // }
+    },
+
+    formatMoney(myFloat){ // money in DB store in 1 dp (eg. 12.1), to change to 2 dp (12.10)
+      myFloat = Math.round(myFloat)
+      myFloat = myFloat.toString()
+      const dotExists = myFloat.includes('.')
+      let newFloat= myFloat
+      if (dotExists){
+        newFloat = myFloat.split(".")
+        if ((newFloat[1]).length ==1){
+          newFloat[1] += "0"
+        }
+        else if ((newFloat[1]).length ==0){
+          newFloat[1] += "00"
+        }
+        newFloat = newFloat.join(".")
+      }
+      else{
+        newFloat += ".00"
+      }
+      
+      return newFloat
+    },
     calculateDistance() {
       const url = "http://127.0.0.1:5009/getCoords"
       axios
@@ -527,8 +1746,6 @@ export default defineComponent({
             this.carparksArraySimu[i]["duration_mins"] =
               destinations[i].duration_in_traffic.text;
           }
-          console.log(this.carparksArraySimu)
-          console.log(response)
 
           this.carparksArraySimu.sort(function (a, b) {
             const keyA = a.distance_km_value;
@@ -544,39 +1761,6 @@ export default defineComponent({
           console.log(error.message);
         });
     },
-    // calculateDistance() {
-    //   axios
-    //     .get(this.googleMapDistanceUrl)
-    //     .then((response) => {
-    //       const destinations = response.data.rows[0].elements;
-
-    //       for (let i = 0; i < this.carparksArraySimu.length; i++) {
-    //         // this.carparksArray[i]["distance_km"] = (destinations[i].distance.value / 1000).toPrecision(2)
-    //         // this.carparksArray[i]["duration_mins"] = (destinations[i].duration_in_traffic.value / 60).toPrecision(2)
-    //         this.carparksArraySimu[i]["distance_km"] =
-    //           destinations[i].distance.text;
-    //         this.carparksArraySimu[i]["distance_km_value"] =
-    //           destinations[i].distance.value;
-    //         this.carparksArraySimu[i]["duration_mins"] =
-    //           destinations[i].duration_in_traffic.text;
-    //       }
-    //       console.log(this.carparksArraySimu)
-    //       console.log(response)
-
-    //       this.carparksArraySimu.sort(function (a, b) {
-    //         const keyA = a.distance_km_value;
-    //         const keyB = b.distance_km_value;
-    //         if (keyA < keyB) return -1;
-    //         if (keyA > keyB) return 1;
-    //         return 0;
-    //       });
-
-    //       this.carparksArraySimu = this.carparksArraySimu.slice(0, 4);
-    //     })
-    //     .catch((error) => {
-    //       console.log(error.message);
-    //     });
-    // },
     getSimulator() {
       this.carparksArraySimu = []
       this.googleMapDistanceUrl ="https://maps.googleapis.com/maps/api/distancematrix/json?origins=";
@@ -592,6 +1776,7 @@ export default defineComponent({
           this.carparksArraySimu.push({
             data :response.data.data,
             image: "assets/images/paragon.jpg",
+            availableLots: response.data.data.lotbalancehourly -  response.data.data.lotusehourly,
             // lat: 1.3040258775031617,
             // long: 103.83608284915861
           })
@@ -606,12 +1791,12 @@ export default defineComponent({
               this.carparksArraySimu.push({
                   data :response.data.data,
                   image: "assets/images/ion.jpg",
+                  availableLots: response.data.data.lotbalancehourly -  response.data.data.lotusehourly,
                   // lat: 1.3040258775031617,
                   // long: 103.83608284915861
           })
           this.combinedLatLang +="1.3040258775031617" + "," + "103.83608284915861" + "|";
               url = "http://127.0.0.1:5004/getCarpark/3";
-              console.log(url)
               axios
                 .post(url,{
                   "requesttype": 1000,
@@ -621,6 +1806,7 @@ export default defineComponent({
                   this.carparksArraySimu.push({
                     data :response.data.data,
                     image: "assets/images/takashimaya.jpeg",
+                    availableLots: response.data.data.lotbalancehourly -  response.data.data.lotusehourly,
             //         lat: 1.3033454254185042,
             // long: 103.83455711763565
           })
@@ -635,6 +1821,7 @@ export default defineComponent({
                       this.carparksArraySimu.push({
                         data :response.data.data,
                         image: "assets/images/tangs.jpg",
+                        availableLots: response.data.data.lotbalancehourly -  response.data.data.lotusehourly,
             //             lat: 1.3040258775031617,
             // long: 103.83608284915861
           })
@@ -649,6 +1836,7 @@ export default defineComponent({
                           this.carparksArraySimu.push({
                           data :response.data.data,
                           image: "assets/images/Wheelock.png",
+                          availableLots: response.data.data.lotbalancehourly -  response.data.data.lotusehourly,
             //               lat: 1.3050314731714412,
             // long: 103.83297614415605
           })
@@ -663,6 +1851,7 @@ export default defineComponent({
                               this.carparksArraySimu.push({
                               data :response.data.data,
                               image: "assets/images/313.jpg",
+                              availableLots: response.data.data.lotbalancehourly -  response.data.data.lotusehourly,
             //                   lat: 1.301171207812743,
             // long: 103.8386220085623
           })
@@ -677,6 +1866,7 @@ export default defineComponent({
                                   this.carparksArraySimu.push({
                                 data :response.data.data,
                                 image: "assets/images/scape.jpg",
+                                availableLots: response.data.data.lotbalancehourly -  response.data.data.lotusehourly,
             //                     lat: 1.3010677408660067,
             // long: 103.83576204980196
           })
@@ -688,14 +1878,15 @@ export default defineComponent({
                                       "carparkid": 8
                                     })
                                     .then((response) => {
+                                      this.getCarparkPrices()
                                       this.carparksArraySimu.push({
                                       data :response.data.data,
+                                      availableLots: response.data.data.lotbalancehourly -  response.data.data.lotusehourly,
                                       image: "assets/images/wisma.jpeg",
                                       // lat: 1.303842974291844,
                                       // long: 103.8333226716273
                                     })
                                       this.combinedLatLang +="1.303842974291844" + "," + "103.8333226716273" + "|";
-
                                       if (this.selectedLocation == "") {
                                         console.log("no location selected");
                                       } else {
@@ -715,16 +1906,16 @@ export default defineComponent({
                                       "&departure_time=now&key=AIzaSyAJXGx7T2ypt5Ew5-9SbDTWF9gqloQUJwI";
                                       // this.calculateDistance();
 
-                                      console.log(this.userOrigin, "HEREEEE")
+                                      
                                       // this.userOrigin = "1.3064433533620563,103.83276247871694"
-                                      // console.log("HERE2")
                                       const url = "http://127.0.0.1:5009/getCoords";
                                       axios
                                         .post(url,{
                                           "origin": this.userOrigin
                                         })
                                         .then((response) => {
-                                          console.log(response.data.rows[0].elements)
+                                          
+
                                           const destinations = response.data.rows[0].elements
                                           for (let i = 0; i < this.carparksArraySimu.length; i++) {
                                             this.carparksArraySimu[i]["distance_km"] = destinations[i].distance.text;
@@ -760,55 +1951,13 @@ export default defineComponent({
           
         })
 
-      // this.calculateDistance()
-
-      // this.googleMapDistanceUrl =
-      //   "https://maps.googleapis.com/maps/api/distancematrix/json?origins=";
-      // this.combinedLatLang = "";
-      
-      // for (const eachCarpark in this.carparksArraySimu){
-      //     console.log(this.carparksArraySimu[eachCarpark])
-      //     this.combinedLatLang +=
-      //         eachCarpark.lat + "," + eachCarpark.long + "|";
-      // }
-
-      //   if (this.selectedLocation == "") {
-      //       console.log("no location selected");
-      //     } else {
-      //       if (this.selectedLocation == "orchard") {
-      //         this.userOrigin = "1.3064433533620563,103.83276247871694";
-      //       } else if (this.selectedLocation == "yishun") {
-      //         this.userOrigin = "1.4304060903894582, 103.83515323243753";
-      //       } else if (this.selectedLocation == "somerset") {
-      //         this.userOrigin = "1.3016313961551784, 103.83849995957749";
-      //       }
-
-      //       this.googleMapDistanceUrl +=
-      //         this.userOrigin +
-      //         "&destinations=" +
-      //         this.combinedLatLang.slice(0, -1) +
-      //         "&departure_time=now&key=AIzaSyAJXGx7T2ypt5Ew5-9SbDTWF9gqloQUJwI";
-      //       this.calculateDistance();
-      //       console.log(this.googleMapDistanceUrl)
-      //     }
-  
     },
-      // getSimu2(){
-      //   const url2 = "http://127.0.0.1:5004/getCarpark/2";
-      //   console.log(url2)
-      //   axios
-      //     .get(url2)
-      //     .then((response) => {
-      //       console.log(response)
-      //     })
-      // }
+   
   },
 
   mounted() {
-    this.getSimulator();
-    
-    // this.getSimu2()
-    // this.confirmDateTime();
+    this.userData = JSON.parse(localStorage.getItem("userData"));
+            
   },
 });
 </script>
