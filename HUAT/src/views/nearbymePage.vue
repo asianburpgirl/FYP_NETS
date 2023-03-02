@@ -1,5 +1,5 @@
 <template>
-    <ion-page class="ion-padding">
+    <ion-page>
         <ion-header>
             <ion-toolbar>
                 <ion-buttons slot="start">
@@ -10,7 +10,7 @@
         </ion-header>
     
         <ion-content>
-            <ion-searchbar></ion-searchbar>
+            <!-- <ion-searchbar></ion-searchbar> -->
     
             <ion-row class="ion-justify-content-center ion-padding">
                 <ion-button expand="block" @click="setDateTimeOpen(true)">Change Booking Date and Time</ion-button>
@@ -53,8 +53,8 @@
                 </ion-item>
             </ion-list>
     
-            <div v-if="this.pageTab == 'nearest' && this.selectedLocation == ''">
-                <h1>Select a location to view the nearest carparks to it!</h1>
+            <div class="ion-padding" v-if="this.pageTab == 'nearest' && this.selectedLocation == ''">
+                <h1>Please select a location to view the nearest carparks to it👆</h1>
             </div>
     
             <ion-grid class="ion-padding-top" v-if="
@@ -95,7 +95,6 @@
                 <ion-header>
                     <ion-toolbar>
                         <ion-title class="ion-text-center"> Date and Time</ion-title>
-    
                         <ion-buttons slot="start">
                             <ion-button @click="setDateTimeOpen(false)">
                                 <ion-icon :icon="arrowBackOutline"></ion-icon>
@@ -104,6 +103,7 @@
                     </ion-toolbar>
                 </ion-header>
                 <ion-content class="ion-padding">
+                  <ion-item>
                     <ion-label position="stacked"> Booking Date:</ion-label>
                     <ion-datetime presentation="date" v-model="bookingDate"></ion-datetime>
     
@@ -113,16 +113,22 @@
                     <ion-label position="stacked"> End Time:</ion-label>
                     <ion-datetime presentation="time" v-model="endTime"></ion-datetime>
     
-                    <ion-row class="ion-padding-top">
+                    <!-- <ion-row class="ion-padding-top"> -->
                         <ion-text color="danger" class="ion-padding-top">
                             <li v-for="error in errorMessage" :key="error">
                                 {{ error }}
                             </li>
                         </ion-text>
-                    </ion-row>
+                    <!-- </ion-row> -->
+                  </ion-item>
+                    
     
                     <ion-row class="ion-padding-top ion-justify-content-center ion-padding-bottom addPaddingBottom">
-                        <ion-button shape="round" @click="confirmDateTime()">Confirm</ion-button>
+                        
+                      <ion-col>
+                        <ion-button expand="block" @click="confirmDateTime()">Confirm</ion-button>
+                      </ion-col>
+                       
                     </ion-row>
                 </ion-content>
             </ion-modal>
@@ -148,7 +154,7 @@ import {
     IonCardHeader,
     IonCardSubtitle,
     IonCardTitle,
-    IonSearchbar,
+    // IonSearchbar,
     IonList,
     IonItem,
     IonSelect,
@@ -183,7 +189,7 @@ export default defineComponent({
         IonCardHeader,
         IonCardSubtitle,
         IonCardTitle,
-        IonSearchbar,
+        // IonSearchbar,
         IonList,
         IonItem,
         IonSelect,

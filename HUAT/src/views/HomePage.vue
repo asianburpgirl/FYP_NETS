@@ -36,7 +36,18 @@
     
         <!-- User home -->
         <ion-grid v-if="userRole == 'User'">
-            <h4 class="ion-text-start">Carparks Details</h4>
+            <h4 class="ion-text-start">Carpark Details</h4>
+         
+                <ion-card v-for="carpark in c" :key="carpark">
+                    <ion-img :src="carpark.image"></ion-img>
+    
+                    <ion-card-header>
+                        <ion-card-title>{{ carpark.data.carparklocation }}</ion-card-title>
+                        <ion-card-subtitle></ion-card-subtitle>
+                        <ion-card-subtitle>{{ carpark.data.carparkaddress }}</ion-card-subtitle>
+
+                    </ion-card-header>
+                </ion-card>
         </ion-grid>
     </base-layout>
 </template>
@@ -47,6 +58,10 @@ import {
     IonRow,
     IonCol,
     IonGrid,
+    IonCard,
+    IonCardHeader,
+    IonCardSubtitle,
+    IonCardTitle,
 } from "@ionic/vue";
 import {
     GChart
@@ -62,11 +77,16 @@ export default defineComponent({
         IonRow,
         IonCol,
         IonGrid,
+        IonCardHeader,
+        IonCardSubtitle,
+        IonCardTitle,
+        IonCard,
     },
     data() {
         return {
             userRole: "",
             userData: {},
+            carparkArraySimu: [],
 
             PieChartData: [
                 ["Bookings", "Percentage of bookings"]
@@ -174,6 +194,120 @@ export default defineComponent({
                     console.log(error.message);
                 });
         },
+        getSimulator() {
+            this.carparksArraySimu = []
+
+            let url = "http://127.0.0.1:5004/getCarpark/1";
+            axios
+                .post(url, {
+                    "requesttype": 1000,
+                    "carparkid": 1
+                })
+                .then((response) => {
+                    this.carparksArraySimu.push({
+                        data: response.data.data,
+                        image: "assets/images/paragon.jpg",
+                        availableLots: response.data.data.lotbalancehourly - response.data.data.lotusehourly,
+                    })
+
+                    url = "http://127.0.0.1:5004/getCarpark/2";
+                    axios
+                        .post(url, {
+                            "requesttype": 1000,
+                            "carparkid": 2
+                        })
+                        .then((response) => {
+                            this.carparksArraySimu.push({
+                                data: response.data.data,
+                                image: "assets/images/ion.jpg",
+                                availableLots: response.data.data.lotbalancehourly - response.data.data.lotusehourly,
+                            })
+                            url = "http://127.0.0.1:5004/getCarpark/3";
+                            axios
+                                .post(url, {
+                                    "requesttype": 1000,
+                                    "carparkid": 3,
+                                })
+                                .then((response) => {
+                                    this.carparksArraySimu.push({
+                                        data: response.data.data,
+                                        image: "assets/images/takashimaya.jpeg",
+                                        availableLots: response.data.data.lotbalancehourly - response.data.data.lotusehourly,
+                                    })
+                                    url = "http://127.0.0.1:5004/getCarpark/4";
+                                    axios
+                                        .post(url, {
+                                            "requesttype": 1000,
+                                            "carparkid": 4,
+                                        })
+                                        .then((response) => {
+                                            this.carparksArraySimu.push({
+                                                data: response.data.data,
+                                                image: "assets/images/tangs.jpg",
+                                                availableLots: response.data.data.lotbalancehourly - response.data.data.lotusehourly,
+                                            })
+                                            url = "http://127.0.0.1:5004/getCarpark/5";
+                                            axios
+                                                .post(url, {
+                                                    "requesttype": 1000,
+                                                    "carparkid": 5,
+                                                })
+                                                .then((response) => {
+                                                    this.carparksArraySimu.push({
+                                                        data: response.data.data,
+                                                        image: "assets/images/Wheelock.png",
+                                                        availableLots: response.data.data.lotbalancehourly - response.data.data.lotusehourly,
+                                                    })
+                                                    url = "http://127.0.0.1:5004/getCarpark/6";
+                                                    axios
+                                                        .post(url, {
+                                                            "requesttype": 1000,
+                                                            "carparkid": 6,
+                                                        })
+                                                        .then((response) => {
+                                                            this.carparksArraySimu.push({
+                                                                data: response.data.data,
+                                                                image: "assets/images/313.jpg",
+                                                                availableLots: response.data.data.lotbalancehourly - response.data.data.lotusehourly,
+                                                            })
+                                                           
+                                                            url = "http://127.0.0.1:5004/getCarpark/7";
+                                                            axios
+                                                                .post(url, {
+                                                                    "requesttype": 1000,
+                                                                    "carparkid": 7,
+                                                                })
+                                                                .then((response) => {
+                                                                    this.carparksArraySimu.push({
+                                                                        data: response.data.data,
+                                                                        image: "assets/images/scape.jpg",
+                                                                        availableLots: response.data.data.lotbalancehourly - response.data.data.lotusehourly,
+
+                                                                    })
+                                                                    url = "http://127.0.0.1:5004/getCarpark/8";
+                                                                    axios
+                                                                        .post(url, {
+                                                                            "requesttype": 1000,
+                                                                            "carparkid": 8
+                                                                        })
+                                                                        .then((response) => {
+                                                                            this.carparksArraySimu.push({
+                                                                                data: response.data.data,
+                                                                                availableLots: response.data.data.lotbalancehourly - response.data.data.lotusehourly,
+                                                                                image: "assets/images/wisma.jpeg",
+                                                                            })
+                                                                            
+                                                                        })
+                                                                })
+                                                        })
+                                                })
+                                        })
+                                })
+                        })
+
+                })
+
+        },
     },
     // Calls function on page load
     mounted() {
@@ -181,6 +315,7 @@ export default defineComponent({
         this.getBarChart();
         this.getPieChart();
         this.getColumnChart();
+        this.getSimulator();
     },
 });
 </script>
