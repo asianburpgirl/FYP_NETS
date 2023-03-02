@@ -27,7 +27,7 @@ class User(db.Model):
     phoneNum = db.Column(db.Integer, nullable=False)
     username = db.Column(db.String(100), nullable=False)
     password = db.Column(db.String(100), nullable=False)
-    balance = db.Column(db.Float())
+    balance = db.Column(db.Float(), nullable=False)
     role = db.Column(db.String(100))
     
 
@@ -112,7 +112,8 @@ def createUser():
     phoneNum = request.json.get('phoneNum' , None)
     username = request.json.get('username' , None)
     password = request.json.get('password' , None)
-    balance = request.json.get('balance', None)
+    balance = request.json.get('balance', 0)  
+    # balance = request.json.get('balance', None)
     # if role is given, must be Admin. Else, default is User
     if request.get_json().get("role") != None:
         role = "Admin"

@@ -11,7 +11,7 @@ CREATE TABLE bookings(
     bookingEndDateTime DATETIME NOT NULL , 
     status VARCHAR(128) NOT NULL , 
     bookingRef VARCHAR(128) NOT NULL,
-    bookingAmt FLOAT NOT NULL, 
+    bookingAmt FLOAT(5,2) NOT NULL, 
     userID INT NOT NULL , 
     PRIMARY KEY (bookingID));
 	
@@ -83,7 +83,7 @@ CREATE TABLE users (
 	phoneNum INT NOT NULL,
 	username VARCHAR(128) NOT NULL,
 	password VARCHAR(128) NOT NULL,
-	balance FLOAT(5,2),
+	balance FLOAT(5,2) NOT NULL DEFAULT '0',
     role VARCHAR(128) NOT NULL,
   	PRIMARY KEY (userID));
 
