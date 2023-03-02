@@ -2,12 +2,12 @@
     <base-layout needToolBar="y" pageTitle="Home">
     
         <!-- this is for ease of development -->
-        <ion-grid>
+        <!-- <ion-grid>
             <ion-row class="ion-justify-content-center">
                 <ion-button color="dark" @click="changeRole('Admin')"> Admin </ion-button>
                 <ion-button color="dark" @click="changeRole('User')"> User </ion-button>
             </ion-row>
-        </ion-grid>
+        </ion-grid> -->
     
         <!-- admin home -->
         <ion-grid v-if="userRole == 'Admin'">
@@ -37,15 +37,13 @@
         <!-- User home -->
         <ion-grid v-if="userRole == 'User'">
             <h4 class="ion-text-start">Carparks Details</h4>
-            
-            
         </ion-grid>
     </base-layout>
 </template>
 
 <script>
 import {
-    IonButton,
+    // IonButton,
     IonRow,
     IonCol,
     IonGrid,
@@ -60,7 +58,7 @@ import axios from "axios";
 export default defineComponent({
     components: {
         GChart,
-        IonButton,
+        // IonButton,
         IonRow,
         IonCol,
         IonGrid,
