@@ -1,5 +1,5 @@
 <template>
-  <ion-page class="ion-padding">
+  <ion-page>
     <ion-header>
       <ion-toolbar>
         <ion-buttons slot="start">
@@ -10,8 +10,14 @@
     </ion-header>
 
     <ion-content class="ion-padding">
-      <ion-button shape="round" expand="block" size="large" @click="routeNets('Nets')">NETS</ion-button>
-      <ion-button shape="round" expand="block" size="large" @click="routeStripe('Stripe')">Stripe</ion-button>
+      <ion-row>
+        <ion-col>
+          <ion-button expand="block" size="large" @click="routeNets('Nets')">NETS</ion-button>
+        </ion-col>
+        <ion-col> 
+          <ion-button expand="block" size="large" @click="routeStripe('Stripe')">Stripe</ion-button>
+        </ion-col>
+      </ion-row>
     </ion-content>
   </ion-page>
 </template>
