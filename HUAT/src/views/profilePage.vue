@@ -8,9 +8,9 @@
             <ion-item button detail="true">
                 <ion-label @click='routeUser("viewProfile")'>Edit Profile</ion-label>
             </ion-item>
-            <ion-item button detail="true">
+            <!-- <ion-item button detail="true">
                 <ion-label @click='routeUser("viewBooking")'>View Bookings</ion-label>
-            </ion-item>
+            </ion-item> -->
 
             <!-- <ion-item button detail="true">
                 <ion-label>Setting</ion-label>
