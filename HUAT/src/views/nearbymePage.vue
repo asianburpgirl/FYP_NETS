@@ -94,7 +94,7 @@
             <ion-row
             class="ion-padding-top ion-justify-content-center ion-padding-bottom">
             <!-- confirmationAlert(eachBooking.amount) -->
-            <ion-button shape="round" @click="confirmationAlert(carpark,this.bookingDate,this.startTime,this.endTime,this.userData)">
+            <ion-button shape="round" @click="confirmationAlert(carpark,this.bookingDate,this.startTime,this.endTime,this.userData )">
               Book
               </ion-button>
             </ion-row>
@@ -250,7 +250,7 @@ export default defineComponent({
   },
   setup() {
     const handlerMessage = ref("");
-    const confirmationAlert = async (carpark, bookingDate,startTime,endTime,userData) => {
+    const confirmationAlert = async (carpark, bookingDate,startTime,endTime,userData ) => {
       
       const alert = await alertController.create({
         header: "Confirm your booking? ",
@@ -269,6 +269,7 @@ export default defineComponent({
             cssClass: "alert-button-confirm",
             role: "confirm",
             handler: () => {
+              // this.deductLot(carpark.data.carparkid,1,"-1" )
               console.log(carpark)
               handlerMessage.value = "Alert confirmed";
             const currentDateTime = new Date();
@@ -298,6 +299,7 @@ export default defineComponent({
               endTime = endTime.substring(11, 19);
 
             const userID = userData.userID;
+            
 
             let url = "http://127.0.0.1:5001/bookings";
             axios
@@ -321,8 +323,22 @@ export default defineComponent({
                       bookingID: response.data.data.bookingID,
                     })
                     .then((response) => {
+                      const balance = response.data.data
                       console.log(response)
-                      sucessMsg(bookingAmount, response.data.data);
+                      const carparkID = carpark.data.carparkid
+                      const url ="http://127.0.0.1:5004/lotAdj/"  + carparkID + "/2/1" 
+                      axios
+                        .get(url)
+                        .then((response)=> {
+                          console.log(response)
+                          sucessMsg(bookingAmount, balance);
+
+                        })
+                        .catch((error) => {
+                          console.log(error.message);
+                        });
+                        
+                      
                     })
                     .catch((error) => {
                       console.log(error.message);
@@ -342,7 +358,7 @@ export default defineComponent({
     const sucessMsg = async (amount,balance) => {
       const alert = await alertController.create({
         header: "Success!",
-        subHeader: "$"+ amount + " deducted. Balance is " + "$" +balance,
+        subHeader: "$"+ amount + " deducted. Balance is " + "$" +balance.toFixed(2),
         buttons: [
           {
             text: "Okay",
@@ -363,6 +379,17 @@ export default defineComponent({
     };
   },
   methods: {  
+    deductLot(carparkid,parkingtype, lotadjustment ){
+      const url ="http://127.0.0.1:5004/lotAdj/"  + carparkid + "/" + parkingtype+ "/" + lotadjustment
+      axios
+        .get(url)
+        .then((response)=> {
+          console.log(response)
+        })
+        .catch((error) => {
+          console.log(error.message);
+        });
+    },
    
     confirmDateTime() {
 
@@ -1709,7 +1736,7 @@ export default defineComponent({
     },
 
     formatMoney(myFloat){ // money in DB store in 1 dp (eg. 12.1), to change to 2 dp (12.10)
-      myFloat = Math.round(myFloat)
+      myFloat = myFloat.toFixed(2)
       myFloat = myFloat.toString()
       const dotExists = myFloat.includes('.')
       let newFloat= myFloat

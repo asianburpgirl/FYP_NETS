@@ -53,6 +53,8 @@ def getCarparkDetails(carparkid):
     
 #request type 2001 (lot adjustment)
 #if want to deduct from lot used, put minus sign infront
+
+# Complimentary = 1, Hourly= 2 , Season= 3
 @app.route("/lotAdj/<int:carparkid>/<int:parkingtype>/<string:lotadjustment>", methods=["POST","GET"])
 def lotAdj(carparkid,parkingtype,lotadjustment):
     print("hi")
