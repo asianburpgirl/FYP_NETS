@@ -5,7 +5,7 @@
         <ion-buttons slot="start">
           <ion-back-button defaultHref="/tabs/bookings"></ion-back-button>
         </ion-buttons>
-        <ion-title class="ion-text-center">Nearby Me!</ion-title>
+        <ion-title class="ion-text-center">View Carparks</ion-title>
       </ion-toolbar>
     </ion-header>
 
