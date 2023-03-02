@@ -141,7 +141,7 @@
             <ion-modal :is-open="subscriptionIsOpen" class="ion-padding">
                 <ion-header>
                     <ion-toolbar>
-                        <ion-title>Subscription plan </ion-title>
+                        <ion-title>Subscription plan</ion-title>
                         <ion-buttons slot="start">
                             <ion-button @click="
                       setSubscriptionOpen(false);
