@@ -30,12 +30,12 @@
     
                 <ion-content class="ion-padding ion-justify-content-center">
                     <div>
-                        <p>
+                        <!-- <p>
                             <b>Distance:</b> {{ distanceToLocation_km }} km
                         </p>
                         <p>
                             <b>Time Taken:</b> {{ timeToLocation_mins }} mins
-                        </p>
+                        </p> -->
                         <p><b>Booking Amount:</b> ${{ bookingAmount }} per hour</p>
                     </div>
     
@@ -120,7 +120,7 @@
                         Your booking at {{ clickedMarkerName }} is successful!
                         <br /> Your booking details are as followed:
                         <ul>
-                            <li><b>Carpark Location:</b> {{ clickedMarkerAddress }}</li>
+                            <!-- <li><b>Carpark Location:</b> {{ clickedMarkerAddress }}</li> -->
                             <li><b>Booking Date:</b> {{ bookingDate }}</li>
     
                             <li><b>Start Time:</b> {{ startTime }}</li>
@@ -129,11 +129,18 @@
                     </ion-row>
     
                     <ion-row class="ion-padding-top ion-justify-content-center ion-padding-bottom addPaddingBottom">
-                      <ion-col><ion-button expand="block" @click="setBookingSuccessOpen(false)">Back to Map</ion-button>
-                        <!-- <ion-button shape="round" @click="routeToMyBookings()"
-                  >View My Bookings</ion-button
-                > --></ion-col>  
+                        <ion-col md="6">
+                          <ion-button expand="block" @click="setBookingSuccessOpen(false)">Back to Map</ion-button>
+                            
+                            
+                        </ion-col>
+                        <ion-col md="6">
+                          <ion-button @click="routeToMyBookings()"
+                  >View My Bookings</ion-button>
+                        </ion-col>
                     </ion-row>
+
+                    
                 </ion-content>
             </ion-modal>
     
