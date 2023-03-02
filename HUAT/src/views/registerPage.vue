@@ -106,7 +106,7 @@
         </ion-item>
 
         <ion-row class="ion-padding-top ion-justify-content-center">
-          <ion-button shape="round" :disabled="disabledRegisterButton==1" @click="registerUser">Register</ion-button>
+          <ion-button expand="block" :disabled="disabledRegisterButton==1" @click="registerUser">Register</ion-button>
         </ion-row>
       </ion-list>
     </ion-grid>
