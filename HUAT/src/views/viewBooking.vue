@@ -104,7 +104,7 @@
                   "
                   color="danger"
                   >Cancel</ion-button
-                >
+                > 
               </ion-row>
 
               <ion-row class="ion-padding-top ion-justify-content-center">

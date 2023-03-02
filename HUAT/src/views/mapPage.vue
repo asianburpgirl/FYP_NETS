@@ -491,7 +491,6 @@ export default defineComponent({
         .catch((error) => {
           console.log(error.message);
         });
-
     },
 
     async createMap() {
