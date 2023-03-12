@@ -2,12 +2,12 @@
     <base-layout needToolBar="y" pageTitle="Home">
     
         <!-- this is for ease of development -->
-        <!-- <ion-grid>
+        <ion-grid>
             <ion-row class="ion-justify-content-center">
                 <ion-button color="dark" @click="changeRole('Admin')"> Admin </ion-button>
                 <ion-button color="dark" @click="changeRole('User')"> User </ion-button>
             </ion-row>
-        </ion-grid> -->
+        </ion-grid>
     
         <!-- admin home -->
         <ion-grid v-if="userRole == 'Admin'">
@@ -37,31 +37,24 @@
         <!-- User home -->
         <ion-grid v-if="userRole == 'User'">
             <h4 class="ion-text-start">Carpark Details</h4>
-         
-                <ion-card v-for="carpark in c" :key="carpark">
-                    <ion-img :src="carpark.image"></ion-img>
-    
-                    <ion-card-header>
-                        <ion-card-title>{{ carpark.data.carparklocation }}</ion-card-title>
-                        <ion-card-subtitle></ion-card-subtitle>
-                        <ion-card-subtitle>{{ carpark.data.carparkaddress }}</ion-card-subtitle>
+            <ion-card v-for="carpark in carparksArraySimu" :key="carpark">
+                <ion-img :src="carpark.image"></ion-img>
+                <ion-card-header>
+                    <ion-card-title>{{ carpark.data.carparklocation }}</ion-card-title>
+                    <ion-card-subtitle>{{ carpark.data.carparkaddress }}</ion-card-subtitle>
 
-                    </ion-card-header>
-                </ion-card>
+                </ion-card-header>
+            </ion-card>
         </ion-grid>
     </base-layout>
 </template>
 
 <script>
 import {
-    // IonButton,
+    IonButton,
     IonRow,
     IonCol,
     IonGrid,
-    IonCard,
-    IonCardHeader,
-    IonCardSubtitle,
-    IonCardTitle,
 } from "@ionic/vue";
 import {
     GChart
@@ -73,20 +66,16 @@ import axios from "axios";
 export default defineComponent({
     components: {
         GChart,
-        // IonButton,
+        IonButton,
         IonRow,
         IonCol,
         IonGrid,
-        IonCardHeader,
-        IonCardSubtitle,
-        IonCardTitle,
-        IonCard,
     },
     data() {
         return {
             userRole: "",
             userData: {},
-            carparkArraySimu: [],
+            carparksArraySimu: [],
 
             PieChartData: [
                 ["Bookings", "Percentage of bookings"]
@@ -124,6 +113,7 @@ export default defineComponent({
     methods: {
         changeRole(role) {
             this.userRole = role;
+            this.getSimulator()
         },
         loadUserData() {
             this.userData = JSON.parse(localStorage.getItem("userData"));
@@ -270,7 +260,7 @@ export default defineComponent({
                                                                 image: "assets/images/313.jpg",
                                                                 availableLots: response.data.data.lotbalancehourly - response.data.data.lotusehourly,
                                                             })
-                                                           
+
                                                             url = "http://127.0.0.1:5004/getCarpark/7";
                                                             axios
                                                                 .post(url, {
@@ -296,7 +286,6 @@ export default defineComponent({
                                                                                 availableLots: response.data.data.lotbalancehourly - response.data.data.lotusehourly,
                                                                                 image: "assets/images/wisma.jpeg",
                                                                             })
-                                                                            
                                                                         })
                                                                 })
                                                         })
@@ -315,7 +304,6 @@ export default defineComponent({
         this.getBarChart();
         this.getPieChart();
         this.getColumnChart();
-        this.getSimulator();
     },
 });
 </script>
