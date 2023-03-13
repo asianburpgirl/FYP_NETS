@@ -44,8 +44,7 @@
                 <ion-item>
                     <ion-select placeholder="I am at:" @ionChange="
                   pushLog($event.detail.value);
-                  this.getSimulator();
-                ">
+                  this.getSimulator();">
                         <IonSelectOption value="orchard">Orchard</IonSelectOption>
                         <IonSelectOption value="somerset">Somerset</IonSelectOption>
                         <IonSelectOption value="yishun">Yishun</IonSelectOption>

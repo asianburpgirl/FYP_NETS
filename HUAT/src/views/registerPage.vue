@@ -1,13 +1,18 @@
 <template>
-  <base-layout>
+  <base-layout
+    pageTitle="Registration"
+    pageToGoBack="/"
+    needBackButton="y"
+    needToolBar="y"
+  >
     <ion-grid>
       <ion-row class="ion-justify-content-center">
         <!-- <img :src="require('../images/nets.png')" /> -->
-        <img src='assets/images/nets.png' />
+        <img src="assets/images/nets.png" />
       </ion-row>
 
       <ion-row class="ion-justify-content-center">
-        <icon-col size="9" class="pageHeader"> Registration </icon-col>
+        <ion-col class="pageHeader"> Registration </ion-col>
       </ion-row>
 
       <!-- username -->
@@ -87,7 +92,7 @@
         </ion-item>
         <!-- reconfirm password error message -->
         <ion-item lines="none" v-if="isReconfirmPasswordValid == 2">
-            <ion-note color="danger" >Your password do not match!</ion-note>
+          <ion-note color="danger">Your password do not match!</ion-note>
         </ion-item>
 
         <!-- phone num -->
@@ -102,33 +107,40 @@
         </ion-item>
         <!-- phone num error message -->
         <ion-item lines="none" v-if="isPhoneValid == 2">
-            <ion-note color="danger" >Invalid phone number!</ion-note>
+          <ion-note color="danger">Invalid phone number!</ion-note>
         </ion-item>
-
-        <ion-row class="ion-padding-top ion-justify-content-center">
-          <ion-button expand="block" :disabled="disabledRegisterButton==1" @click="registerUser">Register</ion-button>
-        </ion-row>
       </ion-list>
+      <div class="ion-padding-top ion-justify-content-center">
+        <ion-button
+          expand="block"
+          :disabled="disabledRegisterButton == 1"
+          @click="registerUser"
+          >Register</ion-button
+        >
+      </div>
     </ion-grid>
   </base-layout>
 </template>
 
 <script lang="ts">
 import { List } from "@ionic/core/dist/types/components/list/list";
-import { defineComponent } from 'vue';
+import { defineComponent } from "vue";
 
 import {
   IonRow,
-  IonInput,
-  IonItem,
-  IonButton,
-  IonLabel,
-  IonNote,
+    IonInput,
+    IonItem,
+    IonButton,
+    IonLabel,
+    IonNote,
+    IonGrid,
+    IonList,
+    IonCol
 } from "@ionic/vue";
 import { construct } from "ionicons/icons";
 import axios from "axios";
 
-export default defineComponent( {
+export default defineComponent({
   components: {
     IonRow,
     IonInput,
@@ -136,6 +148,9 @@ export default defineComponent( {
     IonButton,
     IonLabel,
     IonNote,
+    IonGrid,
+    IonList,
+    IonCol
   },
   data() {
     return {
@@ -153,7 +168,7 @@ export default defineComponent( {
       isEmailValid: 0,
       isReconfirmPasswordValid: 0,
       isPhoneValid: 0,
-      
+
       //password need a list since there are multiple requiremnts to a password,
       passwordErrors: Array<string>(),
 
@@ -165,7 +180,7 @@ export default defineComponent( {
       //user enter valid address (with a @)
       if (email.match("@")) {
         this.isEmailValid = 1;
-        this.registerButton()
+        this.registerButton();
       } else {
         this.isEmailValid = 2;
       }
@@ -176,7 +191,7 @@ export default defineComponent( {
       //valid path. username less than 128 characters
       if (username.length < 128) {
         this.isUsernameValid = 1;
-        this.registerButton()
+        this.registerButton();
       } else {
         this.isUsernameValid = 2;
       }
@@ -185,7 +200,7 @@ export default defineComponent( {
       //valid path. name less than 128 characters
       if (name.length < 128) {
         this.isNameValid = 1;
-        this.registerButton()
+        this.registerButton();
       } else {
         this.isNameValid = 2;
       }
@@ -199,28 +214,24 @@ export default defineComponent( {
         );
       }
       // check if there is at least a lower letter in password
-      const capsAllPassword = password.toUpperCase()
+      const capsAllPassword = password.toUpperCase();
       if (password == capsAllPassword) {
-        this.passwordErrors.push(
-          "Password must have at least a lower letter"
-        );
+        this.passwordErrors.push("Password must have at least a lower letter");
       }
       // check if there is at least a capital letter in password
-      const lowerAllPassword = password.toLowerCase()
+      const lowerAllPassword = password.toLowerCase();
       if (password == lowerAllPassword) {
-        this.passwordErrors.push(
-          "Password must have at least an upper letter"
-        );
+        this.passwordErrors.push("Password must have at least an upper letter");
       }
-      this.registerButton()
+      this.registerButton();
     },
     validateReconfirmPassword(reconfirmPassword: string) {
       //valid path. reconfirm password same as password
       if (reconfirmPassword == this.password) {
         this.isReconfirmPasswordValid = 1;
         //issue if user enter reconfirm password first, then enter password.
-        // even if same passwords, will have 
-        this.registerButton()
+        // even if same passwords, will have
+        this.registerButton();
       } else {
         this.isReconfirmPasswordValid = 2;
       }
@@ -229,36 +240,40 @@ export default defineComponent( {
       //valid path. phone number is 8 numbers
       if (phoneNum.length == 8) {
         this.isPhoneValid = 1;
-        this.registerButton()
+        this.registerButton();
       } else {
         this.isPhoneValid = 2;
       }
     },
     registerButton() {
-      // only let user register if they are no errors  
-      if (this.isPhoneValid == 1 && this.isReconfirmPasswordValid == 1 && this.isNameValid == 1 && this.isEmailValid == 1) {
-        this.disabledRegisterButton = 0 
+      // only let user register if they are no errors
+      if (
+        this.isPhoneValid == 1 &&
+        this.isReconfirmPasswordValid == 1 &&
+        this.isNameValid == 1 &&
+        this.isEmailValid == 1
+      ) {
+        this.disabledRegisterButton = 0;
       }
     },
     registerUser() {
       const url = "http://127.0.0.1:5002/users"; // hardcoded
-        axios
-          .post(url, {
-            email: this.email,
-            name: this.name,
-            phoneNum: this.phoneNumber,
-            username: this.userName,
-            password: this.password,
-          })
-          .then((response) => {
-            console.log(response)
-            this.$router.push({
-          path: '/',
+      axios
+        .post(url, {
+          email: this.email,
+          name: this.name,
+          phoneNum: this.phoneNumber,
+          username: this.userName,
+          password: this.password,
+        })
+        .then((response) => {
+          console.log(response);
+          this.$router.push({
+            path: "/",
+          });
         });
-
-          })
-    }
-  }
+    },
+  },
 });
 </script>
 
@@ -269,6 +284,7 @@ img {
   width: 290px;
 }
 .pageHeader {
+  text-align: center;
   padding: 45px;
   font-size: 35px;
   color: #484747;
