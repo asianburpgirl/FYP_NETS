@@ -55,6 +55,12 @@ import {
     IonRow,
     IonCol,
     IonGrid,
+    IonImg,
+    IonCardHeader,
+    IonCardTitle,
+    IonCardSubtitle,
+    IonCard
+
 } from "@ionic/vue";
 import {
     GChart
@@ -70,6 +76,11 @@ export default defineComponent({
         IonRow,
         IonCol,
         IonGrid,
+        IonImg,
+        IonCardHeader,
+        IonCardTitle,
+        IonCardSubtitle,
+        IonCard
     },
     data() {
         return {

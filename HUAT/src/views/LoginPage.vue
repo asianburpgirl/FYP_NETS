@@ -80,7 +80,7 @@
 
 <script>
 import {
-    // IonRow,
+    IonRow,
     IonInput,
     IonItem,
     IonButton,
@@ -98,7 +98,7 @@ import axios from 'axios';
 
 export default defineComponent({
     components: {
-        // IonRow,
+        IonRow,
         IonGrid,
         IonList,
         // IonCol,

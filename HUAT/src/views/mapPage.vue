@@ -196,6 +196,7 @@
 
 <script>
 import { defineComponent, ref } from "vue";
+import { GoogleMap } from "@capacitor/google-maps";
 import axios from "axios";
 import {
     IonPage,
@@ -215,11 +216,12 @@ import {
     IonLabel,
     IonSelect,
     IonSelectOption,
+    IonCol,
+    IonText,
+    IonImg
 
-    //   IonRefresher,
-    //   IonRefresherContent,
 } from "@ionic/vue";
-import { GoogleMap } from "@capacitor/google-maps";
+
 import { arrowBackOutline } from "ionicons/icons";
 import { Geolocation } from "@capacitor/geolocation";
 
@@ -242,8 +244,10 @@ export default defineComponent({
         IonSelectOption,
         IonRow,
         IonList,
-        // IonRefresher,
-        // IonRefresherContent,
+        IonCol,
+        IonText,
+        IonImg
+
     },
 
     setup() {

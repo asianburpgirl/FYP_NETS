@@ -40,6 +40,9 @@ import {
   IonContent,
   IonToolbar,
   IonBackButton,
+  IonButtons,
+  IonCol,
+  IonRow
 } from '@ionic/vue';
 import { defineComponent } from 'vue'
 import axios from "axios";
@@ -53,6 +56,9 @@ export default defineComponent({
     IonTitle,
     IonContent,
     IonToolbar,
+    IonButtons,
+    IonCol,
+    IonRow
   },
   data() {
     return {
