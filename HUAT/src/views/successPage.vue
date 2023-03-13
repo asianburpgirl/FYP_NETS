@@ -1,8 +1,11 @@
 <template>
   <ion-page>
     <ion-content class="ion-padding">
-      <p>Payment has been made. Thank you!</p>
+      <div class="ion-padding">
+        <p>Payment has been made. Thank you!</p>
       <ion-button color="primary" routerLink="/tabs/wallet" routerDirection="forward">Back to Wallet</ion-button>
+      </div>
+    
     </ion-content>
   </ion-page>
 </template>

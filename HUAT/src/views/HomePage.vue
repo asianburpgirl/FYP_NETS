@@ -114,6 +114,7 @@ export default defineComponent({
         changeRole(role) {
             this.userRole = role;
             this.getSimulator()
+
         },
         loadUserData() {
             this.userData = JSON.parse(localStorage.getItem("userData"));
@@ -300,6 +301,7 @@ export default defineComponent({
     },
     // Calls function on page load
     mounted() {
+        this.getSimulator()
         this.loadUserData();
         this.getBarChart();
         this.getPieChart();
