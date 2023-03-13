@@ -22,7 +22,7 @@
                 <ion-label><b>Transaction History</b></ion-label>
             </ion-list-header>
             <ion-item>
-                <ion-label>Place</ion-label>
+                <ion-label>ID</ion-label>
                 <ion-label>Date</ion-label>
                 <ion-label class="ion-text-right">Amount</ion-label>
             </ion-item>
@@ -48,6 +48,9 @@ import {
     IonList,
     IonItem,
     IonListHeader,
+    IonCardHeader,
+    IonCardSubtitle,
+    IonCardTitle
 } from "@ionic/vue";
 import { defineComponent } from "vue";
 import { card, wallet } from "ionicons/icons";
@@ -63,6 +66,9 @@ export default defineComponent({
         IonList,
         IonItem,
         IonListHeader,
+        IonCardHeader,
+        IonCardSubtitle,
+        IonCardTitle
     },
     setup() {
         return { card, wallet };
@@ -79,11 +85,20 @@ export default defineComponent({
         formatMoney(myFloat) {
             // money in DB store in 1 dp (eg. 12.1), to change to 2 dp (12.10)
             myFloat = myFloat.toString();
-            let newFloat = myFloat.split(".");
-            if (newFloat[1].length == 1) {
-                newFloat[1] += "0";
+            const dotExists = myFloat.includes(".");
+            let newFloat = myFloat;
+            if (dotExists) {
+                newFloat = myFloat.split(".");
+                if (newFloat[1].length == 1) {
+                    newFloat[1] += "0";
+                } else if (newFloat[1].length == 0) {
+                    newFloat[1] += "00";
+                }
+                newFloat = newFloat.join(".");
+            } else {
+                newFloat += ".00";
             }
-            newFloat = newFloat.join(".");
+
             return newFloat;
         },
         getUserBooking() {

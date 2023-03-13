@@ -10,14 +10,22 @@
     </ion-header>
 
     <ion-content class="ion-padding">
-      <ion-row>
-        <ion-col>
-          <ion-button expand="block" size="large" @click="routeNets('Nets')">NETS</ion-button>
-        </ion-col>
+
+      <ion-row  class="ion-padding">
+        <ion-col  @click="routeNets('Nets')"> 
+
+        
+              <img src='assets/images/nets.png'/>
+              
+            
+          </ion-col>
+      
+      
         <ion-col> 
-          <ion-button expand="block" size="large" @click="routeStripe('Stripe')">Stripe</ion-button>
+          <ion-button expand="block" size="large" @click="routeStripe('Stripe')">Others</ion-button>
         </ion-col>
       </ion-row>
+
     </ion-content>
   </ion-page>
 </template>

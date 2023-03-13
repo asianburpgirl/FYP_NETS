@@ -115,7 +115,7 @@
             >
             <ion-badge
               v-if="eachBooking.status == 'Cancelled'"
-              color="success"
+              color="medium"
               slot="end"
               >Cancelled</ion-badge
             >
@@ -368,15 +368,24 @@ export default defineComponent({
     //     });
     // },
     formatMoney(myFloat) {
-      // money in DB store in 1 dp (eg. 12.1), to change to 2 dp (12.10)
-      myFloat = myFloat.toString();
-      let newFloat = myFloat.split(".");
-      if (newFloat[1].length == 1) {
-        newFloat[1] += "0";
-      }
-      newFloat = newFloat.join(".");
-      return newFloat;
-    },
+            // money in DB store in 1 dp (eg. 12.1), to change to 2 dp (12.10)
+            myFloat = myFloat.toString();
+            const dotExists = myFloat.includes(".");
+            let newFloat = myFloat;
+            if (dotExists) {
+                newFloat = myFloat.split(".");
+                if (newFloat[1].length == 1) {
+                    newFloat[1] += "0";
+                } else if (newFloat[1].length == 0) {
+                    newFloat[1] += "00";
+                }
+                newFloat = newFloat.join(".");
+            } else {
+                newFloat += ".00";
+            }
+
+            return newFloat;
+        },
     editBooking(bookingInfo) {
       this.setEditBookingOpen(true);
       this.bookingInfo = bookingInfo;
@@ -428,7 +437,8 @@ export default defineComponent({
           bookingEndDateTime: newEndDateTime,
         })
         .then((response) => {
-          // console.log(response)
+          console.log(response)
+          location.reload()
         })
         .catch((error) => {
           console.log(error.message);
