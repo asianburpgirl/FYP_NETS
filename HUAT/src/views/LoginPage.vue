@@ -39,8 +39,9 @@
             </ion-row> -->
     
             <div class="ion-text-center ion-padding-top">
-                        <a href="/register"> Do not have an account? Sign up now! </a>
-                    </div>
+                <a href="/register"> Do not have an account? Sign up now! </a>
+            </div>
+
             <!-- login -->
             <div class="ion-padding-top">
                 <ion-button expand="block" @click="validateLogin()">Login</ion-button>
@@ -48,15 +49,16 @@
 
             <!-- login error message -->
             <!-- Password error message -->
-            <ion-item lines="none">
-                <ion-note color="danger">
-                    <ul>
-                        <li v-if="usernameError != '' ">{{ usernameError }}</li>
-                        <li v-if="passwordError != '' ">{{ passwordError }}</li>
-                    </ul>
-                </ion-note>
-            </ion-item>
-    
+            <!-- User does not exist error message -->
+            <ion-note color="danger" class="ion-text-center">
+                <p v-if="usernameError != '' ">{{ usernameError }}</p>
+                <p v-if="passwordError != '' ">{{ passwordError }}</p>
+            </ion-note>
+            
+            <ion-note color="danger" class="ion-text-center">
+                <p id="NoUserFound"></p>
+            </ion-note>
+
             <!-- username error message -->
             <!-- <ion-item lines="none" v-if="">
               <ion-note color="danger">
@@ -65,15 +67,6 @@
                 </ul>
               </ion-note>
           </ion-item> -->
-    
-  
-            <!-- <ion-item lines="none">
-                <ion-note color="danger">
-                    <ul id="hi">
-                    </ul>
-                </ion-note>
-            </ion-item> -->
-    
         </ion-grid>
     </base-layout>
 </template>
@@ -155,8 +148,8 @@ export default defineComponent({
                         return response.data
                     })
                     .catch(function(error) {
-                        error = "Incorrect login details. Please try again"
-                        document.getElementById("hi").innerText = error
+                        error = "User not found. Please Try Again!"
+                        document.getElementById("NoUserFound").innerText = error
                         console.log(error)
                         // return error
                     });
