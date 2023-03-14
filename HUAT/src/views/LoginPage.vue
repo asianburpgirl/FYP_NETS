@@ -143,8 +143,13 @@ export default defineComponent({
                 const response = axios(config)
                     .then(function(response) {
                         localStorage.setItem("userData", JSON.stringify(response.data.data));
-                        // console.log(response.data);
-                        router.push("tabs");
+                        console.log(response.data.data);
+                        if (response.data.data.role === 'Admin'){
+                            router.push("admin");
+                        }else{
+                            router.push("tabs");
+                        }
+                        // router.push("tabs");
                         return response.data
                     })
                     .catch(function(error) {

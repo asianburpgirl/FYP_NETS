@@ -2,7 +2,7 @@
   <ion-page>
     <ion-tabs>
       <ion-router-outlet></ion-router-outlet>
-      <ion-tab-bar slot="bottom">
+      <ion-tab-bar>
         <ion-tab-button tab="home" href="/tabs/home">
           <ion-icon :icon="home" />
           <ion-label>Home</ion-label>
@@ -12,7 +12,7 @@
           <ion-icon :icon="card" />
           <ion-label>Wallet</ion-label>
         </ion-tab-button>
-        
+
         <ion-tab-button tab="booking" href="/tabs/bookings">
           <ion-icon :icon="map" />
           <ion-label>Bookings</ion-label>
@@ -32,7 +32,40 @@
   </ion-page>
 </template>
 
-<script setup lang="ts">
-import { IonTabBar, IonTabButton, IonTabs, IonLabel, IonIcon, IonPage, IonRouterOutlet } from '@ionic/vue';
-import { albums, card, ellipse, home, map, person, square, triangle } from 'ionicons/icons';
+<script>
+const userRole = localStorage.getItem("userData");
+import {
+  IonTabBar,
+  IonTabButton,
+  IonTabs,
+  IonLabel,
+  IonIcon,
+  IonPage,
+  IonRouterOutlet,
+} from "@ionic/vue";
+import { albums, card, home, map, person } from "ionicons/icons";
+import { defineComponent } from "vue";
+
+export default defineComponent({
+  components: {
+    IonTabBar,
+    IonTabButton,
+    IonTabs,
+    IonLabel,
+    IonIcon,
+    IonPage,
+    IonRouterOutlet,
+  },
+  setup() {
+    return { card, albums, home, map, person };
+  },
+  async created() {
+    if (
+      //if user is admin or super admin
+      userRole === "Admin"
+    ) {
+      this.isAuthorized = true;
+    }
+  },
+});
 </script>

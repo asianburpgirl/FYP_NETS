@@ -2,7 +2,7 @@
   <ion-page>
     <ion-header>
       <ion-toolbar v-if="needToolBar">
-        <ion-buttons v-if="needBackButton" slot="start">
+        <ion-buttons v-if="needBackButton">
           <ion-back-button :default-href="pageToGoBack"></ion-back-button>
         </ion-buttons>
 
