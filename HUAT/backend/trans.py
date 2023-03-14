@@ -7,6 +7,7 @@ import random
 import string
 import user
 import json
+import datetime
 
 app = Flask(__name__)
 # app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL') or 'mysql+mysqlconnector://root@localhost:3306/localconnect'
@@ -30,11 +31,12 @@ class Transaction(db.Model):
     user = db.relationship('User', primaryjoin='Transaction.userID == User.userID', backref='transaction')
 
 
-    def __init__(self, transID,  transDate, transType, amount):
+    def __init__(self, transID,  transDate, transType, amount,userID):
         self.transID = transID
         self.transDate = transDate
         self.transType = transType
         self.amount = amount
+        self.userID = userID
 
 
     def json(self):
@@ -99,6 +101,75 @@ def get_by_user(userID):
             "message": "There are no bookings."
         }
     ), 404
+
+# Create a transaction for topup
+@app.route("/topup", methods=['POST'])
+def topupTrans():
+
+    transID = ''.join(random.SystemRandom().choice(string.digits) for _ in range(6))
+    transDate = datetime.datetime.now()
+    transType = "topup"
+    amount = request.json.get('amount', None)
+    userID = request.json.get('userID', None)
+
+    newTransaction = Transaction(transID=transID, transDate=transDate, transType=transType, amount=amount, userID=userID)
+
+    try:
+        db.session.add(newTransaction)
+        db.session.commit()
+
+    except Exception as e:
+        print(e)
+        return jsonify({
+            "code": 500,
+            "data": {
+                "transID": transID
+            },
+            "message": "An error occurred collecting"
+        }), 500
+
+    return jsonify(
+        {
+            "code": 201,
+            "data": newTransaction.json(),
+            "message": "Your transaction has been created"
+        }
+    ), 201
+
+# Create a transaction for deduction of booking
+@app.route("/deduct", methods=['POST'])
+def deductTrans():
+
+    transID = ''.join(random.SystemRandom().choice(string.digits) for _ in range(6))
+    transDate = datetime.datetime.now()
+    transType = "deduct"
+    amount = request.json.get('amount', None)
+    userID = request.json.get('userID', None)
+
+    newTransaction = Transaction(transID=transID, transDate=transDate, transType=transType, amount=amount, userID=userID)
+
+    try:
+        db.session.add(newTransaction)
+        db.session.commit()
+
+    except Exception as e:
+        print(e)
+        return jsonify({
+            "code": 500,
+            "data": {
+                "transID": transID
+            },
+            "message": "An error occurred collecting"
+        }), 500
+
+    return jsonify(
+        {
+            "code": 201,
+            "data": newTransaction.json(),
+            "message": "Your transaction has been created"
+        }
+    ), 201
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5006, debug=True)
