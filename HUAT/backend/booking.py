@@ -143,6 +143,43 @@ def get_by_user(userID):
             "message": "There are no bookings."
         }
     ), 404
+    
+#get most common 3 bookings by userID
+@app.route("/commonBookings/<int:userID>")
+def get_most_common(userID):
+    userBooking = Booking.query.filter_by(userID=userID).all()
+
+    if len(userBooking):
+        my_dict = {}
+        for eachBooking in userBooking:
+            if eachBooking.bookingLocation in my_dict:
+                my_dict[eachBooking.bookingLocation] += 1
+            else:
+                my_dict[eachBooking.bookingLocation] = 1
+        common_3_dict = []
+        if len(my_dict) <3 :
+            pass
+        else: 
+            sort_dict = sorted(my_dict.items(), key=lambda x:x[1], reverse= True)
+            common_3_dict.append(sort_dict[0][0])
+            common_3_dict.append(sort_dict[1][0])
+            common_3_dict.append(sort_dict[2][0])
+        
+        
+        return jsonify(
+            {
+                "code": 200,
+                "data": {
+                    "bookings": [booking for booking in common_3_dict]
+                }
+            }
+        )
+    return jsonify(
+        {
+            "code": 404,
+            "message": "There are no bookings."
+        }
+    ), 404
 
 # Create a new booking
 @app.route("/bookings", methods=['POST'])
