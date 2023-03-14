@@ -63,30 +63,32 @@
             ">
                 <!-- v-if="endTime != '' && startTime!= '' &&bookingDate!= ''" -->
                 <ion-card v-for="carpark in carparksArraySimu" :key="carpark">
-                    <ion-img :src="carpark.image"></ion-img>
+                    <div v-if="carpark.data.lotbalancehourly != 0">
+                        <ion-img :src="carpark.image"></ion-img>
     
-                    <ion-card-header>
-                        <ion-card-title>{{ carpark.data.carparklocation }}</ion-card-title>
-                        <ion-card-subtitle></ion-card-subtitle>
-                        <ion-card-subtitle>{{ carpark.data.carparkaddress }}</ion-card-subtitle>
-                        <h3>
-                            <b> {{ carpark.data.lotbalancehourly }}</b> lots available
-                        </h3>
-                        <h3 v-if="this.startTime != '' &&
-              this.endTime !='' && this.bookingDate != '' ">
-                            <b> Total: ${{ carpark.data.totalFee }}</b>
-                        </h3>
-                        <h4 v-if="this.userOrigin != ''">
-                            <u>{{ carpark.distance_km }},</u>
-                            <u>{{ carpark.duration_mins }} </u> away from you
-                        </h4>
-                        <ion-row class="ion-padding-top ion-justify-content-center ion-padding-bottom">
-                            <!-- confirmationAlert(eachBooking.amount) -->
-                            <ion-button shape="round" @click="confirmationAlert(carpark,this.bookingDate,this.startTime,this.endTime,this.userData )">
-                                Book
-                            </ion-button>
-                        </ion-row>
-                    </ion-card-header>
+                        <ion-card-header>
+                            <ion-card-title>{{ carpark.data.carparklocation }}</ion-card-title>
+                            <ion-card-subtitle></ion-card-subtitle>
+                            <ion-card-subtitle>{{ carpark.data.carparkaddress }}</ion-card-subtitle>
+                            <h3>
+                                <b> {{ carpark.data.lotbalancehourly }}</b> lots available
+                            </h3>
+                            <h3 v-if="this.startTime != '' && this.endTime !='' && this.bookingDate != '' ">
+                                <b> Total: ${{ carpark.data.totalFee }}</b>
+                            </h3>
+                            <h4 v-if="this.userOrigin != ''">
+                                <u>{{ carpark.distance_km }},</u>
+                                <u>{{ carpark.duration_mins }} </u> away from you
+                            </h4>
+                            <ion-row class="ion-padding-top ion-justify-content-center ion-padding-bottom">
+                                <!-- confirmationAlert(eachBooking.amount) -->
+                                <ion-button shape="round" @click="confirmationAlert(carpark,this.bookingDate,this.startTime,this.endTime,this.userData )">
+                                    Book
+                                </ion-button>
+                            </ion-row>
+                        </ion-card-header>
+                    </div>
+
                 </ion-card>
             </ion-grid>
     
