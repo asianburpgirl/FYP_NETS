@@ -293,8 +293,16 @@ export default defineComponent({
                     .put(url, {
                       bookingID: bookingID,
                     })
+
+                    // MIN PLEASE CHECK HEH
                     .then((response) => {
                       sucessMsg(amount, response.data.data);
+                      url = "http://127.0.0.1:5004/lotAdj/1/2/-1" 
+                      axios
+                        .get(url)
+                        .then((response) => {
+                            console.log(response)
+                        })
                     })
                     .catch((error) => {
                       console.log(error.message);
