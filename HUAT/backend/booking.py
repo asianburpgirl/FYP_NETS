@@ -7,6 +7,7 @@ import random
 import string
 import user
 import json
+from datetime import date
 
 app = Flask(__name__)
 # app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL') or 'mysql+mysqlconnector://root@localhost:3306/localconnect'
@@ -145,32 +146,71 @@ def get_by_user(userID):
     ), 404
     
 #get most common 3 bookings by userID
-@app.route("/commonBookings/<int:userID>")
-def get_most_common(userID):
+@app.route("/commonCarparks/<int:userID>")
+def get_common_carparks(userID):
+    todayMonth = date.today().month
     userBooking = Booking.query.filter_by(userID=userID).all()
-
+    
     if len(userBooking):
-        my_dict = {}
+        common_3_carparks = {}
         for eachBooking in userBooking:
-            if eachBooking.bookingLocation in my_dict:
-                my_dict[eachBooking.bookingLocation] += 1
-            else:
-                my_dict[eachBooking.bookingLocation] = 1
+            
+            if eachBooking.bookingStartDateTime.month == todayMonth or eachBooking.bookingStartDateTime.month == todayMonth-1 or eachBooking.bookingStartDateTime.month == todayMonth -2 or eachBooking.bookingStartDateTime.month == todayMonth -3:
+                if eachBooking.bookingLocation in common_3_carparks:
+                    common_3_carparks[eachBooking.bookingLocation] += 1
+                else:
+                    common_3_carparks[eachBooking.bookingLocation] = 1
         common_3_dict = []
-        if len(my_dict) <3 :
+        if len(common_3_carparks) <3 :
             pass
         else: 
-            sort_dict = sorted(my_dict.items(), key=lambda x:x[1], reverse= True)
+            sort_dict = sorted(common_3_carparks.items(), key=lambda x:x[1], reverse= True)
             common_3_dict.append(sort_dict[0][0])
             common_3_dict.append(sort_dict[1][0])
             common_3_dict.append(sort_dict[2][0])
-        
         
         return jsonify(
             {
                 "code": 200,
                 "data": {
-                    "bookings": [booking for booking in common_3_dict]
+                    "carparks": [carparks for carparks in common_3_dict]
+                }
+            }
+        )
+    return jsonify(
+        {
+            "code": 404,
+            "message": "There are no bookings."
+        }
+    ), 404
+    
+#get all carparks booked in common 3 carparks by userID
+@app.route("/commonBookingsAll/<int:userID>", methods=['POST'])
+def get_common_bookings(userID):
+    discount = request.json.get('discount', 0)
+    # discount = 0.1
+    todayMonth = date.today().month 
+    userBooking = Booking.query.filter_by(userID=userID).all()
+    
+    if len(userBooking):
+        common_bookings_all = []
+        for eachBooking in userBooking:
+            if eachBooking.bookingStartDateTime.month == todayMonth or eachBooking.bookingStartDateTime.month == todayMonth-1 or eachBooking.bookingStartDateTime.month == todayMonth -2 :
+                common_bookings_all.append(eachBooking)
+        
+        total_amt = 0
+        for booking in common_bookings_all:
+            total_amt += booking.bookingAmt
+        discounted_price = (1-discount) * total_amt
+        return jsonify(
+            {
+                "code": 200,
+                "data": {
+                    "bookings": [bookings.json() for bookings in common_bookings_all],
+                    "discountedPrice": round(discounted_price/3,2),
+                    "totalPrice": round(total_amt/3,2),
+                    "discount": round(total_amt/3 - discounted_price/3,2)
+                    
                 }
             }
         )
@@ -184,8 +224,16 @@ def get_most_common(userID):
 # Create a new booking
 @app.route("/bookings", methods=['POST'])
 def createBooking():
-
-    bookingID = ''.join(random.SystemRandom().choice(string.digits) for _ in range(6))
+    bookingIDList = []
+    userBooking = Booking.query.all()
+    
+    bookingID = 1
+    if len(userBooking):
+        for eachBooking in userBooking:
+            bookingIDList.append(eachBooking.bookingID)
+        bookingIDList.sort( reverse=True)
+        bookingID = bookingIDList[0] +1 
+    
     bookingRef = ''.join(random.SystemRandom().choice(string.ascii_uppercase + string.digits)
                         for _ in range(10))
     bookingDateTime = request.json.get('bookingDateTime', None)
