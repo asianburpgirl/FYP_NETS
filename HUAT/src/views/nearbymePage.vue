@@ -44,15 +44,6 @@
                 </ion-radio-group>
             </ion-list>
         
-            <!-- <div class="ion-padding" v-if="this.pageTab == 'nearest' && this.selectedLocation == ''">
-                <h1>Please select a location to view the nearest carparks to it👆</h1>
-            </div> -->
-    
-            <!-- <ion-grid class="ion-padding-top" v-if="
-              (this.pageTab == 'nearest' && this.selectedLocation != '') ||
-              this.pageTab == 'all' || (this.pageTab =='cheapest' && this.startTime != '' &&
-              this.endTime !='' && this.bookingDate != '' ) || this.pageTab=='lotsAvail'
-            "> -->
             <ion-grid class="ion-padding-top">
                 <ion-card v-for="carpark in carparkArrayToShow" :key="carpark">
                     <ion-img :src="carpark.image"></ion-img>
@@ -73,9 +64,14 @@
                             <u>{{ carpark.duration_mins }} </u> away from you
                         </h4>
                         <ion-row class="ion-padding-top ion-justify-content-center ion-padding-bottom">
-                            <ion-button shape="round" @click="confirmationAlert(carpark,this.bookingDate,this.startTime,this.endTime,this.userData )">
+                            <ion-button shape="round" @click="confirmationAlert(carpark,this.bookingDate,this.startTime,this.endTime,this.userData )" v-if="carpark.data.totalFee <= userBalance">
                                 Book
                             </ion-button>
+                            <ion-text color="danger" v-if="carpark.data.totalFee > userBalance">
+                                <b> 
+                                    Insufficient credit
+                                </b>
+                            </ion-text>
                         </ion-row>
                     </ion-card-header>
                 </ion-card>
@@ -115,11 +111,9 @@
                         <li v-for="error in errorMessage" :key="error">
                             {{ error }}
                         </li>
-                    </ion-text>
-                    
+                    </ion-text>                
                   </ion-item>
                     
-    
                     <ion-row class="ion-padding-top ion-justify-content-center ion-padding-bottom addPaddingBottom">
                       <ion-col>
                         <ion-button expand="block" @click="confirmDateTime()">Confirm</ion-button>
@@ -222,6 +216,7 @@ export default defineComponent({
 
             test: "",
             userData: "",
+            userBalance: 0,
 
             errorMessage: ""
         };
@@ -376,6 +371,16 @@ export default defineComponent({
         },
         loaduser(){
             this.userData = JSON.parse(localStorage.getItem("userData"));
+
+            const url = "http://127.0.0.1:5002/getBalance/" + parseInt(this.userData.userID)
+            axios.get(url)
+                .then((response) => {
+                    this.userBalance = response.data.data.balance
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+
         },
         formatDate(date){ // parsing in Date require DD-MM-YY but get Date functions output is only 1 digit
             const newDate = "00" + date
