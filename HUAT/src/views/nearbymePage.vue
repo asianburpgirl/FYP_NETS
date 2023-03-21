@@ -461,7 +461,7 @@ export default defineComponent({
             const lotsAvailWeight = 1 // lots --> 40 higher lots better
             const priceWeight = 0.5 // price in dollars --> 19.5. lower price better 
             this.carparkArrayToShow = JSON.parse(JSON.stringify(this.carparksArraySimu));
-            for (let eachCarpark of this.carparkArrayToShow){
+            for (const eachCarpark of this.carparkArrayToShow){
                 eachCarpark["points"] = distanceWeight * eachCarpark.distance_km_value +lotsAvailWeight * eachCarpark.data.lotbalancehourly + priceWeight *  eachCarpark.data.totalFee
             }
             this.carparkArrayToShow = this.carparkArrayToShow.sort(function(a, b) {
