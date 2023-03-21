@@ -39,6 +39,7 @@ import {
   // IonRow,
   IonList,
   IonItem,
+  IonLabel
 } from "@ionic/vue";
 import { defineComponent } from "vue";
 import axios from "axios";
@@ -57,6 +58,7 @@ export default defineComponent({
     // IonRow,
     IonList,
     IonItem,
+    IonLabel
   },
   data() {
     return {

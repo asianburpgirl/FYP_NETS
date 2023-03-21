@@ -10,7 +10,7 @@
         </ion-header>
     
         <ion-content>
-            
+    
             <ion-row class="ion-justify-content-center ion-padding">
                 <ion-button expand="block" @click="setDateTimeOpen(true)">Change Booking Date and Time</ion-button>
             </ion-row>
@@ -21,7 +21,7 @@
                         <ion-label>Recommended</ion-label>
                         <ion-radio slot="end" value="recommend"></ion-radio>
                     </ion-item>
-
+    
                     <ion-item>
                         <ion-label>All</ion-label>
                         <ion-radio slot="end" value="all"></ion-radio>
@@ -43,7 +43,7 @@
                     </ion-item>
                 </ion-radio-group>
             </ion-list>
-        
+    
             <ion-grid class="ion-padding-top">
                 <ion-card v-for="carpark in carparkArrayToShow" :key="carpark">
                     <ion-img :src="carpark.image"></ion-img>
@@ -56,7 +56,7 @@
                             <b> {{ carpark.availableLots }}</b> lots available
                         </h3>
                         <h3 v-if="this.startTime != '' &&
-              this.endTime !='' && this.bookingDate != '' ">
+                  this.endTime !='' && this.bookingDate != '' ">
                             <b> Total: ${{ carpark.data.totalFee }}</b>
                         </h3>
                         <h4>
@@ -69,8 +69,8 @@
                             </ion-button>
                             <ion-text color="danger" v-if="carpark.data.totalFee > userBalance">
                                 <b> 
-                                    Insufficient credit
-                                </b>
+                                        Insufficient credit
+                                    </b>
                             </ion-text>
                         </ion-row>
                     </ion-card-header>
@@ -89,35 +89,35 @@
                     </ion-toolbar>
                 </ion-header>
                 <ion-content class="ion-padding">
-                  <ion-item>
-                     <ion-label position="stacked"> Booking Location:</ion-label>
-                  <ion-select placeholder="Location" v-model="selectedLocation">
-                        <ion-select-option value="orchard">Orchard</ion-select-option>
-                        <ion-select-option value="somerset">Somerset</ion-select-option>
-                        <ion-select-option value="yishun">Yishun</ion-select-option>
-                    </ion-select>
-
-                    <ion-label position="stacked"> Booking Date:</ion-label>
-                    <ion-datetime presentation="date" :min=currentDateTime v-model="bookingDate"></ion-datetime>
+                    <ion-item>
+                        <ion-label position="stacked"> Booking Location:</ion-label>
+                        <ion-select placeholder="Location" v-model="selectedLocation">
+                            <ion-select-option value="orchard">Orchard</ion-select-option>
+                            <ion-select-option value="somerset">Somerset</ion-select-option>
+                            <ion-select-option value="yishun">Yishun</ion-select-option>
+                        </ion-select>
     
-                    <ion-label position="stacked"> Start Time:</ion-label>
-                    <ion-datetime presentation="time" v-model="startTime"></ion-datetime>
+                        <ion-label position="stacked"> Booking Date:</ion-label>
+                        <ion-datetime presentation="date" :min=currentDateTime v-model="bookingDate"></ion-datetime>
     
-                    <ion-label position="stacked"> End Time:</ion-label>
-                    <ion-datetime presentation="time" v-model="endTime"></ion-datetime>
-                          
-                    
-                    <ion-text color="danger" class="ion-padding-top">
-                        <li v-for="error in errorMessage" :key="error">
-                            {{ error }}
-                        </li>
-                    </ion-text>                
-                  </ion-item>
-                    
+                        <ion-label position="stacked"> Start Time:</ion-label>
+                        <ion-datetime presentation="time" v-model="startTime"></ion-datetime>
+    
+                        <ion-label position="stacked"> End Time:</ion-label>
+                        <ion-datetime presentation="time" v-model="endTime"></ion-datetime>
+    
+    
+                        <ion-text color="danger" class="ion-padding-top">
+                            <li v-for="error in errorMessage" :key="error">
+                                {{ error }}
+                            </li>
+                        </ion-text>
+                    </ion-item>
+    
                     <ion-row class="ion-padding-top ion-justify-content-center ion-padding-bottom addPaddingBottom">
-                      <ion-col>
-                        <ion-button expand="block" @click="confirmDateTime()">Confirm</ion-button>
-                      </ion-col>
+                        <ion-col>
+                            <ion-button expand="block" @click="confirmDateTime()">Confirm</ion-button>
+                        </ion-col>
                     </ion-row>
                 </ion-content>
             </ion-modal>
@@ -369,7 +369,7 @@ export default defineComponent({
         setDateTimeOpen(isOpen) {
             this.dateTimeModal = isOpen;
         },
-        loaduser(){
+        loaduser() {
             this.userData = JSON.parse(localStorage.getItem("userData"));
 
             const url = "http://127.0.0.1:5002/getBalance/" + parseInt(this.userData.userID)
@@ -382,9 +382,9 @@ export default defineComponent({
                 });
 
         },
-        formatDate(date){ // parsing in Date require DD-MM-YY but get Date functions output is only 1 digit
+        formatDate(date) { // parsing in Date require DD-MM-YY but get Date functions output is only 1 digit
             const newDate = "00" + date
-            return(newDate.slice(-2))
+            return (newDate.slice(-2))
         },
         confirmDateTime() {
             // error validation
@@ -405,7 +405,7 @@ export default defineComponent({
                 this.errorMessage.push("You need to indicate a location!")
             }
 
-             // to check if booking start time > current time
+            // to check if booking start time > current time
             let startDateTime = this.startTime
             const currentDate = new Date();
             startDateTime = new Date(startDateTime)
@@ -413,21 +413,21 @@ export default defineComponent({
             let bookingDateTime = this.bookingDate
             bookingDateTime = new Date(bookingDateTime)
 
-            if (currentDate.getDate() == bookingDateTime.getDate() && currentDate.getMonth() == bookingDateTime.getMonth() && currentDate.getYear() == bookingDateTime.getYear() ) {
-                if (currentDate-startDateTime > 0){
-                   this.errorMessage.push("Start time must be after current time.")
+            if (currentDate.getDate() == bookingDateTime.getDate() && currentDate.getMonth() == bookingDateTime.getMonth() && currentDate.getYear() == bookingDateTime.getYear()) {
+                if (currentDate - startDateTime > 0) {
+                    this.errorMessage.push("Start time must be after current time.")
                 }
-            } 
-            
+            }
+
             if (this.errorMessage.length == 0) {
                 this.carparksArraySimu = []
                 this.setDateTimeOpen(false); // close popup
-                this.getSimulator();   
+                this.getSimulator();
             }
         },
-        limitBookingDate(){
-             // to limit booking date to after curent date
-             const currentDateTime = new Date();
+        limitBookingDate() {
+            // to limit booking date to after curent date
+            const currentDateTime = new Date();
             const date = this.formatDate(currentDateTime.getDate());
             const month = this.formatDate(currentDateTime.getMonth() + 1);
             const year = currentDateTime.getFullYear();
@@ -438,31 +438,31 @@ export default defineComponent({
                 year + "-" + month + "-" + date + "T" + hour + ":" + min + ":" + sec;
             this.currentDateTime = currentDateTimeFormatted
         },
-        changeTab(){
-            if (this.pageTab == "recommend"){
+        changeTab() {
+            if (this.pageTab == "recommend") {
                 this.recommendationTab()
             }
-            if (this.pageTab == "all" ){
+            if (this.pageTab == "all") {
                 // this.carparkArrayToShow =  this.carparksArraySimu 
                 this.carparkArrayToShow = JSON.parse(JSON.stringify(this.carparksArraySimu));
             }
-            if (this.pageTab== "nearest"){
+            if (this.pageTab == "nearest") {
                 this.nearestTab()
             }
-            if (this.pageTab== "cheapest"){
+            if (this.pageTab == "cheapest") {
                 this.cheapestTab()
             }
-            if (this.pageTab== "lotsAvail"){
+            if (this.pageTab == "lotsAvail") {
                 this.lotsAvailTab()
             }
         },
-        recommendationTab(){
+        recommendationTab() {
             const distanceWeight = 0.01 //distance in meter --> 1026. lower distance better
             const lotsAvailWeight = 1 // lots --> 40 higher lots better
             const priceWeight = 0.5 // price in dollars --> 19.5. lower price better 
             this.carparkArrayToShow = JSON.parse(JSON.stringify(this.carparksArraySimu));
-            for (const eachCarpark of this.carparkArrayToShow){
-                eachCarpark["points"] = distanceWeight * eachCarpark.distance_km_value +lotsAvailWeight * eachCarpark.data.lotbalancehourly + priceWeight *  eachCarpark.data.totalFee
+            for (const eachCarpark of this.carparkArrayToShow) {
+                eachCarpark["points"] = distanceWeight * eachCarpark.distance_km_value + lotsAvailWeight * eachCarpark.data.lotbalancehourly + priceWeight * eachCarpark.data.totalFee
             }
             this.carparkArrayToShow = this.carparkArrayToShow.sort(function(a, b) {
                 const keyA = a.points;
@@ -471,9 +471,9 @@ export default defineComponent({
                 if (keyA < keyB) return 1;
                 return 0;
             });
-            this.carparkArrayToShow= this.carparkArrayToShow.slice(0,4)
+            this.carparkArrayToShow = this.carparkArrayToShow.slice(0, 4)
         },
-        nearestTab(){
+        nearestTab() {
             this.carparkArrayToShow = JSON.parse(JSON.stringify(this.carparksArraySimu));
             this.carparkArrayToShow.sort(function(a, b) {
                 const keyA = a.distance_km_value;
@@ -482,9 +482,9 @@ export default defineComponent({
                 if (keyA > keyB) return 1;
                 return 0;
             })
-            this.carparkArrayToShow= this.carparkArrayToShow.slice(0,4)
+            this.carparkArrayToShow = this.carparkArrayToShow.slice(0, 4)
         },
-        cheapestTab(){
+        cheapestTab() {
             this.carparkArrayToShow = JSON.parse(JSON.stringify(this.carparksArraySimu));
             this.carparkArrayToShow.sort(function(a, b) {
                 const keyA = a.data.totalFee;
@@ -495,7 +495,7 @@ export default defineComponent({
             });
             this.carparkArrayToShow = this.carparkArrayToShow.slice(0, 4);
         },
-        lotsAvailTab(){
+        lotsAvailTab() {
             this.carparkArrayToShow = JSON.parse(JSON.stringify(this.carparksArraySimu));
             this.carparkArrayToShow = this.carparkArrayToShow.sort(function(a, b) {
                 const keyA = a.availableLots;
@@ -506,7 +506,7 @@ export default defineComponent({
             });
             this.carparkArrayToShow = this.carparkArrayToShow.slice(0, 4);
         },
-        getSimulator() { 
+        getSimulator() {
             this.googleMapDistanceUrl = "https://maps.googleapis.com/maps/api/distancematrix/json?origins=";
             this.combinedLatLang = "";
 
@@ -622,7 +622,7 @@ export default defineComponent({
                                                                             "carparkid": 8
                                                                         })
                                                                         .then((response) => {
-                                        
+
                                                                             this.carparksArraySimu.push({
                                                                                 data: response.data.data,
                                                                                 availableLots: response.data.data.lotbalancehourly - response.data.data.lotusehourly,
@@ -630,1257 +630,1257 @@ export default defineComponent({
                                                                                 // lat: 1.303842974291844,
                                                                                 // long: 103.8333226716273
                                                                             })
-                                                                            
+
                                                                             this.combinedLatLang += "1.303842974291844" + "," + "103.8333226716273" + "|";
-                                                                            
-                                                                                if (this.selectedLocation == "orchard") {
-                                                                                    this.userOrigin = "1.3064433533620563,103.83276247871694";
-                                                                                } else if (this.selectedLocation == "yishun") {
-                                                                                    this.userOrigin = "1.4304060903894582, 103.83515323243753";
-                                                                                } else if (this.selectedLocation == "somerset") {
-                                                                                    this.userOrigin = "1.3016313961551784, 103.83849995957749";
-                                                                                }
 
-                                                                                this.googleMapDistanceUrl +=
-                                                                                    this.userOrigin +
-                                                                                    "&destinations=" +
-                                                                                    this.combinedLatLang.slice(0, -1) +
-                                                                                    "&departure_time=now&key=AIzaSyAJXGx7T2ypt5Ew5-9SbDTWF9gqloQUJwI";
-                                                                                    
-                                                                                // this.userOrigin = "1.3064433533620563,103.83276247871694"
-                                                                                const url = "http://127.0.0.1:5009/getCoords";
-                                                                                axios
-                                                                                    .post(url, {
-                                                                                        "origin": this.userOrigin
-                                                                                    })
-                                                                                    .then((response) => {
-                                                                                        const destinations = response.data.rows[0].elements
-                                                                                        for (let i = 0; i < this.carparksArraySimu.length; i++) {
-                                                                                            this.carparksArraySimu[i]["distance_km"] = destinations[i].distance.text;
-                                                                                            this.carparksArraySimu[i]["distance_km_value"] = destinations[i].distance.value;
-                                                                                            this.carparksArraySimu[i]["duration_mins"] = destinations[i].duration_in_traffic.text;
-                                                                                        }
-                                                                                        
-            // for (let i = 0; i < this.carparksArraySimu.length ; i++) {
-            const bookingDateFormatted = this.bookingDate.substring(0, 10);
-            const startDateTime = new Date(bookingDateFormatted + " " + this.startTime.substring(11, 19));
-            const endDateTime = new Date(
-                bookingDateFormatted + " " + this.endTime.substring(11, 19));
-
-            const url = "http://127.0.0.1:5004/getCarparkPrice/1"
-            axios
-                .get(url)
-                .then((response) => {
-
-                    let fee = 0
-                    // weekend
-                    if (startDateTime.getDay() == 6 || startDateTime.getDay() == 0) {
-                        // for (const eachCarpark of response.data.data.carparks) {
-                        // if booking start and end in peak
-                        if (
-                            endDateTime <
-                            new Date(bookingDateFormatted + " " + this.endPeak) &&
-                            startDateTime >
-                            new Date(bookingDateFormatted + " " + this.startPeak)
-                        ) {
-                            const duration =
-                                Math.floor((endDateTime - startDateTime) / 3600000) + 1;
-                            fee = duration * response.data.data.weekendpeakhourly;
-                        }
-
-                        // if booking start in non peak and end in peak
-                        else if (
-                            endDateTime <
-                            new Date(bookingDateFormatted + " " + this.endPeak) &&
-                            startDateTime <
-                            new Date(bookingDateFormatted + " " + this.startPeak)
-                        ) {
-                            const peakFee =
-                                (Math.floor(
-                                        (new Date(bookingDateFormatted + " " + this.startPeak) -
-                                            startDateTime) /
-                                        3600000
-                                    ) +
-                                    1) *
-                                response.data.data.weekendpeakhourly;
-                            const nonPeakFee = (Math.floor((endDateTime - new Date(bookingDateFormatted + " " + this.startPeak)) / 3600000) + 1) * response.data.data.weekendnonpeakhourly;
-                            fee = peakFee + nonPeakFee;
-                        }
-
-                        // if booking start in peak and end in non peak
-                        else if (
-                            endDateTime >
-                            new Date(bookingDateFormatted + " " + this.endPeak) &&
-                            startDateTime <
-                            new Date(bookingDateFormatted + " " + this.endPeak)
-                        ) {
-                            const peakFee =
-                                (Math.floor(
-                                        (new Date(bookingDateFormatted + " " + this.endPeak) -
-                                            startDateTime) /
-                                        3600000
-                                    ) +
-                                    1) *
-                                response.data.data.weekendpeakhourly;
-                            const nonPeakFee =
-                                (Math.floor(
-                                        (endDateTime -
-                                            new Date(bookingDateFormatted + " " + this.endPeak)) /
-                                        3600000
-                                    ) +
-                                    1) *
-                                response.data.data.weekendpeaknonhourly;
-                            fee = peakFee + nonPeakFee;
-                        }
-
-                        // if booking start and end in non peak
-                        // else if ((endDateTime > (new Date(bookingDateFormatted + " " + this.endPeak))) && (startDateTime > (new Date(bookingDateFormatted + " " + this.startPeak)))) {
-                        else {
-                            const duration =
-                                Math.floor((endDateTime - startDateTime) / 3600000) + 1;
-                            fee = duration * response.data.data.weekendnonpeakhourly;
-                        }
-
-                    }
-
-                    // weekday
-                    else {
-                        // for (const eachCarpark of response.data.data.carparks) {
-                        // if booking start and end in peak
-                        if (
-                            endDateTime <
-                            new Date(bookingDateFormatted + " " + this.endPeak) &&
-                            startDateTime >
-                            new Date(bookingDateFormatted + " " + this.startPeak)
-                        ) {
-                            const duration =
-                                Math.floor((endDateTime - startDateTime) / 3600000) + 1;
-                            fee = duration * response.data.data.weekdaypeakhourly;
-                        }
-
-                        // if booking start in non peak and end in peak
-                        else if (
-                            new Date(bookingDateFormatted + " " + this.startPeak) <
-                            endDateTime && endDateTime <
-                            new Date(bookingDateFormatted + " " + this.endPeak) &&
-                            startDateTime <
-                            new Date(bookingDateFormatted + " " + this.startPeak)
-                        ) {
-                            const peakFee =
-                                (Math.floor(
-                                        (new Date(bookingDateFormatted + " " + this.startPeak) -
-                                            startDateTime) /
-                                        3600000
-                                    ) +
-                                    1) *
-                                response.data.data.weekdaypeakhourly;
-                            const nonPeakFee = (Math.floor((endDateTime - new Date(bookingDateFormatted + " " + this.startPeak)) / 3600000) + 1) * response.data.data.weekdaynonpeakhourly;
-                            fee = peakFee + nonPeakFee;
-                        }
-
-                        // if booking start in peak and end in non peak
-                        else if (
-                            endDateTime >
-                            new Date(bookingDateFormatted + " " + this.endPeak) &&
-                            startDateTime <
-                            new Date(bookingDateFormatted + " " + this.endPeak)
-                        ) {
-                            const peakFee =
-                                (Math.floor(
-                                        (new Date(bookingDateFormatted + " " + this.endPeak) -
-                                            startDateTime) /
-                                        3600000
-                                    ) +
-                                    1) *
-                                response.data.data.weekdaypeakhourly
-                            const nonPeakFee =
-                                (Math.floor(
-                                        (endDateTime -
-                                            new Date(bookingDateFormatted + " " + this.endPeak)) /
-                                        3600000
-                                    ) +
-                                    1) *
-                                response.data.data.weekdaynonpeakhourly;
-                            fee = peakFee + nonPeakFee;
-                        }
-
-                        // if booking start and end in non peak
-                        // else if ((endDateTime > (new Date(bookingDateFormatted + " " + this.endPeak))) && (startDateTime > (new Date(bookingDateFormatted + " " + this.startPeak)))) {
-                        else {
-                            const duration =
-                                Math.floor((endDateTime - startDateTime) / 3600000) + 1;
-                            fee = duration * response.data.data.weekdaynonpeakhourly;
-                        }
-
-                    }
-                    this.carparksArraySimu[0].data["totalFee"] = this.formatMoney(fee / 100)
-
-                    /////////// 2
-                    const url = "http://127.0.0.1:5004/getCarparkPrice/2"
-                    axios
-                        .get(url)
-                        .then((response) => {
-
-                            let fee = 0
-                            // weekend
-                            if (startDateTime.getDay() == 6 || startDateTime.getDay() == 0) {
-                                // for (const eachCarpark of response.data.data.carparks) {
-                                // if booking start and end in peak
-                                if (
-                                    endDateTime <
-                                    new Date(bookingDateFormatted + " " + this.endPeak) &&
-                                    startDateTime >
-                                    new Date(bookingDateFormatted + " " + this.startPeak)
-                                ) {
-                                    const duration =
-                                        Math.floor((endDateTime - startDateTime) / 3600000) + 1;
-                                    fee = duration * response.data.data.weekendpeakhourly;
-                                }
-
-                                // if booking start in non peak and end in peak
-                                else if (
-                                    endDateTime <
-                                    new Date(bookingDateFormatted + " " + this.endPeak) &&
-                                    startDateTime <
-                                    new Date(bookingDateFormatted + " " + this.startPeak)
-                                ) {
-                                    const peakFee =
-                                        (Math.floor(
-                                                (new Date(bookingDateFormatted + " " + this.startPeak) -
-                                                    startDateTime) /
-                                                3600000
-                                            ) +
-                                            1) *
-                                        response.data.data.weekendpeakhourly;
-                                    const nonPeakFee = (Math.floor((endDateTime - new Date(bookingDateFormatted + " " + this.startPeak)) / 3600000) + 1) * response.data.data.weekendnonpeakhourly;
-                                    fee = peakFee + nonPeakFee;
-                                }
-
-                                // if booking start in peak and end in non peak
-                                else if (
-                                    endDateTime >
-                                    new Date(bookingDateFormatted + " " + this.endPeak) &&
-                                    startDateTime <
-                                    new Date(bookingDateFormatted + " " + this.endPeak)
-                                ) {
-                                    const peakFee =
-                                        (Math.floor(
-                                                (new Date(bookingDateFormatted + " " + this.endPeak) -
-                                                    startDateTime) /
-                                                3600000
-                                            ) +
-                                            1) *
-                                        response.data.data.weekendpeakhourly;
-                                    const nonPeakFee =
-                                        (Math.floor(
-                                                (endDateTime -
-                                                    new Date(bookingDateFormatted + " " + this.endPeak)) /
-                                                3600000
-                                            ) +
-                                            1) *
-                                        response.data.data.weekendpeaknonhourly;
-                                    fee = peakFee + nonPeakFee;
-                                }
-
-                                // if booking start and end in non peak
-                                // else if ((endDateTime > (new Date(bookingDateFormatted + " " + this.endPeak))) && (startDateTime > (new Date(bookingDateFormatted + " " + this.startPeak)))) {
-                                else {
-                                    const duration =
-                                        Math.floor((endDateTime - startDateTime) / 3600000) + 1;
-                                    fee = duration * response.data.data.weekendnonpeakhourly;
-                                }
-
-                            }
-
-                            // weekday
-                            else {
-                                // for (const eachCarpark of response.data.data.carparks) {
-                                // if booking start and end in peak
-                                if (
-                                    endDateTime <
-                                    new Date(bookingDateFormatted + " " + this.endPeak) &&
-                                    startDateTime >
-                                    new Date(bookingDateFormatted + " " + this.startPeak)
-                                ) {
-                                    const duration =
-                                        Math.floor((endDateTime - startDateTime) / 3600000) + 1;
-                                    fee = duration * response.data.data.weekdaypeakhourly;
-                                }
-
-                                // if booking start in non peak and end in peak
-                                else if (
-                                    new Date(bookingDateFormatted + " " + this.startPeak) <
-                                    endDateTime && endDateTime <
-                                    new Date(bookingDateFormatted + " " + this.endPeak) &&
-                                    startDateTime <
-                                    new Date(bookingDateFormatted + " " + this.startPeak)
-                                ) {
-                                    const peakFee =
-                                        (Math.floor(
-                                                (new Date(bookingDateFormatted + " " + this.startPeak) -
-                                                    startDateTime) /
-                                                3600000
-                                            ) +
-                                            1) *
-                                        response.data.data.weekdaypeakhourly;
-                                    const nonPeakFee = (Math.floor((endDateTime - new Date(bookingDateFormatted + " " + this.startPeak)) / 3600000) + 1) * response.data.data.weekdaynonpeakhourly;
-                                    fee = peakFee + nonPeakFee;
-                                }
-
-                                // if booking start in peak and end in non peak
-                                else if (
-                                    endDateTime >
-                                    new Date(bookingDateFormatted + " " + this.endPeak) &&
-                                    startDateTime <
-                                    new Date(bookingDateFormatted + " " + this.endPeak)
-                                ) {
-                                    const peakFee =
-                                        (Math.floor(
-                                                (new Date(bookingDateFormatted + " " + this.endPeak) -
-                                                    startDateTime) /
-                                                3600000
-                                            ) +
-                                            1) *
-                                        response.data.data.weekdaypeakhourly
-                                    const nonPeakFee =
-                                        (Math.floor(
-                                                (endDateTime -
-                                                    new Date(bookingDateFormatted + " " + this.endPeak)) /
-                                                3600000
-                                            ) +
-                                            1) *
-                                        response.data.data.weekdaynonpeakhourly;
-                                    fee = peakFee + nonPeakFee;
-                                }
-
-                                // if booking start and end in non peak
-                                // else if ((endDateTime > (new Date(bookingDateFormatted + " " + this.endPeak))) && (startDateTime > (new Date(bookingDateFormatted + " " + this.startPeak)))) {
-                                else {
-                                    const duration =
-                                        Math.floor((endDateTime - startDateTime) / 3600000) + 1;
-                                    fee = duration * response.data.data.weekdaynonpeakhourly;
-                                }
-
-                            }
-                            this.carparksArraySimu[1].data["totalFee"] = this.formatMoney(fee / 100)
-
-
-                            ///////////////3
-                            const url = "http://127.0.0.1:5004/getCarparkPrice/3"
-                            axios
-                                .get(url)
-                                .then((response) => {
-                                    let fee = 0
-                                    // weekend
-                                    if (startDateTime.getDay() == 6 || startDateTime.getDay() == 0) {
-                                        // for (const eachCarpark of response.data.data.carparks) {
-                                        // if booking start and end in peak
-                                        if (
-                                            endDateTime <
-                                            new Date(bookingDateFormatted + " " + this.endPeak) &&
-                                            startDateTime >
-                                            new Date(bookingDateFormatted + " " + this.startPeak)
-                                        ) {
-                                            const duration =
-                                                Math.floor((endDateTime - startDateTime) / 3600000) + 1;
-                                            fee = duration * response.data.data.weekendpeakhourly;
-                                        }
-
-                                        // if booking start in non peak and end in peak
-                                        else if (
-                                            endDateTime <
-                                            new Date(bookingDateFormatted + " " + this.endPeak) &&
-                                            startDateTime <
-                                            new Date(bookingDateFormatted + " " + this.startPeak)
-                                        ) {
-                                            const peakFee =
-                                                (Math.floor(
-                                                        (new Date(bookingDateFormatted + " " + this.startPeak) -
-                                                            startDateTime) /
-                                                        3600000
-                                                    ) +
-                                                    1) *
-                                                response.data.data.weekendpeakhourly;
-                                            const nonPeakFee = (Math.floor((endDateTime - new Date(bookingDateFormatted + " " + this.startPeak)) / 3600000) + 1) * response.data.data.weekendnonpeakhourly;
-                                            fee = peakFee + nonPeakFee;
-                                        }
-
-                                        // if booking start in peak and end in non peak
-                                        else if (
-                                            endDateTime >
-                                            new Date(bookingDateFormatted + " " + this.endPeak) &&
-                                            startDateTime <
-                                            new Date(bookingDateFormatted + " " + this.endPeak)
-                                        ) {
-                                            const peakFee =
-                                                (Math.floor(
-                                                        (new Date(bookingDateFormatted + " " + this.endPeak) -
-                                                            startDateTime) /
-                                                        3600000
-                                                    ) +
-                                                    1) *
-                                                response.data.data.weekendpeakhourly;
-                                            const nonPeakFee =
-                                                (Math.floor(
-                                                        (endDateTime -
-                                                            new Date(bookingDateFormatted + " " + this.endPeak)) /
-                                                        3600000
-                                                    ) +
-                                                    1) *
-                                                response.data.data.weekendpeaknonhourly;
-                                            fee = peakFee + nonPeakFee;
-                                        }
-
-                                        // if booking start and end in non peak
-                                        // else if ((endDateTime > (new Date(bookingDateFormatted + " " + this.endPeak))) && (startDateTime > (new Date(bookingDateFormatted + " " + this.startPeak)))) {
-                                        else {
-                                            const duration =
-                                                Math.floor((endDateTime - startDateTime) / 3600000) + 1;
-                                            fee = duration * response.data.data.weekendnonpeakhourly;
-                                        }
-
-                                    }
-
-                                    // weekday
-                                    else {
-                                        // for (const eachCarpark of response.data.data.carparks) {
-                                        // if booking start and end in peak
-                                        if (
-                                            endDateTime <
-                                            new Date(bookingDateFormatted + " " + this.endPeak) &&
-                                            startDateTime >
-                                            new Date(bookingDateFormatted + " " + this.startPeak)
-                                        ) {
-                                            const duration =
-                                                Math.floor((endDateTime - startDateTime) / 3600000) + 1;
-                                            fee = duration * response.data.data.weekdaypeakhourly;
-                                        }
-
-                                        // if booking start in non peak and end in peak
-                                        else if (
-                                            new Date(bookingDateFormatted + " " + this.startPeak) <
-                                            endDateTime && endDateTime <
-                                            new Date(bookingDateFormatted + " " + this.endPeak) &&
-                                            startDateTime <
-                                            new Date(bookingDateFormatted + " " + this.startPeak)
-                                        ) {
-                                            const peakFee =
-                                                (Math.floor(
-                                                        (new Date(bookingDateFormatted + " " + this.startPeak) -
-                                                            startDateTime) /
-                                                        3600000
-                                                    ) +
-                                                    1) *
-                                                response.data.data.weekdaypeakhourly;
-                                            const nonPeakFee = (Math.floor((endDateTime - new Date(bookingDateFormatted + " " + this.startPeak)) / 3600000) + 1) * response.data.data.weekdaynonpeakhourly;
-                                            fee = peakFee + nonPeakFee;
-                                        }
-
-                                        // if booking start in peak and end in non peak
-                                        else if (
-                                            endDateTime >
-                                            new Date(bookingDateFormatted + " " + this.endPeak) &&
-                                            startDateTime <
-                                            new Date(bookingDateFormatted + " " + this.endPeak)
-                                        ) {
-                                            const peakFee =
-                                                (Math.floor(
-                                                        (new Date(bookingDateFormatted + " " + this.endPeak) -
-                                                            startDateTime) /
-                                                        3600000
-                                                    ) +
-                                                    1) *
-                                                response.data.data.weekdaypeakhourly
-                                            const nonPeakFee =
-                                                (Math.floor(
-                                                        (endDateTime -
-                                                            new Date(bookingDateFormatted + " " + this.endPeak)) /
-                                                        3600000
-                                                    ) +
-                                                    1) *
-                                                response.data.data.weekdaynonpeakhourly;
-                                            fee = peakFee + nonPeakFee;
-                                        }
-
-                                        // if booking start and end in non peak
-                                        // else if ((endDateTime > (new Date(bookingDateFormatted + " " + this.endPeak))) && (startDateTime > (new Date(bookingDateFormatted + " " + this.startPeak)))) {
-                                        else {
-                                            const duration =
-                                                Math.floor((endDateTime - startDateTime) / 3600000) + 1;
-                                            fee = duration * response.data.data.weekdaynonpeakhourly;
-                                        }
-
-                                    }
-                                    this.carparksArraySimu[2].data["totalFee"] = this.formatMoney(fee / 100)
-
-
-                                    /////////// 4
-                                    const url = "http://127.0.0.1:5004/getCarparkPrice/4"
-                                    axios
-                                        .get(url)
-                                        .then((response) => {
-                                            let fee = 0
-                                            // weekend
-                                            if (startDateTime.getDay() == 6 || startDateTime.getDay() == 0) {
-                                                // for (const eachCarpark of response.data.data.carparks) {
-                                                // if booking start and end in peak
-                                                if (
-                                                    endDateTime <
-                                                    new Date(bookingDateFormatted + " " + this.endPeak) &&
-                                                    startDateTime >
-                                                    new Date(bookingDateFormatted + " " + this.startPeak)
-                                                ) {
-                                                    const duration =
-                                                        Math.floor((endDateTime - startDateTime) / 3600000) + 1;
-                                                    fee = duration * response.data.data.weekendpeakhourly;
-                                                }
-
-                                                // if booking start in non peak and end in peak
-                                                else if (
-                                                    endDateTime <
-                                                    new Date(bookingDateFormatted + " " + this.endPeak) &&
-                                                    startDateTime <
-                                                    new Date(bookingDateFormatted + " " + this.startPeak)
-                                                ) {
-                                                    const peakFee =
-                                                        (Math.floor(
-                                                                (new Date(bookingDateFormatted + " " + this.startPeak) -
-                                                                    startDateTime) /
-                                                                3600000
-                                                            ) +
-                                                            1) *
-                                                        response.data.data.weekendpeakhourly;
-                                                    const nonPeakFee = (Math.floor((endDateTime - new Date(bookingDateFormatted + " " + this.startPeak)) / 3600000) + 1) * response.data.data.weekendnonpeakhourly;
-                                                    fee = peakFee + nonPeakFee;
-                                                }
-
-                                                // if booking start in peak and end in non peak
-                                                else if (
-                                                    endDateTime >
-                                                    new Date(bookingDateFormatted + " " + this.endPeak) &&
-                                                    startDateTime <
-                                                    new Date(bookingDateFormatted + " " + this.endPeak)
-                                                ) {
-                                                    const peakFee =
-                                                        (Math.floor(
-                                                                (new Date(bookingDateFormatted + " " + this.endPeak) -
-                                                                    startDateTime) /
-                                                                3600000
-                                                            ) +
-                                                            1) *
-                                                        response.data.data.weekendpeakhourly;
-                                                    const nonPeakFee =
-                                                        (Math.floor(
-                                                                (endDateTime -
-                                                                    new Date(bookingDateFormatted + " " + this.endPeak)) /
-                                                                3600000
-                                                            ) +
-                                                            1) *
-                                                        response.data.data.weekendpeaknonhourly;
-                                                    fee = peakFee + nonPeakFee;
-                                                }
-
-                                                // if booking start and end in non peak
-                                                // else if ((endDateTime > (new Date(bookingDateFormatted + " " + this.endPeak))) && (startDateTime > (new Date(bookingDateFormatted + " " + this.startPeak)))) {
-                                                else {
-                                                    const duration =
-                                                        Math.floor((endDateTime - startDateTime) / 3600000) + 1;
-                                                    fee = duration * response.data.data.weekendnonpeakhourly;
-                                                }
-
-                                            }
-
-                                            // weekday
-                                            else {
-                                                // for (const eachCarpark of response.data.data.carparks) {
-                                                // if booking start and end in peak
-                                                if (
-                                                    endDateTime <
-                                                    new Date(bookingDateFormatted + " " + this.endPeak) &&
-                                                    startDateTime >
-                                                    new Date(bookingDateFormatted + " " + this.startPeak)
-                                                ) {
-                                                    const duration =
-                                                        Math.floor((endDateTime - startDateTime) / 3600000) + 1;
-                                                    fee = duration * response.data.data.weekdaypeakhourly;
-                                                }
-
-                                                // if booking start in non peak and end in peak
-                                                else if (
-                                                    new Date(bookingDateFormatted + " " + this.startPeak) <
-                                                    endDateTime && endDateTime <
-                                                    new Date(bookingDateFormatted + " " + this.endPeak) &&
-                                                    startDateTime <
-                                                    new Date(bookingDateFormatted + " " + this.startPeak)
-                                                ) {
-                                                    const peakFee =
-                                                        (Math.floor(
-                                                                (new Date(bookingDateFormatted + " " + this.startPeak) -
-                                                                    startDateTime) /
-                                                                3600000
-                                                            ) +
-                                                            1) *
-                                                        response.data.data.weekdaypeakhourly;
-                                                    const nonPeakFee = (Math.floor((endDateTime - new Date(bookingDateFormatted + " " + this.startPeak)) / 3600000) + 1) * response.data.data.weekdaynonpeakhourly;
-                                                    fee = peakFee + nonPeakFee;
-                                                }
-
-                                                // if booking start in peak and end in non peak
-                                                else if (
-                                                    endDateTime >
-                                                    new Date(bookingDateFormatted + " " + this.endPeak) &&
-                                                    startDateTime <
-                                                    new Date(bookingDateFormatted + " " + this.endPeak)
-                                                ) {
-                                                    const peakFee =
-                                                        (Math.floor(
-                                                                (new Date(bookingDateFormatted + " " + this.endPeak) -
-                                                                    startDateTime) /
-                                                                3600000
-                                                            ) +
-                                                            1) *
-                                                        response.data.data.weekdaypeakhourly
-                                                    const nonPeakFee =
-                                                        (Math.floor(
-                                                                (endDateTime -
-                                                                    new Date(bookingDateFormatted + " " + this.endPeak)) /
-                                                                3600000
-                                                            ) +
-                                                            1) *
-                                                        response.data.data.weekdaynonpeakhourly;
-                                                    fee = peakFee + nonPeakFee;
-                                                }
-
-                                                // if booking start and end in non peak
-                                                // else if ((endDateTime > (new Date(bookingDateFormatted + " " + this.endPeak))) && (startDateTime > (new Date(bookingDateFormatted + " " + this.startPeak)))) {
-                                                else {
-                                                    const duration =
-                                                        Math.floor((endDateTime - startDateTime) / 3600000) + 1;
-                                                    fee = duration * response.data.data.weekdaynonpeakhourly;
-                                                }
-
-                                            }
-                                            this.carparksArraySimu[3].data["totalFee"] = this.formatMoney(fee / 100)
-
-
-                                            /////////// 5
-                                            const url = "http://127.0.0.1:5004/getCarparkPrice/5"
-                                            axios
-                                                .get(url)
-                                                .then((response) => {
-                                                    let fee = 0
-                                                    // weekend
-                                                    if (startDateTime.getDay() == 6 || startDateTime.getDay() == 0) {
-                                                        // for (const eachCarpark of response.data.data.carparks) {
-                                                        // if booking start and end in peak
-                                                        if (
-                                                            endDateTime <
-                                                            new Date(bookingDateFormatted + " " + this.endPeak) &&
-                                                            startDateTime >
-                                                            new Date(bookingDateFormatted + " " + this.startPeak)
-                                                        ) {
-                                                            const duration =
-                                                                Math.floor((endDateTime - startDateTime) / 3600000) + 1;
-                                                            fee = duration * response.data.data.weekendpeakhourly;
-                                                        }
-
-                                                        // if booking start in non peak and end in peak
-                                                        else if (
-                                                            endDateTime <
-                                                            new Date(bookingDateFormatted + " " + this.endPeak) &&
-                                                            startDateTime <
-                                                            new Date(bookingDateFormatted + " " + this.startPeak)
-                                                        ) {
-                                                            const peakFee =
-                                                                (Math.floor(
-                                                                        (new Date(bookingDateFormatted + " " + this.startPeak) -
-                                                                            startDateTime) /
-                                                                        3600000
-                                                                    ) +
-                                                                    1) *
-                                                                response.data.data.weekendpeakhourly;
-                                                            const nonPeakFee = (Math.floor((endDateTime - new Date(bookingDateFormatted + " " + this.startPeak)) / 3600000) + 1) * response.data.data.weekendnonpeakhourly;
-                                                            fee = peakFee + nonPeakFee;
-                                                        }
-
-                                                        // if booking start in peak and end in non peak
-                                                        else if (
-                                                            endDateTime >
-                                                            new Date(bookingDateFormatted + " " + this.endPeak) &&
-                                                            startDateTime <
-                                                            new Date(bookingDateFormatted + " " + this.endPeak)
-                                                        ) {
-                                                            const peakFee =
-                                                                (Math.floor(
-                                                                        (new Date(bookingDateFormatted + " " + this.endPeak) -
-                                                                            startDateTime) /
-                                                                        3600000
-                                                                    ) +
-                                                                    1) *
-                                                                response.data.data.weekendpeakhourly;
-                                                            const nonPeakFee =
-                                                                (Math.floor(
-                                                                        (endDateTime -
-                                                                            new Date(bookingDateFormatted + " " + this.endPeak)) /
-                                                                        3600000
-                                                                    ) +
-                                                                    1) *
-                                                                response.data.data.weekendpeaknonhourly;
-                                                            fee = peakFee + nonPeakFee;
-                                                        }
-
-                                                        // if booking start and end in non peak
-                                                        // else if ((endDateTime > (new Date(bookingDateFormatted + " " + this.endPeak))) && (startDateTime > (new Date(bookingDateFormatted + " " + this.startPeak)))) {
-                                                        else {
-                                                            const duration =
-                                                                Math.floor((endDateTime - startDateTime) / 3600000) + 1;
-                                                            fee = duration * response.data.data.weekendnonpeakhourly;
-                                                        }
-
-                                                    }
-
-                                                    // weekday
-                                                    else {
-                                                        // for (const eachCarpark of response.data.data.carparks) {
-                                                        // if booking start and end in peak
-                                                        if (
-                                                            endDateTime <
-                                                            new Date(bookingDateFormatted + " " + this.endPeak) &&
-                                                            startDateTime >
-                                                            new Date(bookingDateFormatted + " " + this.startPeak)
-                                                        ) {
-                                                            const duration =
-                                                                Math.floor((endDateTime - startDateTime) / 3600000) + 1;
-                                                            fee = duration * response.data.data.weekdaypeakhourly;
-                                                        }
-
-                                                        // if booking start in non peak and end in peak
-                                                        else if (
-                                                            new Date(bookingDateFormatted + " " + this.startPeak) <
-                                                            endDateTime && endDateTime <
-                                                            new Date(bookingDateFormatted + " " + this.endPeak) &&
-                                                            startDateTime <
-                                                            new Date(bookingDateFormatted + " " + this.startPeak)
-                                                        ) {
-                                                            const peakFee =
-                                                                (Math.floor(
-                                                                        (new Date(bookingDateFormatted + " " + this.startPeak) -
-                                                                            startDateTime) /
-                                                                        3600000
-                                                                    ) +
-                                                                    1) *
-                                                                response.data.data.weekdaypeakhourly;
-                                                            const nonPeakFee = (Math.floor((endDateTime - new Date(bookingDateFormatted + " " + this.startPeak)) / 3600000) + 1) * response.data.data.weekdaynonpeakhourly;
-                                                            fee = peakFee + nonPeakFee;
-                                                        }
-
-                                                        // if booking start in peak and end in non peak
-                                                        else if (
-                                                            endDateTime >
-                                                            new Date(bookingDateFormatted + " " + this.endPeak) &&
-                                                            startDateTime <
-                                                            new Date(bookingDateFormatted + " " + this.endPeak)
-                                                        ) {
-                                                            const peakFee =
-                                                                (Math.floor(
-                                                                        (new Date(bookingDateFormatted + " " + this.endPeak) -
-                                                                            startDateTime) /
-                                                                        3600000
-                                                                    ) +
-                                                                    1) *
-                                                                response.data.data.weekdaypeakhourly
-                                                            const nonPeakFee =
-                                                                (Math.floor(
-                                                                        (endDateTime -
-                                                                            new Date(bookingDateFormatted + " " + this.endPeak)) /
-                                                                        3600000
-                                                                    ) +
-                                                                    1) *
-                                                                response.data.data.weekdaynonpeakhourly;
-                                                            fee = peakFee + nonPeakFee;
-                                                        }
-
-                                                        // if booking start and end in non peak
-                                                        // else if ((endDateTime > (new Date(bookingDateFormatted + " " + this.endPeak))) && (startDateTime > (new Date(bookingDateFormatted + " " + this.startPeak)))) {
-                                                        else {
-                                                            const duration =
-                                                                Math.floor((endDateTime - startDateTime) / 3600000) + 1;
-                                                            fee = duration * response.data.data.weekdaynonpeakhourly;
-                                                        }
-
-                                                    }
-                                                    this.carparksArraySimu[4].data["totalFee"] = this.formatMoney(fee / 100)
-
-
-                                                    ///////////////6
-                                                    const url = "http://127.0.0.1:5004/getCarparkPrice/6"
-                                                    axios
-                                                        .get(url)
-                                                        .then((response) => {
-                                                            let fee = 0
-                                                            // weekend
-                                                            if (startDateTime.getDay() == 6 || startDateTime.getDay() == 0) {
-                                                                // for (const eachCarpark of response.data.data.carparks) {
-                                                                // if booking start and end in peak
-                                                                if (
-                                                                    endDateTime <
-                                                                    new Date(bookingDateFormatted + " " + this.endPeak) &&
-                                                                    startDateTime >
-                                                                    new Date(bookingDateFormatted + " " + this.startPeak)
-                                                                ) {
-                                                                    const duration =
-                                                                        Math.floor((endDateTime - startDateTime) / 3600000) + 1;
-                                                                    fee = duration * response.data.data.weekendpeakhourly;
-                                                                }
-
-                                                                // if booking start in non peak and end in peak
-                                                                else if (
-                                                                    endDateTime <
-                                                                    new Date(bookingDateFormatted + " " + this.endPeak) &&
-                                                                    startDateTime <
-                                                                    new Date(bookingDateFormatted + " " + this.startPeak)
-                                                                ) {
-                                                                    const peakFee =
-                                                                        (Math.floor(
-                                                                                (new Date(bookingDateFormatted + " " + this.startPeak) -
-                                                                                    startDateTime) /
-                                                                                3600000
-                                                                            ) +
-                                                                            1) *
-                                                                        response.data.data.weekendpeakhourly;
-                                                                    const nonPeakFee = (Math.floor((endDateTime - new Date(bookingDateFormatted + " " + this.startPeak)) / 3600000) + 1) * response.data.data.weekendnonpeakhourly;
-                                                                    fee = peakFee + nonPeakFee;
-                                                                }
-
-                                                                // if booking start in peak and end in non peak
-                                                                else if (
-                                                                    endDateTime >
-                                                                    new Date(bookingDateFormatted + " " + this.endPeak) &&
-                                                                    startDateTime <
-                                                                    new Date(bookingDateFormatted + " " + this.endPeak)
-                                                                ) {
-                                                                    const peakFee =
-                                                                        (Math.floor(
-                                                                                (new Date(bookingDateFormatted + " " + this.endPeak) -
-                                                                                    startDateTime) /
-                                                                                3600000
-                                                                            ) +
-                                                                            1) *
-                                                                        response.data.data.weekendpeakhourly;
-                                                                    const nonPeakFee =
-                                                                        (Math.floor(
-                                                                                (endDateTime -
-                                                                                    new Date(bookingDateFormatted + " " + this.endPeak)) /
-                                                                                3600000
-                                                                            ) +
-                                                                            1) *
-                                                                        response.data.data.weekendpeaknonhourly;
-                                                                    fee = peakFee + nonPeakFee;
-                                                                }
-
-                                                                // if booking start and end in non peak
-                                                                // else if ((endDateTime > (new Date(bookingDateFormatted + " " + this.endPeak))) && (startDateTime > (new Date(bookingDateFormatted + " " + this.startPeak)))) {
-                                                                else {
-                                                                    const duration =
-                                                                        Math.floor((endDateTime - startDateTime) / 3600000) + 1;
-                                                                    fee = duration * response.data.data.weekendnonpeakhourly;
-                                                                }
-
-                                                            }
-
-                                                            // weekday
-                                                            else {
-                                                                // for (const eachCarpark of response.data.data.carparks) {
-                                                                // if booking start and end in peak
-                                                                if (
-                                                                    endDateTime <
-                                                                    new Date(bookingDateFormatted + " " + this.endPeak) &&
-                                                                    startDateTime >
-                                                                    new Date(bookingDateFormatted + " " + this.startPeak)
-                                                                ) {
-                                                                    const duration =
-                                                                        Math.floor((endDateTime - startDateTime) / 3600000) + 1;
-                                                                    fee = duration * response.data.data.weekdaypeakhourly;
-                                                                }
-
-                                                                // if booking start in non peak and end in peak
-                                                                else if (
-                                                                    new Date(bookingDateFormatted + " " + this.startPeak) <
-                                                                    endDateTime && endDateTime <
-                                                                    new Date(bookingDateFormatted + " " + this.endPeak) &&
-                                                                    startDateTime <
-                                                                    new Date(bookingDateFormatted + " " + this.startPeak)
-                                                                ) {
-                                                                    const peakFee =
-                                                                        (Math.floor(
-                                                                                (new Date(bookingDateFormatted + " " + this.startPeak) -
-                                                                                    startDateTime) /
-                                                                                3600000
-                                                                            ) +
-                                                                            1) *
-                                                                        response.data.data.weekdaypeakhourly;
-                                                                    const nonPeakFee = (Math.floor((endDateTime - new Date(bookingDateFormatted + " " + this.startPeak)) / 3600000) + 1) * response.data.data.weekdaynonpeakhourly;
-                                                                    fee = peakFee + nonPeakFee;
-                                                                }
-
-                                                                // if booking start in peak and end in non peak
-                                                                else if (
-                                                                    endDateTime >
-                                                                    new Date(bookingDateFormatted + " " + this.endPeak) &&
-                                                                    startDateTime <
-                                                                    new Date(bookingDateFormatted + " " + this.endPeak)
-                                                                ) {
-                                                                    const peakFee =
-                                                                        (Math.floor(
-                                                                                (new Date(bookingDateFormatted + " " + this.endPeak) -
-                                                                                    startDateTime) /
-                                                                                3600000
-                                                                            ) +
-                                                                            1) *
-                                                                        response.data.data.weekdaypeakhourly
-                                                                    const nonPeakFee =
-                                                                        (Math.floor(
-                                                                                (endDateTime -
-                                                                                    new Date(bookingDateFormatted + " " + this.endPeak)) /
-                                                                                3600000
-                                                                            ) +
-                                                                            1) *
-                                                                        response.data.data.weekdaynonpeakhourly;
-                                                                    fee = peakFee + nonPeakFee;
-                                                                }
-
-                                                                // if booking start and end in non peak
-                                                                // else if ((endDateTime > (new Date(bookingDateFormatted + " " + this.endPeak))) && (startDateTime > (new Date(bookingDateFormatted + " " + this.startPeak)))) {
-                                                                else {
-                                                                    const duration =
-                                                                        Math.floor((endDateTime - startDateTime) / 3600000) + 1;
-                                                                    fee = duration * response.data.data.weekdaynonpeakhourly;
-                                                                }
-
-                                                            }
-                                                            this.carparksArraySimu[5].data["totalFee"] = this.formatMoney(fee / 100)
-
-                                                            ///////////////7
-                                                            const url = "http://127.0.0.1:5004/getCarparkPrice/7"
-                                                            axios
-                                                                .get(url)
-                                                                .then((response) => {
-                                                                    let fee = 0
-                                                                    // weekend
-                                                                    if (startDateTime.getDay() == 6 || startDateTime.getDay() == 0) {
-                                                                        // for (const eachCarpark of response.data.data.carparks) {
-                                                                        // if booking start and end in peak
-                                                                        if (
-                                                                            endDateTime <
-                                                                            new Date(bookingDateFormatted + " " + this.endPeak) &&
-                                                                            startDateTime >
-                                                                            new Date(bookingDateFormatted + " " + this.startPeak)
-                                                                        ) {
-                                                                            const duration =
-                                                                                Math.floor((endDateTime - startDateTime) / 3600000) + 1;
-                                                                            fee = duration * response.data.data.weekendpeakhourly;
-                                                                        }
-
-                                                                        // if booking start in non peak and end in peak
-                                                                        else if (
-                                                                            endDateTime <
-                                                                            new Date(bookingDateFormatted + " " + this.endPeak) &&
-                                                                            startDateTime <
-                                                                            new Date(bookingDateFormatted + " " + this.startPeak)
-                                                                        ) {
-                                                                            const peakFee =
-                                                                                (Math.floor(
-                                                                                        (new Date(bookingDateFormatted + " " + this.startPeak) -
-                                                                                            startDateTime) /
-                                                                                        3600000
-                                                                                    ) +
-                                                                                    1) *
-                                                                                response.data.data.weekendpeakhourly;
-                                                                            const nonPeakFee = (Math.floor((endDateTime - new Date(bookingDateFormatted + " " + this.startPeak)) / 3600000) + 1) * response.data.data.weekendnonpeakhourly;
-                                                                            fee = peakFee + nonPeakFee;
-                                                                        }
-
-                                                                        // if booking start in peak and end in non peak
-                                                                        else if (
-                                                                            endDateTime >
-                                                                            new Date(bookingDateFormatted + " " + this.endPeak) &&
-                                                                            startDateTime <
-                                                                            new Date(bookingDateFormatted + " " + this.endPeak)
-                                                                        ) {
-                                                                            const peakFee =
-                                                                                (Math.floor(
-                                                                                        (new Date(bookingDateFormatted + " " + this.endPeak) -
-                                                                                            startDateTime) /
-                                                                                        3600000
-                                                                                    ) +
-                                                                                    1) *
-                                                                                response.data.data.weekendpeakhourly;
-                                                                            const nonPeakFee =
-                                                                                (Math.floor(
-                                                                                        (endDateTime -
-                                                                                            new Date(bookingDateFormatted + " " + this.endPeak)) /
-                                                                                        3600000
-                                                                                    ) +
-                                                                                    1) *
-                                                                                response.data.data.weekendpeaknonhourly;
-                                                                            fee = peakFee + nonPeakFee;
-                                                                        }
-
-                                                                        // if booking start and end in non peak
-                                                                        // else if ((endDateTime > (new Date(bookingDateFormatted + " " + this.endPeak))) && (startDateTime > (new Date(bookingDateFormatted + " " + this.startPeak)))) {
-                                                                        else {
-                                                                            const duration =
-                                                                                Math.floor((endDateTime - startDateTime) / 3600000) + 1;
-                                                                            fee = duration * response.data.data.weekendnonpeakhourly;
-                                                                        }
-
-                                                                    }
-
-                                                                    // weekday
-                                                                    else {
-                                                                        // for (const eachCarpark of response.data.data.carparks) {
-                                                                        // if booking start and end in peak
-                                                                        if (
-                                                                            endDateTime <
-                                                                            new Date(bookingDateFormatted + " " + this.endPeak) &&
-                                                                            startDateTime >
-                                                                            new Date(bookingDateFormatted + " " + this.startPeak)
-                                                                        ) {
-                                                                            const duration =
-                                                                                Math.floor((endDateTime - startDateTime) / 3600000) + 1;
-                                                                            fee = duration * response.data.data.weekdaypeakhourly;
-                                                                        }
-
-                                                                        // if booking start in non peak and end in peak
-                                                                        else if (
-                                                                            new Date(bookingDateFormatted + " " + this.startPeak) <
-                                                                            endDateTime && endDateTime <
-                                                                            new Date(bookingDateFormatted + " " + this.endPeak) &&
-                                                                            startDateTime <
-                                                                            new Date(bookingDateFormatted + " " + this.startPeak)
-                                                                        ) {
-                                                                            const peakFee =
-                                                                                (Math.floor(
-                                                                                        (new Date(bookingDateFormatted + " " + this.startPeak) -
-                                                                                            startDateTime) /
-                                                                                        3600000
-                                                                                    ) +
-                                                                                    1) *
-                                                                                response.data.data.weekdaypeakhourly;
-                                                                            const nonPeakFee = (Math.floor((endDateTime - new Date(bookingDateFormatted + " " + this.startPeak)) / 3600000) + 1) * response.data.data.weekdaynonpeakhourly;
-                                                                            fee = peakFee + nonPeakFee;
-                                                                        }
-
-                                                                        // if booking start in peak and end in non peak
-                                                                        else if (
-                                                                            endDateTime >
-                                                                            new Date(bookingDateFormatted + " " + this.endPeak) &&
-                                                                            startDateTime <
-                                                                            new Date(bookingDateFormatted + " " + this.endPeak)
-                                                                        ) {
-                                                                            const peakFee =
-                                                                                (Math.floor(
-                                                                                        (new Date(bookingDateFormatted + " " + this.endPeak) -
-                                                                                            startDateTime) /
-                                                                                        3600000
-                                                                                    ) +
-                                                                                    1) *
-                                                                                response.data.data.weekdaypeakhourly
-                                                                            const nonPeakFee =
-                                                                                (Math.floor(
-                                                                                        (endDateTime -
-                                                                                            new Date(bookingDateFormatted + " " + this.endPeak)) /
-                                                                                        3600000
-                                                                                    ) +
-                                                                                    1) *
-                                                                                response.data.data.weekdaynonpeakhourly;
-                                                                            fee = peakFee + nonPeakFee;
-                                                                        }
-
-                                                                        // if booking start and end in non peak
-                                                                        // else if ((endDateTime > (new Date(bookingDateFormatted + " " + this.endPeak))) && (startDateTime > (new Date(bookingDateFormatted + " " + this.startPeak)))) {
-                                                                        else {
-                                                                            const duration =
-                                                                                Math.floor((endDateTime - startDateTime) / 3600000) + 1;
-                                                                            fee = duration * response.data.data.weekdaynonpeakhourly;
-                                                                        }
-
-                                                                    }
-                                                                    this.carparksArraySimu[6].data["totalFee"] = this.formatMoney(fee / 100)
-
-
-                                                                    ///////////////8
-                                                                    const url = "http://127.0.0.1:5004/getCarparkPrice/8"
-                                                                    axios
-                                                                        .get(url)
-                                                                        .then((response) => {
-                                                                            let fee = 0
-                                                                            // weekend
-                                                                            if (startDateTime.getDay() == 6 || startDateTime.getDay() == 0) {
-                                                                                // for (const eachCarpark of response.data.data.carparks) {
-                                                                                // if booking start and end in peak
-                                                                                if (
-                                                                                    endDateTime <
-                                                                                    new Date(bookingDateFormatted + " " + this.endPeak) &&
-                                                                                    startDateTime >
-                                                                                    new Date(bookingDateFormatted + " " + this.startPeak)
-                                                                                ) {
-                                                                                    const duration =
-                                                                                        Math.floor((endDateTime - startDateTime) / 3600000) + 1;
-                                                                                    fee = duration * response.data.data.weekendpeakhourly;
-                                                                                }
-
-                                                                                // if booking start in non peak and end in peak
-                                                                                else if (
-                                                                                    endDateTime <
-                                                                                    new Date(bookingDateFormatted + " " + this.endPeak) &&
-                                                                                    startDateTime <
-                                                                                    new Date(bookingDateFormatted + " " + this.startPeak)
-                                                                                ) {
-                                                                                    const peakFee =
-                                                                                        (Math.floor(
-                                                                                                (new Date(bookingDateFormatted + " " + this.startPeak) -
-                                                                                                    startDateTime) /
-                                                                                                3600000
-                                                                                            ) +
-                                                                                            1) *
-                                                                                        response.data.data.weekendpeakhourly;
-                                                                                    const nonPeakFee = (Math.floor((endDateTime - new Date(bookingDateFormatted + " " + this.startPeak)) / 3600000) + 1) * response.data.data.weekendnonpeakhourly;
-                                                                                    fee = peakFee + nonPeakFee;
-                                                                                }
-
-                                                                                // if booking start in peak and end in non peak
-                                                                                else if (
-                                                                                    endDateTime >
-                                                                                    new Date(bookingDateFormatted + " " + this.endPeak) &&
-                                                                                    startDateTime <
-                                                                                    new Date(bookingDateFormatted + " " + this.endPeak)
-                                                                                ) {
-                                                                                    const peakFee =
-                                                                                        (Math.floor(
-                                                                                                (new Date(bookingDateFormatted + " " + this.endPeak) -
-                                                                                                    startDateTime) /
-                                                                                                3600000
-                                                                                            ) +
-                                                                                            1) *
-                                                                                        response.data.data.weekendpeakhourly;
-                                                                                    const nonPeakFee =
-                                                                                        (Math.floor(
-                                                                                                (endDateTime -
-                                                                                                    new Date(bookingDateFormatted + " " + this.endPeak)) /
-                                                                                                3600000
-                                                                                            ) +
-                                                                                            1) *
-                                                                                        response.data.data.weekendpeaknonhourly;
-                                                                                    fee = peakFee + nonPeakFee;
-                                                                                }
-
-                                                                                // if booking start and end in non peak
-                                                                                // else if ((endDateTime > (new Date(bookingDateFormatted + " " + this.endPeak))) && (startDateTime > (new Date(bookingDateFormatted + " " + this.startPeak)))) {
-                                                                                else {
-                                                                                    const duration =
-                                                                                        Math.floor((endDateTime - startDateTime) / 3600000) + 1;
-                                                                                    fee = duration * response.data.data.weekendnonpeakhourly;
-                                                                                }
-
+                                                                            if (this.selectedLocation == "orchard") {
+                                                                                this.userOrigin = "1.3064433533620563,103.83276247871694";
+                                                                            } else if (this.selectedLocation == "yishun") {
+                                                                                this.userOrigin = "1.4304060903894582, 103.83515323243753";
+                                                                            } else if (this.selectedLocation == "somerset") {
+                                                                                this.userOrigin = "1.3016313961551784, 103.83849995957749";
                                                                             }
 
-                                                                            // weekday
-                                                                            else {
-                                                                                // for (const eachCarpark of response.data.data.carparks) {
-                                                                                // if booking start and end in peak
-                                                                                if (
-                                                                                    endDateTime <
-                                                                                    new Date(bookingDateFormatted + " " + this.endPeak) &&
-                                                                                    startDateTime >
-                                                                                    new Date(bookingDateFormatted + " " + this.startPeak)
-                                                                                ) {
-                                                                                    const duration =
-                                                                                        Math.floor((endDateTime - startDateTime) / 3600000) + 1;
-                                                                                    fee = duration * response.data.data.weekdaypeakhourly;
-                                                                                }
+                                                                            this.googleMapDistanceUrl +=
+                                                                                this.userOrigin +
+                                                                                "&destinations=" +
+                                                                                this.combinedLatLang.slice(0, -1) +
+                                                                                "&departure_time=now&key=AIzaSyAJXGx7T2ypt5Ew5-9SbDTWF9gqloQUJwI";
 
-                                                                                // if booking start in non peak and end in peak
-                                                                                else if (
-                                                                                    new Date(bookingDateFormatted + " " + this.startPeak) <
-                                                                                    endDateTime && endDateTime <
-                                                                                    new Date(bookingDateFormatted + " " + this.endPeak) &&
-                                                                                    startDateTime <
-                                                                                    new Date(bookingDateFormatted + " " + this.startPeak)
-                                                                                ) {
-                                                                                    const peakFee =
-                                                                                        (Math.floor(
-                                                                                                (new Date(bookingDateFormatted + " " + this.startPeak) -
-                                                                                                    startDateTime) /
-                                                                                                3600000
-                                                                                            ) +
-                                                                                            1) *
-                                                                                        response.data.data.weekdaypeakhourly;
-                                                                                    const nonPeakFee = (Math.floor((endDateTime - new Date(bookingDateFormatted + " " + this.startPeak)) / 3600000) + 1) * response.data.data.weekdaynonpeakhourly;
-                                                                                    fee = peakFee + nonPeakFee;
-                                                                                }
+                                                                            // this.userOrigin = "1.3064433533620563,103.83276247871694"
+                                                                            const url = "http://127.0.0.1:5009/getCoords";
+                                                                            axios
+                                                                                .post(url, {
+                                                                                    "origin": this.userOrigin
+                                                                                })
+                                                                                .then((response) => {
+                                                                                    const destinations = response.data.rows[0].elements
+                                                                                    for (let i = 0; i < this.carparksArraySimu.length; i++) {
+                                                                                        this.carparksArraySimu[i]["distance_km"] = destinations[i].distance.text;
+                                                                                        this.carparksArraySimu[i]["distance_km_value"] = destinations[i].distance.value;
+                                                                                        this.carparksArraySimu[i]["duration_mins"] = destinations[i].duration_in_traffic.text;
+                                                                                    }
 
-                                                                                // if booking start in peak and end in non peak
-                                                                                else if (
-                                                                                    endDateTime >
-                                                                                    new Date(bookingDateFormatted + " " + this.endPeak) &&
-                                                                                    startDateTime <
-                                                                                    new Date(bookingDateFormatted + " " + this.endPeak)
-                                                                                ) {
-                                                                                    const peakFee =
-                                                                                        (Math.floor(
-                                                                                                (new Date(bookingDateFormatted + " " + this.endPeak) -
-                                                                                                    startDateTime) /
-                                                                                                3600000
-                                                                                            ) +
-                                                                                            1) *
-                                                                                        response.data.data.weekdaypeakhourly
-                                                                                    const nonPeakFee =
-                                                                                        (Math.floor(
-                                                                                                (endDateTime -
-                                                                                                    new Date(bookingDateFormatted + " " + this.endPeak)) /
-                                                                                                3600000
-                                                                                            ) +
-                                                                                            1) *
-                                                                                        response.data.data.weekdaynonpeakhourly;
-                                                                                    fee = peakFee + nonPeakFee;
-                                                                                }
+                                                                                    // for (let i = 0; i < this.carparksArraySimu.length ; i++) {
+                                                                                    const bookingDateFormatted = this.bookingDate.substring(0, 10);
+                                                                                    const startDateTime = new Date(bookingDateFormatted + " " + this.startTime.substring(11, 19));
+                                                                                    const endDateTime = new Date(
+                                                                                        bookingDateFormatted + " " + this.endTime.substring(11, 19));
 
-                                                                                // if booking start and end in non peak
-                                                                                // else if ((endDateTime > (new Date(bookingDateFormatted + " " + this.endPeak))) && (startDateTime > (new Date(bookingDateFormatted + " " + this.startPeak)))) {
-                                                                                else {
-                                                                                    const duration =
-                                                                                        Math.floor((endDateTime - startDateTime) / 3600000) + 1;
-                                                                                    fee = duration * response.data.data.weekdaynonpeakhourly;
-                                                                                }
+                                                                                    const url = "http://127.0.0.1:5004/getCarparkPrice/1"
+                                                                                    axios
+                                                                                        .get(url)
+                                                                                        .then((response) => {
 
-                                                                            }
-                                                                            this.carparksArraySimu[7].data["totalFee"] = this.formatMoney(fee / 100)
-                                                                            this.changeTab()
+                                                                                            let fee = 0
+                                                                                            // weekend
+                                                                                            if (startDateTime.getDay() == 6 || startDateTime.getDay() == 0) {
+                                                                                                // for (const eachCarpark of response.data.data.carparks) {
+                                                                                                // if booking start and end in peak
+                                                                                                if (
+                                                                                                    endDateTime <
+                                                                                                    new Date(bookingDateFormatted + " " + this.endPeak) &&
+                                                                                                    startDateTime >
+                                                                                                    new Date(bookingDateFormatted + " " + this.startPeak)
+                                                                                                ) {
+                                                                                                    const duration =
+                                                                                                        Math.floor((endDateTime - startDateTime) / 3600000) + 1;
+                                                                                                    fee = duration * response.data.data.weekendpeakhourly;
+                                                                                                }
 
-                                                    
-                                                                        })
+                                                                                                // if booking start in non peak and end in peak
+                                                                                                else if (
+                                                                                                    endDateTime <
+                                                                                                    new Date(bookingDateFormatted + " " + this.endPeak) &&
+                                                                                                    startDateTime <
+                                                                                                    new Date(bookingDateFormatted + " " + this.startPeak)
+                                                                                                ) {
+                                                                                                    const peakFee =
+                                                                                                        (Math.floor(
+                                                                                                                (new Date(bookingDateFormatted + " " + this.startPeak) -
+                                                                                                                    startDateTime) /
+                                                                                                                3600000
+                                                                                                            ) +
+                                                                                                            1) *
+                                                                                                        response.data.data.weekendpeakhourly;
+                                                                                                    const nonPeakFee = (Math.floor((endDateTime - new Date(bookingDateFormatted + " " + this.startPeak)) / 3600000) + 1) * response.data.data.weekendnonpeakhourly;
+                                                                                                    fee = peakFee + nonPeakFee;
+                                                                                                }
 
-                                                                })
-                                                        })
+                                                                                                // if booking start in peak and end in non peak
+                                                                                                else if (
+                                                                                                    endDateTime >
+                                                                                                    new Date(bookingDateFormatted + " " + this.endPeak) &&
+                                                                                                    startDateTime <
+                                                                                                    new Date(bookingDateFormatted + " " + this.endPeak)
+                                                                                                ) {
+                                                                                                    const peakFee =
+                                                                                                        (Math.floor(
+                                                                                                                (new Date(bookingDateFormatted + " " + this.endPeak) -
+                                                                                                                    startDateTime) /
+                                                                                                                3600000
+                                                                                                            ) +
+                                                                                                            1) *
+                                                                                                        response.data.data.weekendpeakhourly;
+                                                                                                    const nonPeakFee =
+                                                                                                        (Math.floor(
+                                                                                                                (endDateTime -
+                                                                                                                    new Date(bookingDateFormatted + " " + this.endPeak)) /
+                                                                                                                3600000
+                                                                                                            ) +
+                                                                                                            1) *
+                                                                                                        response.data.data.weekendpeaknonhourly;
+                                                                                                    fee = peakFee + nonPeakFee;
+                                                                                                }
 
-                                                })
-                                        })
-                                })
-                        })
-                })
-                .catch((error) => {
-                    console.log(error)
-                })
-        
-                                                                                        
-                                                                                        
-                                                                                    
-                                                                                    })
-                                                                                    .catch((error) => {
-                                                                                        console.log(error);
-                                                                                    });
-                                                                            
+                                                                                                // if booking start and end in non peak
+                                                                                                // else if ((endDateTime > (new Date(bookingDateFormatted + " " + this.endPeak))) && (startDateTime > (new Date(bookingDateFormatted + " " + this.startPeak)))) {
+                                                                                                else {
+                                                                                                    const duration =
+                                                                                                        Math.floor((endDateTime - startDateTime) / 3600000) + 1;
+                                                                                                    fee = duration * response.data.data.weekendnonpeakhourly;
+                                                                                                }
+
+                                                                                            }
+
+                                                                                            // weekday
+                                                                                            else {
+                                                                                                // for (const eachCarpark of response.data.data.carparks) {
+                                                                                                // if booking start and end in peak
+                                                                                                if (
+                                                                                                    endDateTime <
+                                                                                                    new Date(bookingDateFormatted + " " + this.endPeak) &&
+                                                                                                    startDateTime >
+                                                                                                    new Date(bookingDateFormatted + " " + this.startPeak)
+                                                                                                ) {
+                                                                                                    const duration =
+                                                                                                        Math.floor((endDateTime - startDateTime) / 3600000) + 1;
+                                                                                                    fee = duration * response.data.data.weekdaypeakhourly;
+                                                                                                }
+
+                                                                                                // if booking start in non peak and end in peak
+                                                                                                else if (
+                                                                                                    new Date(bookingDateFormatted + " " + this.startPeak) <
+                                                                                                    endDateTime && endDateTime <
+                                                                                                    new Date(bookingDateFormatted + " " + this.endPeak) &&
+                                                                                                    startDateTime <
+                                                                                                    new Date(bookingDateFormatted + " " + this.startPeak)
+                                                                                                ) {
+                                                                                                    const peakFee =
+                                                                                                        (Math.floor(
+                                                                                                                (new Date(bookingDateFormatted + " " + this.startPeak) -
+                                                                                                                    startDateTime) /
+                                                                                                                3600000
+                                                                                                            ) +
+                                                                                                            1) *
+                                                                                                        response.data.data.weekdaypeakhourly;
+                                                                                                    const nonPeakFee = (Math.floor((endDateTime - new Date(bookingDateFormatted + " " + this.startPeak)) / 3600000) + 1) * response.data.data.weekdaynonpeakhourly;
+                                                                                                    fee = peakFee + nonPeakFee;
+                                                                                                }
+
+                                                                                                // if booking start in peak and end in non peak
+                                                                                                else if (
+                                                                                                    endDateTime >
+                                                                                                    new Date(bookingDateFormatted + " " + this.endPeak) &&
+                                                                                                    startDateTime <
+                                                                                                    new Date(bookingDateFormatted + " " + this.endPeak)
+                                                                                                ) {
+                                                                                                    const peakFee =
+                                                                                                        (Math.floor(
+                                                                                                                (new Date(bookingDateFormatted + " " + this.endPeak) -
+                                                                                                                    startDateTime) /
+                                                                                                                3600000
+                                                                                                            ) +
+                                                                                                            1) *
+                                                                                                        response.data.data.weekdaypeakhourly
+                                                                                                    const nonPeakFee =
+                                                                                                        (Math.floor(
+                                                                                                                (endDateTime -
+                                                                                                                    new Date(bookingDateFormatted + " " + this.endPeak)) /
+                                                                                                                3600000
+                                                                                                            ) +
+                                                                                                            1) *
+                                                                                                        response.data.data.weekdaynonpeakhourly;
+                                                                                                    fee = peakFee + nonPeakFee;
+                                                                                                }
+
+                                                                                                // if booking start and end in non peak
+                                                                                                // else if ((endDateTime > (new Date(bookingDateFormatted + " " + this.endPeak))) && (startDateTime > (new Date(bookingDateFormatted + " " + this.startPeak)))) {
+                                                                                                else {
+                                                                                                    const duration =
+                                                                                                        Math.floor((endDateTime - startDateTime) / 3600000) + 1;
+                                                                                                    fee = duration * response.data.data.weekdaynonpeakhourly;
+                                                                                                }
+
+                                                                                            }
+                                                                                            this.carparksArraySimu[0].data["totalFee"] = this.formatMoney(fee / 100)
+
+                                                                                            /////////// 2
+                                                                                            const url = "http://127.0.0.1:5004/getCarparkPrice/2"
+                                                                                            axios
+                                                                                                .get(url)
+                                                                                                .then((response) => {
+
+                                                                                                    let fee = 0
+                                                                                                    // weekend
+                                                                                                    if (startDateTime.getDay() == 6 || startDateTime.getDay() == 0) {
+                                                                                                        // for (const eachCarpark of response.data.data.carparks) {
+                                                                                                        // if booking start and end in peak
+                                                                                                        if (
+                                                                                                            endDateTime <
+                                                                                                            new Date(bookingDateFormatted + " " + this.endPeak) &&
+                                                                                                            startDateTime >
+                                                                                                            new Date(bookingDateFormatted + " " + this.startPeak)
+                                                                                                        ) {
+                                                                                                            const duration =
+                                                                                                                Math.floor((endDateTime - startDateTime) / 3600000) + 1;
+                                                                                                            fee = duration * response.data.data.weekendpeakhourly;
+                                                                                                        }
+
+                                                                                                        // if booking start in non peak and end in peak
+                                                                                                        else if (
+                                                                                                            endDateTime <
+                                                                                                            new Date(bookingDateFormatted + " " + this.endPeak) &&
+                                                                                                            startDateTime <
+                                                                                                            new Date(bookingDateFormatted + " " + this.startPeak)
+                                                                                                        ) {
+                                                                                                            const peakFee =
+                                                                                                                (Math.floor(
+                                                                                                                        (new Date(bookingDateFormatted + " " + this.startPeak) -
+                                                                                                                            startDateTime) /
+                                                                                                                        3600000
+                                                                                                                    ) +
+                                                                                                                    1) *
+                                                                                                                response.data.data.weekendpeakhourly;
+                                                                                                            const nonPeakFee = (Math.floor((endDateTime - new Date(bookingDateFormatted + " " + this.startPeak)) / 3600000) + 1) * response.data.data.weekendnonpeakhourly;
+                                                                                                            fee = peakFee + nonPeakFee;
+                                                                                                        }
+
+                                                                                                        // if booking start in peak and end in non peak
+                                                                                                        else if (
+                                                                                                            endDateTime >
+                                                                                                            new Date(bookingDateFormatted + " " + this.endPeak) &&
+                                                                                                            startDateTime <
+                                                                                                            new Date(bookingDateFormatted + " " + this.endPeak)
+                                                                                                        ) {
+                                                                                                            const peakFee =
+                                                                                                                (Math.floor(
+                                                                                                                        (new Date(bookingDateFormatted + " " + this.endPeak) -
+                                                                                                                            startDateTime) /
+                                                                                                                        3600000
+                                                                                                                    ) +
+                                                                                                                    1) *
+                                                                                                                response.data.data.weekendpeakhourly;
+                                                                                                            const nonPeakFee =
+                                                                                                                (Math.floor(
+                                                                                                                        (endDateTime -
+                                                                                                                            new Date(bookingDateFormatted + " " + this.endPeak)) /
+                                                                                                                        3600000
+                                                                                                                    ) +
+                                                                                                                    1) *
+                                                                                                                response.data.data.weekendpeaknonhourly;
+                                                                                                            fee = peakFee + nonPeakFee;
+                                                                                                        }
+
+                                                                                                        // if booking start and end in non peak
+                                                                                                        // else if ((endDateTime > (new Date(bookingDateFormatted + " " + this.endPeak))) && (startDateTime > (new Date(bookingDateFormatted + " " + this.startPeak)))) {
+                                                                                                        else {
+                                                                                                            const duration =
+                                                                                                                Math.floor((endDateTime - startDateTime) / 3600000) + 1;
+                                                                                                            fee = duration * response.data.data.weekendnonpeakhourly;
+                                                                                                        }
+
+                                                                                                    }
+
+                                                                                                    // weekday
+                                                                                                    else {
+                                                                                                        // for (const eachCarpark of response.data.data.carparks) {
+                                                                                                        // if booking start and end in peak
+                                                                                                        if (
+                                                                                                            endDateTime <
+                                                                                                            new Date(bookingDateFormatted + " " + this.endPeak) &&
+                                                                                                            startDateTime >
+                                                                                                            new Date(bookingDateFormatted + " " + this.startPeak)
+                                                                                                        ) {
+                                                                                                            const duration =
+                                                                                                                Math.floor((endDateTime - startDateTime) / 3600000) + 1;
+                                                                                                            fee = duration * response.data.data.weekdaypeakhourly;
+                                                                                                        }
+
+                                                                                                        // if booking start in non peak and end in peak
+                                                                                                        else if (
+                                                                                                            new Date(bookingDateFormatted + " " + this.startPeak) <
+                                                                                                            endDateTime && endDateTime <
+                                                                                                            new Date(bookingDateFormatted + " " + this.endPeak) &&
+                                                                                                            startDateTime <
+                                                                                                            new Date(bookingDateFormatted + " " + this.startPeak)
+                                                                                                        ) {
+                                                                                                            const peakFee =
+                                                                                                                (Math.floor(
+                                                                                                                        (new Date(bookingDateFormatted + " " + this.startPeak) -
+                                                                                                                            startDateTime) /
+                                                                                                                        3600000
+                                                                                                                    ) +
+                                                                                                                    1) *
+                                                                                                                response.data.data.weekdaypeakhourly;
+                                                                                                            const nonPeakFee = (Math.floor((endDateTime - new Date(bookingDateFormatted + " " + this.startPeak)) / 3600000) + 1) * response.data.data.weekdaynonpeakhourly;
+                                                                                                            fee = peakFee + nonPeakFee;
+                                                                                                        }
+
+                                                                                                        // if booking start in peak and end in non peak
+                                                                                                        else if (
+                                                                                                            endDateTime >
+                                                                                                            new Date(bookingDateFormatted + " " + this.endPeak) &&
+                                                                                                            startDateTime <
+                                                                                                            new Date(bookingDateFormatted + " " + this.endPeak)
+                                                                                                        ) {
+                                                                                                            const peakFee =
+                                                                                                                (Math.floor(
+                                                                                                                        (new Date(bookingDateFormatted + " " + this.endPeak) -
+                                                                                                                            startDateTime) /
+                                                                                                                        3600000
+                                                                                                                    ) +
+                                                                                                                    1) *
+                                                                                                                response.data.data.weekdaypeakhourly
+                                                                                                            const nonPeakFee =
+                                                                                                                (Math.floor(
+                                                                                                                        (endDateTime -
+                                                                                                                            new Date(bookingDateFormatted + " " + this.endPeak)) /
+                                                                                                                        3600000
+                                                                                                                    ) +
+                                                                                                                    1) *
+                                                                                                                response.data.data.weekdaynonpeakhourly;
+                                                                                                            fee = peakFee + nonPeakFee;
+                                                                                                        }
+
+                                                                                                        // if booking start and end in non peak
+                                                                                                        // else if ((endDateTime > (new Date(bookingDateFormatted + " " + this.endPeak))) && (startDateTime > (new Date(bookingDateFormatted + " " + this.startPeak)))) {
+                                                                                                        else {
+                                                                                                            const duration =
+                                                                                                                Math.floor((endDateTime - startDateTime) / 3600000) + 1;
+                                                                                                            fee = duration * response.data.data.weekdaynonpeakhourly;
+                                                                                                        }
+
+                                                                                                    }
+                                                                                                    this.carparksArraySimu[1].data["totalFee"] = this.formatMoney(fee / 100)
+
+
+                                                                                                    ///////////////3
+                                                                                                    const url = "http://127.0.0.1:5004/getCarparkPrice/3"
+                                                                                                    axios
+                                                                                                        .get(url)
+                                                                                                        .then((response) => {
+                                                                                                            let fee = 0
+                                                                                                            // weekend
+                                                                                                            if (startDateTime.getDay() == 6 || startDateTime.getDay() == 0) {
+                                                                                                                // for (const eachCarpark of response.data.data.carparks) {
+                                                                                                                // if booking start and end in peak
+                                                                                                                if (
+                                                                                                                    endDateTime <
+                                                                                                                    new Date(bookingDateFormatted + " " + this.endPeak) &&
+                                                                                                                    startDateTime >
+                                                                                                                    new Date(bookingDateFormatted + " " + this.startPeak)
+                                                                                                                ) {
+                                                                                                                    const duration =
+                                                                                                                        Math.floor((endDateTime - startDateTime) / 3600000) + 1;
+                                                                                                                    fee = duration * response.data.data.weekendpeakhourly;
+                                                                                                                }
+
+                                                                                                                // if booking start in non peak and end in peak
+                                                                                                                else if (
+                                                                                                                    endDateTime <
+                                                                                                                    new Date(bookingDateFormatted + " " + this.endPeak) &&
+                                                                                                                    startDateTime <
+                                                                                                                    new Date(bookingDateFormatted + " " + this.startPeak)
+                                                                                                                ) {
+                                                                                                                    const peakFee =
+                                                                                                                        (Math.floor(
+                                                                                                                                (new Date(bookingDateFormatted + " " + this.startPeak) -
+                                                                                                                                    startDateTime) /
+                                                                                                                                3600000
+                                                                                                                            ) +
+                                                                                                                            1) *
+                                                                                                                        response.data.data.weekendpeakhourly;
+                                                                                                                    const nonPeakFee = (Math.floor((endDateTime - new Date(bookingDateFormatted + " " + this.startPeak)) / 3600000) + 1) * response.data.data.weekendnonpeakhourly;
+                                                                                                                    fee = peakFee + nonPeakFee;
+                                                                                                                }
+
+                                                                                                                // if booking start in peak and end in non peak
+                                                                                                                else if (
+                                                                                                                    endDateTime >
+                                                                                                                    new Date(bookingDateFormatted + " " + this.endPeak) &&
+                                                                                                                    startDateTime <
+                                                                                                                    new Date(bookingDateFormatted + " " + this.endPeak)
+                                                                                                                ) {
+                                                                                                                    const peakFee =
+                                                                                                                        (Math.floor(
+                                                                                                                                (new Date(bookingDateFormatted + " " + this.endPeak) -
+                                                                                                                                    startDateTime) /
+                                                                                                                                3600000
+                                                                                                                            ) +
+                                                                                                                            1) *
+                                                                                                                        response.data.data.weekendpeakhourly;
+                                                                                                                    const nonPeakFee =
+                                                                                                                        (Math.floor(
+                                                                                                                                (endDateTime -
+                                                                                                                                    new Date(bookingDateFormatted + " " + this.endPeak)) /
+                                                                                                                                3600000
+                                                                                                                            ) +
+                                                                                                                            1) *
+                                                                                                                        response.data.data.weekendpeaknonhourly;
+                                                                                                                    fee = peakFee + nonPeakFee;
+                                                                                                                }
+
+                                                                                                                // if booking start and end in non peak
+                                                                                                                // else if ((endDateTime > (new Date(bookingDateFormatted + " " + this.endPeak))) && (startDateTime > (new Date(bookingDateFormatted + " " + this.startPeak)))) {
+                                                                                                                else {
+                                                                                                                    const duration =
+                                                                                                                        Math.floor((endDateTime - startDateTime) / 3600000) + 1;
+                                                                                                                    fee = duration * response.data.data.weekendnonpeakhourly;
+                                                                                                                }
+
+                                                                                                            }
+
+                                                                                                            // weekday
+                                                                                                            else {
+                                                                                                                // for (const eachCarpark of response.data.data.carparks) {
+                                                                                                                // if booking start and end in peak
+                                                                                                                if (
+                                                                                                                    endDateTime <
+                                                                                                                    new Date(bookingDateFormatted + " " + this.endPeak) &&
+                                                                                                                    startDateTime >
+                                                                                                                    new Date(bookingDateFormatted + " " + this.startPeak)
+                                                                                                                ) {
+                                                                                                                    const duration =
+                                                                                                                        Math.floor((endDateTime - startDateTime) / 3600000) + 1;
+                                                                                                                    fee = duration * response.data.data.weekdaypeakhourly;
+                                                                                                                }
+
+                                                                                                                // if booking start in non peak and end in peak
+                                                                                                                else if (
+                                                                                                                    new Date(bookingDateFormatted + " " + this.startPeak) <
+                                                                                                                    endDateTime && endDateTime <
+                                                                                                                    new Date(bookingDateFormatted + " " + this.endPeak) &&
+                                                                                                                    startDateTime <
+                                                                                                                    new Date(bookingDateFormatted + " " + this.startPeak)
+                                                                                                                ) {
+                                                                                                                    const peakFee =
+                                                                                                                        (Math.floor(
+                                                                                                                                (new Date(bookingDateFormatted + " " + this.startPeak) -
+                                                                                                                                    startDateTime) /
+                                                                                                                                3600000
+                                                                                                                            ) +
+                                                                                                                            1) *
+                                                                                                                        response.data.data.weekdaypeakhourly;
+                                                                                                                    const nonPeakFee = (Math.floor((endDateTime - new Date(bookingDateFormatted + " " + this.startPeak)) / 3600000) + 1) * response.data.data.weekdaynonpeakhourly;
+                                                                                                                    fee = peakFee + nonPeakFee;
+                                                                                                                }
+
+                                                                                                                // if booking start in peak and end in non peak
+                                                                                                                else if (
+                                                                                                                    endDateTime >
+                                                                                                                    new Date(bookingDateFormatted + " " + this.endPeak) &&
+                                                                                                                    startDateTime <
+                                                                                                                    new Date(bookingDateFormatted + " " + this.endPeak)
+                                                                                                                ) {
+                                                                                                                    const peakFee =
+                                                                                                                        (Math.floor(
+                                                                                                                                (new Date(bookingDateFormatted + " " + this.endPeak) -
+                                                                                                                                    startDateTime) /
+                                                                                                                                3600000
+                                                                                                                            ) +
+                                                                                                                            1) *
+                                                                                                                        response.data.data.weekdaypeakhourly
+                                                                                                                    const nonPeakFee =
+                                                                                                                        (Math.floor(
+                                                                                                                                (endDateTime -
+                                                                                                                                    new Date(bookingDateFormatted + " " + this.endPeak)) /
+                                                                                                                                3600000
+                                                                                                                            ) +
+                                                                                                                            1) *
+                                                                                                                        response.data.data.weekdaynonpeakhourly;
+                                                                                                                    fee = peakFee + nonPeakFee;
+                                                                                                                }
+
+                                                                                                                // if booking start and end in non peak
+                                                                                                                // else if ((endDateTime > (new Date(bookingDateFormatted + " " + this.endPeak))) && (startDateTime > (new Date(bookingDateFormatted + " " + this.startPeak)))) {
+                                                                                                                else {
+                                                                                                                    const duration =
+                                                                                                                        Math.floor((endDateTime - startDateTime) / 3600000) + 1;
+                                                                                                                    fee = duration * response.data.data.weekdaynonpeakhourly;
+                                                                                                                }
+
+                                                                                                            }
+                                                                                                            this.carparksArraySimu[2].data["totalFee"] = this.formatMoney(fee / 100)
+
+
+                                                                                                            /////////// 4
+                                                                                                            const url = "http://127.0.0.1:5004/getCarparkPrice/4"
+                                                                                                            axios
+                                                                                                                .get(url)
+                                                                                                                .then((response) => {
+                                                                                                                    let fee = 0
+                                                                                                                    // weekend
+                                                                                                                    if (startDateTime.getDay() == 6 || startDateTime.getDay() == 0) {
+                                                                                                                        // for (const eachCarpark of response.data.data.carparks) {
+                                                                                                                        // if booking start and end in peak
+                                                                                                                        if (
+                                                                                                                            endDateTime <
+                                                                                                                            new Date(bookingDateFormatted + " " + this.endPeak) &&
+                                                                                                                            startDateTime >
+                                                                                                                            new Date(bookingDateFormatted + " " + this.startPeak)
+                                                                                                                        ) {
+                                                                                                                            const duration =
+                                                                                                                                Math.floor((endDateTime - startDateTime) / 3600000) + 1;
+                                                                                                                            fee = duration * response.data.data.weekendpeakhourly;
+                                                                                                                        }
+
+                                                                                                                        // if booking start in non peak and end in peak
+                                                                                                                        else if (
+                                                                                                                            endDateTime <
+                                                                                                                            new Date(bookingDateFormatted + " " + this.endPeak) &&
+                                                                                                                            startDateTime <
+                                                                                                                            new Date(bookingDateFormatted + " " + this.startPeak)
+                                                                                                                        ) {
+                                                                                                                            const peakFee =
+                                                                                                                                (Math.floor(
+                                                                                                                                        (new Date(bookingDateFormatted + " " + this.startPeak) -
+                                                                                                                                            startDateTime) /
+                                                                                                                                        3600000
+                                                                                                                                    ) +
+                                                                                                                                    1) *
+                                                                                                                                response.data.data.weekendpeakhourly;
+                                                                                                                            const nonPeakFee = (Math.floor((endDateTime - new Date(bookingDateFormatted + " " + this.startPeak)) / 3600000) + 1) * response.data.data.weekendnonpeakhourly;
+                                                                                                                            fee = peakFee + nonPeakFee;
+                                                                                                                        }
+
+                                                                                                                        // if booking start in peak and end in non peak
+                                                                                                                        else if (
+                                                                                                                            endDateTime >
+                                                                                                                            new Date(bookingDateFormatted + " " + this.endPeak) &&
+                                                                                                                            startDateTime <
+                                                                                                                            new Date(bookingDateFormatted + " " + this.endPeak)
+                                                                                                                        ) {
+                                                                                                                            const peakFee =
+                                                                                                                                (Math.floor(
+                                                                                                                                        (new Date(bookingDateFormatted + " " + this.endPeak) -
+                                                                                                                                            startDateTime) /
+                                                                                                                                        3600000
+                                                                                                                                    ) +
+                                                                                                                                    1) *
+                                                                                                                                response.data.data.weekendpeakhourly;
+                                                                                                                            const nonPeakFee =
+                                                                                                                                (Math.floor(
+                                                                                                                                        (endDateTime -
+                                                                                                                                            new Date(bookingDateFormatted + " " + this.endPeak)) /
+                                                                                                                                        3600000
+                                                                                                                                    ) +
+                                                                                                                                    1) *
+                                                                                                                                response.data.data.weekendpeaknonhourly;
+                                                                                                                            fee = peakFee + nonPeakFee;
+                                                                                                                        }
+
+                                                                                                                        // if booking start and end in non peak
+                                                                                                                        // else if ((endDateTime > (new Date(bookingDateFormatted + " " + this.endPeak))) && (startDateTime > (new Date(bookingDateFormatted + " " + this.startPeak)))) {
+                                                                                                                        else {
+                                                                                                                            const duration =
+                                                                                                                                Math.floor((endDateTime - startDateTime) / 3600000) + 1;
+                                                                                                                            fee = duration * response.data.data.weekendnonpeakhourly;
+                                                                                                                        }
+
+                                                                                                                    }
+
+                                                                                                                    // weekday
+                                                                                                                    else {
+                                                                                                                        // for (const eachCarpark of response.data.data.carparks) {
+                                                                                                                        // if booking start and end in peak
+                                                                                                                        if (
+                                                                                                                            endDateTime <
+                                                                                                                            new Date(bookingDateFormatted + " " + this.endPeak) &&
+                                                                                                                            startDateTime >
+                                                                                                                            new Date(bookingDateFormatted + " " + this.startPeak)
+                                                                                                                        ) {
+                                                                                                                            const duration =
+                                                                                                                                Math.floor((endDateTime - startDateTime) / 3600000) + 1;
+                                                                                                                            fee = duration * response.data.data.weekdaypeakhourly;
+                                                                                                                        }
+
+                                                                                                                        // if booking start in non peak and end in peak
+                                                                                                                        else if (
+                                                                                                                            new Date(bookingDateFormatted + " " + this.startPeak) <
+                                                                                                                            endDateTime && endDateTime <
+                                                                                                                            new Date(bookingDateFormatted + " " + this.endPeak) &&
+                                                                                                                            startDateTime <
+                                                                                                                            new Date(bookingDateFormatted + " " + this.startPeak)
+                                                                                                                        ) {
+                                                                                                                            const peakFee =
+                                                                                                                                (Math.floor(
+                                                                                                                                        (new Date(bookingDateFormatted + " " + this.startPeak) -
+                                                                                                                                            startDateTime) /
+                                                                                                                                        3600000
+                                                                                                                                    ) +
+                                                                                                                                    1) *
+                                                                                                                                response.data.data.weekdaypeakhourly;
+                                                                                                                            const nonPeakFee = (Math.floor((endDateTime - new Date(bookingDateFormatted + " " + this.startPeak)) / 3600000) + 1) * response.data.data.weekdaynonpeakhourly;
+                                                                                                                            fee = peakFee + nonPeakFee;
+                                                                                                                        }
+
+                                                                                                                        // if booking start in peak and end in non peak
+                                                                                                                        else if (
+                                                                                                                            endDateTime >
+                                                                                                                            new Date(bookingDateFormatted + " " + this.endPeak) &&
+                                                                                                                            startDateTime <
+                                                                                                                            new Date(bookingDateFormatted + " " + this.endPeak)
+                                                                                                                        ) {
+                                                                                                                            const peakFee =
+                                                                                                                                (Math.floor(
+                                                                                                                                        (new Date(bookingDateFormatted + " " + this.endPeak) -
+                                                                                                                                            startDateTime) /
+                                                                                                                                        3600000
+                                                                                                                                    ) +
+                                                                                                                                    1) *
+                                                                                                                                response.data.data.weekdaypeakhourly
+                                                                                                                            const nonPeakFee =
+                                                                                                                                (Math.floor(
+                                                                                                                                        (endDateTime -
+                                                                                                                                            new Date(bookingDateFormatted + " " + this.endPeak)) /
+                                                                                                                                        3600000
+                                                                                                                                    ) +
+                                                                                                                                    1) *
+                                                                                                                                response.data.data.weekdaynonpeakhourly;
+                                                                                                                            fee = peakFee + nonPeakFee;
+                                                                                                                        }
+
+                                                                                                                        // if booking start and end in non peak
+                                                                                                                        // else if ((endDateTime > (new Date(bookingDateFormatted + " " + this.endPeak))) && (startDateTime > (new Date(bookingDateFormatted + " " + this.startPeak)))) {
+                                                                                                                        else {
+                                                                                                                            const duration =
+                                                                                                                                Math.floor((endDateTime - startDateTime) / 3600000) + 1;
+                                                                                                                            fee = duration * response.data.data.weekdaynonpeakhourly;
+                                                                                                                        }
+
+                                                                                                                    }
+                                                                                                                    this.carparksArraySimu[3].data["totalFee"] = this.formatMoney(fee / 100)
+
+
+                                                                                                                    /////////// 5
+                                                                                                                    const url = "http://127.0.0.1:5004/getCarparkPrice/5"
+                                                                                                                    axios
+                                                                                                                        .get(url)
+                                                                                                                        .then((response) => {
+                                                                                                                            let fee = 0
+                                                                                                                            // weekend
+                                                                                                                            if (startDateTime.getDay() == 6 || startDateTime.getDay() == 0) {
+                                                                                                                                // for (const eachCarpark of response.data.data.carparks) {
+                                                                                                                                // if booking start and end in peak
+                                                                                                                                if (
+                                                                                                                                    endDateTime <
+                                                                                                                                    new Date(bookingDateFormatted + " " + this.endPeak) &&
+                                                                                                                                    startDateTime >
+                                                                                                                                    new Date(bookingDateFormatted + " " + this.startPeak)
+                                                                                                                                ) {
+                                                                                                                                    const duration =
+                                                                                                                                        Math.floor((endDateTime - startDateTime) / 3600000) + 1;
+                                                                                                                                    fee = duration * response.data.data.weekendpeakhourly;
+                                                                                                                                }
+
+                                                                                                                                // if booking start in non peak and end in peak
+                                                                                                                                else if (
+                                                                                                                                    endDateTime <
+                                                                                                                                    new Date(bookingDateFormatted + " " + this.endPeak) &&
+                                                                                                                                    startDateTime <
+                                                                                                                                    new Date(bookingDateFormatted + " " + this.startPeak)
+                                                                                                                                ) {
+                                                                                                                                    const peakFee =
+                                                                                                                                        (Math.floor(
+                                                                                                                                                (new Date(bookingDateFormatted + " " + this.startPeak) -
+                                                                                                                                                    startDateTime) /
+                                                                                                                                                3600000
+                                                                                                                                            ) +
+                                                                                                                                            1) *
+                                                                                                                                        response.data.data.weekendpeakhourly;
+                                                                                                                                    const nonPeakFee = (Math.floor((endDateTime - new Date(bookingDateFormatted + " " + this.startPeak)) / 3600000) + 1) * response.data.data.weekendnonpeakhourly;
+                                                                                                                                    fee = peakFee + nonPeakFee;
+                                                                                                                                }
+
+                                                                                                                                // if booking start in peak and end in non peak
+                                                                                                                                else if (
+                                                                                                                                    endDateTime >
+                                                                                                                                    new Date(bookingDateFormatted + " " + this.endPeak) &&
+                                                                                                                                    startDateTime <
+                                                                                                                                    new Date(bookingDateFormatted + " " + this.endPeak)
+                                                                                                                                ) {
+                                                                                                                                    const peakFee =
+                                                                                                                                        (Math.floor(
+                                                                                                                                                (new Date(bookingDateFormatted + " " + this.endPeak) -
+                                                                                                                                                    startDateTime) /
+                                                                                                                                                3600000
+                                                                                                                                            ) +
+                                                                                                                                            1) *
+                                                                                                                                        response.data.data.weekendpeakhourly;
+                                                                                                                                    const nonPeakFee =
+                                                                                                                                        (Math.floor(
+                                                                                                                                                (endDateTime -
+                                                                                                                                                    new Date(bookingDateFormatted + " " + this.endPeak)) /
+                                                                                                                                                3600000
+                                                                                                                                            ) +
+                                                                                                                                            1) *
+                                                                                                                                        response.data.data.weekendpeaknonhourly;
+                                                                                                                                    fee = peakFee + nonPeakFee;
+                                                                                                                                }
+
+                                                                                                                                // if booking start and end in non peak
+                                                                                                                                // else if ((endDateTime > (new Date(bookingDateFormatted + " " + this.endPeak))) && (startDateTime > (new Date(bookingDateFormatted + " " + this.startPeak)))) {
+                                                                                                                                else {
+                                                                                                                                    const duration =
+                                                                                                                                        Math.floor((endDateTime - startDateTime) / 3600000) + 1;
+                                                                                                                                    fee = duration * response.data.data.weekendnonpeakhourly;
+                                                                                                                                }
+
+                                                                                                                            }
+
+                                                                                                                            // weekday
+                                                                                                                            else {
+                                                                                                                                // for (const eachCarpark of response.data.data.carparks) {
+                                                                                                                                // if booking start and end in peak
+                                                                                                                                if (
+                                                                                                                                    endDateTime <
+                                                                                                                                    new Date(bookingDateFormatted + " " + this.endPeak) &&
+                                                                                                                                    startDateTime >
+                                                                                                                                    new Date(bookingDateFormatted + " " + this.startPeak)
+                                                                                                                                ) {
+                                                                                                                                    const duration =
+                                                                                                                                        Math.floor((endDateTime - startDateTime) / 3600000) + 1;
+                                                                                                                                    fee = duration * response.data.data.weekdaypeakhourly;
+                                                                                                                                }
+
+                                                                                                                                // if booking start in non peak and end in peak
+                                                                                                                                else if (
+                                                                                                                                    new Date(bookingDateFormatted + " " + this.startPeak) <
+                                                                                                                                    endDateTime && endDateTime <
+                                                                                                                                    new Date(bookingDateFormatted + " " + this.endPeak) &&
+                                                                                                                                    startDateTime <
+                                                                                                                                    new Date(bookingDateFormatted + " " + this.startPeak)
+                                                                                                                                ) {
+                                                                                                                                    const peakFee =
+                                                                                                                                        (Math.floor(
+                                                                                                                                                (new Date(bookingDateFormatted + " " + this.startPeak) -
+                                                                                                                                                    startDateTime) /
+                                                                                                                                                3600000
+                                                                                                                                            ) +
+                                                                                                                                            1) *
+                                                                                                                                        response.data.data.weekdaypeakhourly;
+                                                                                                                                    const nonPeakFee = (Math.floor((endDateTime - new Date(bookingDateFormatted + " " + this.startPeak)) / 3600000) + 1) * response.data.data.weekdaynonpeakhourly;
+                                                                                                                                    fee = peakFee + nonPeakFee;
+                                                                                                                                }
+
+                                                                                                                                // if booking start in peak and end in non peak
+                                                                                                                                else if (
+                                                                                                                                    endDateTime >
+                                                                                                                                    new Date(bookingDateFormatted + " " + this.endPeak) &&
+                                                                                                                                    startDateTime <
+                                                                                                                                    new Date(bookingDateFormatted + " " + this.endPeak)
+                                                                                                                                ) {
+                                                                                                                                    const peakFee =
+                                                                                                                                        (Math.floor(
+                                                                                                                                                (new Date(bookingDateFormatted + " " + this.endPeak) -
+                                                                                                                                                    startDateTime) /
+                                                                                                                                                3600000
+                                                                                                                                            ) +
+                                                                                                                                            1) *
+                                                                                                                                        response.data.data.weekdaypeakhourly
+                                                                                                                                    const nonPeakFee =
+                                                                                                                                        (Math.floor(
+                                                                                                                                                (endDateTime -
+                                                                                                                                                    new Date(bookingDateFormatted + " " + this.endPeak)) /
+                                                                                                                                                3600000
+                                                                                                                                            ) +
+                                                                                                                                            1) *
+                                                                                                                                        response.data.data.weekdaynonpeakhourly;
+                                                                                                                                    fee = peakFee + nonPeakFee;
+                                                                                                                                }
+
+                                                                                                                                // if booking start and end in non peak
+                                                                                                                                // else if ((endDateTime > (new Date(bookingDateFormatted + " " + this.endPeak))) && (startDateTime > (new Date(bookingDateFormatted + " " + this.startPeak)))) {
+                                                                                                                                else {
+                                                                                                                                    const duration =
+                                                                                                                                        Math.floor((endDateTime - startDateTime) / 3600000) + 1;
+                                                                                                                                    fee = duration * response.data.data.weekdaynonpeakhourly;
+                                                                                                                                }
+
+                                                                                                                            }
+                                                                                                                            this.carparksArraySimu[4].data["totalFee"] = this.formatMoney(fee / 100)
+
+
+                                                                                                                            ///////////////6
+                                                                                                                            const url = "http://127.0.0.1:5004/getCarparkPrice/6"
+                                                                                                                            axios
+                                                                                                                                .get(url)
+                                                                                                                                .then((response) => {
+                                                                                                                                    let fee = 0
+                                                                                                                                    // weekend
+                                                                                                                                    if (startDateTime.getDay() == 6 || startDateTime.getDay() == 0) {
+                                                                                                                                        // for (const eachCarpark of response.data.data.carparks) {
+                                                                                                                                        // if booking start and end in peak
+                                                                                                                                        if (
+                                                                                                                                            endDateTime <
+                                                                                                                                            new Date(bookingDateFormatted + " " + this.endPeak) &&
+                                                                                                                                            startDateTime >
+                                                                                                                                            new Date(bookingDateFormatted + " " + this.startPeak)
+                                                                                                                                        ) {
+                                                                                                                                            const duration =
+                                                                                                                                                Math.floor((endDateTime - startDateTime) / 3600000) + 1;
+                                                                                                                                            fee = duration * response.data.data.weekendpeakhourly;
+                                                                                                                                        }
+
+                                                                                                                                        // if booking start in non peak and end in peak
+                                                                                                                                        else if (
+                                                                                                                                            endDateTime <
+                                                                                                                                            new Date(bookingDateFormatted + " " + this.endPeak) &&
+                                                                                                                                            startDateTime <
+                                                                                                                                            new Date(bookingDateFormatted + " " + this.startPeak)
+                                                                                                                                        ) {
+                                                                                                                                            const peakFee =
+                                                                                                                                                (Math.floor(
+                                                                                                                                                        (new Date(bookingDateFormatted + " " + this.startPeak) -
+                                                                                                                                                            startDateTime) /
+                                                                                                                                                        3600000
+                                                                                                                                                    ) +
+                                                                                                                                                    1) *
+                                                                                                                                                response.data.data.weekendpeakhourly;
+                                                                                                                                            const nonPeakFee = (Math.floor((endDateTime - new Date(bookingDateFormatted + " " + this.startPeak)) / 3600000) + 1) * response.data.data.weekendnonpeakhourly;
+                                                                                                                                            fee = peakFee + nonPeakFee;
+                                                                                                                                        }
+
+                                                                                                                                        // if booking start in peak and end in non peak
+                                                                                                                                        else if (
+                                                                                                                                            endDateTime >
+                                                                                                                                            new Date(bookingDateFormatted + " " + this.endPeak) &&
+                                                                                                                                            startDateTime <
+                                                                                                                                            new Date(bookingDateFormatted + " " + this.endPeak)
+                                                                                                                                        ) {
+                                                                                                                                            const peakFee =
+                                                                                                                                                (Math.floor(
+                                                                                                                                                        (new Date(bookingDateFormatted + " " + this.endPeak) -
+                                                                                                                                                            startDateTime) /
+                                                                                                                                                        3600000
+                                                                                                                                                    ) +
+                                                                                                                                                    1) *
+                                                                                                                                                response.data.data.weekendpeakhourly;
+                                                                                                                                            const nonPeakFee =
+                                                                                                                                                (Math.floor(
+                                                                                                                                                        (endDateTime -
+                                                                                                                                                            new Date(bookingDateFormatted + " " + this.endPeak)) /
+                                                                                                                                                        3600000
+                                                                                                                                                    ) +
+                                                                                                                                                    1) *
+                                                                                                                                                response.data.data.weekendpeaknonhourly;
+                                                                                                                                            fee = peakFee + nonPeakFee;
+                                                                                                                                        }
+
+                                                                                                                                        // if booking start and end in non peak
+                                                                                                                                        // else if ((endDateTime > (new Date(bookingDateFormatted + " " + this.endPeak))) && (startDateTime > (new Date(bookingDateFormatted + " " + this.startPeak)))) {
+                                                                                                                                        else {
+                                                                                                                                            const duration =
+                                                                                                                                                Math.floor((endDateTime - startDateTime) / 3600000) + 1;
+                                                                                                                                            fee = duration * response.data.data.weekendnonpeakhourly;
+                                                                                                                                        }
+
+                                                                                                                                    }
+
+                                                                                                                                    // weekday
+                                                                                                                                    else {
+                                                                                                                                        // for (const eachCarpark of response.data.data.carparks) {
+                                                                                                                                        // if booking start and end in peak
+                                                                                                                                        if (
+                                                                                                                                            endDateTime <
+                                                                                                                                            new Date(bookingDateFormatted + " " + this.endPeak) &&
+                                                                                                                                            startDateTime >
+                                                                                                                                            new Date(bookingDateFormatted + " " + this.startPeak)
+                                                                                                                                        ) {
+                                                                                                                                            const duration =
+                                                                                                                                                Math.floor((endDateTime - startDateTime) / 3600000) + 1;
+                                                                                                                                            fee = duration * response.data.data.weekdaypeakhourly;
+                                                                                                                                        }
+
+                                                                                                                                        // if booking start in non peak and end in peak
+                                                                                                                                        else if (
+                                                                                                                                            new Date(bookingDateFormatted + " " + this.startPeak) <
+                                                                                                                                            endDateTime && endDateTime <
+                                                                                                                                            new Date(bookingDateFormatted + " " + this.endPeak) &&
+                                                                                                                                            startDateTime <
+                                                                                                                                            new Date(bookingDateFormatted + " " + this.startPeak)
+                                                                                                                                        ) {
+                                                                                                                                            const peakFee =
+                                                                                                                                                (Math.floor(
+                                                                                                                                                        (new Date(bookingDateFormatted + " " + this.startPeak) -
+                                                                                                                                                            startDateTime) /
+                                                                                                                                                        3600000
+                                                                                                                                                    ) +
+                                                                                                                                                    1) *
+                                                                                                                                                response.data.data.weekdaypeakhourly;
+                                                                                                                                            const nonPeakFee = (Math.floor((endDateTime - new Date(bookingDateFormatted + " " + this.startPeak)) / 3600000) + 1) * response.data.data.weekdaynonpeakhourly;
+                                                                                                                                            fee = peakFee + nonPeakFee;
+                                                                                                                                        }
+
+                                                                                                                                        // if booking start in peak and end in non peak
+                                                                                                                                        else if (
+                                                                                                                                            endDateTime >
+                                                                                                                                            new Date(bookingDateFormatted + " " + this.endPeak) &&
+                                                                                                                                            startDateTime <
+                                                                                                                                            new Date(bookingDateFormatted + " " + this.endPeak)
+                                                                                                                                        ) {
+                                                                                                                                            const peakFee =
+                                                                                                                                                (Math.floor(
+                                                                                                                                                        (new Date(bookingDateFormatted + " " + this.endPeak) -
+                                                                                                                                                            startDateTime) /
+                                                                                                                                                        3600000
+                                                                                                                                                    ) +
+                                                                                                                                                    1) *
+                                                                                                                                                response.data.data.weekdaypeakhourly
+                                                                                                                                            const nonPeakFee =
+                                                                                                                                                (Math.floor(
+                                                                                                                                                        (endDateTime -
+                                                                                                                                                            new Date(bookingDateFormatted + " " + this.endPeak)) /
+                                                                                                                                                        3600000
+                                                                                                                                                    ) +
+                                                                                                                                                    1) *
+                                                                                                                                                response.data.data.weekdaynonpeakhourly;
+                                                                                                                                            fee = peakFee + nonPeakFee;
+                                                                                                                                        }
+
+                                                                                                                                        // if booking start and end in non peak
+                                                                                                                                        // else if ((endDateTime > (new Date(bookingDateFormatted + " " + this.endPeak))) && (startDateTime > (new Date(bookingDateFormatted + " " + this.startPeak)))) {
+                                                                                                                                        else {
+                                                                                                                                            const duration =
+                                                                                                                                                Math.floor((endDateTime - startDateTime) / 3600000) + 1;
+                                                                                                                                            fee = duration * response.data.data.weekdaynonpeakhourly;
+                                                                                                                                        }
+
+                                                                                                                                    }
+                                                                                                                                    this.carparksArraySimu[5].data["totalFee"] = this.formatMoney(fee / 100)
+
+                                                                                                                                    ///////////////7
+                                                                                                                                    const url = "http://127.0.0.1:5004/getCarparkPrice/7"
+                                                                                                                                    axios
+                                                                                                                                        .get(url)
+                                                                                                                                        .then((response) => {
+                                                                                                                                            let fee = 0
+                                                                                                                                            // weekend
+                                                                                                                                            if (startDateTime.getDay() == 6 || startDateTime.getDay() == 0) {
+                                                                                                                                                // for (const eachCarpark of response.data.data.carparks) {
+                                                                                                                                                // if booking start and end in peak
+                                                                                                                                                if (
+                                                                                                                                                    endDateTime <
+                                                                                                                                                    new Date(bookingDateFormatted + " " + this.endPeak) &&
+                                                                                                                                                    startDateTime >
+                                                                                                                                                    new Date(bookingDateFormatted + " " + this.startPeak)
+                                                                                                                                                ) {
+                                                                                                                                                    const duration =
+                                                                                                                                                        Math.floor((endDateTime - startDateTime) / 3600000) + 1;
+                                                                                                                                                    fee = duration * response.data.data.weekendpeakhourly;
+                                                                                                                                                }
+
+                                                                                                                                                // if booking start in non peak and end in peak
+                                                                                                                                                else if (
+                                                                                                                                                    endDateTime <
+                                                                                                                                                    new Date(bookingDateFormatted + " " + this.endPeak) &&
+                                                                                                                                                    startDateTime <
+                                                                                                                                                    new Date(bookingDateFormatted + " " + this.startPeak)
+                                                                                                                                                ) {
+                                                                                                                                                    const peakFee =
+                                                                                                                                                        (Math.floor(
+                                                                                                                                                                (new Date(bookingDateFormatted + " " + this.startPeak) -
+                                                                                                                                                                    startDateTime) /
+                                                                                                                                                                3600000
+                                                                                                                                                            ) +
+                                                                                                                                                            1) *
+                                                                                                                                                        response.data.data.weekendpeakhourly;
+                                                                                                                                                    const nonPeakFee = (Math.floor((endDateTime - new Date(bookingDateFormatted + " " + this.startPeak)) / 3600000) + 1) * response.data.data.weekendnonpeakhourly;
+                                                                                                                                                    fee = peakFee + nonPeakFee;
+                                                                                                                                                }
+
+                                                                                                                                                // if booking start in peak and end in non peak
+                                                                                                                                                else if (
+                                                                                                                                                    endDateTime >
+                                                                                                                                                    new Date(bookingDateFormatted + " " + this.endPeak) &&
+                                                                                                                                                    startDateTime <
+                                                                                                                                                    new Date(bookingDateFormatted + " " + this.endPeak)
+                                                                                                                                                ) {
+                                                                                                                                                    const peakFee =
+                                                                                                                                                        (Math.floor(
+                                                                                                                                                                (new Date(bookingDateFormatted + " " + this.endPeak) -
+                                                                                                                                                                    startDateTime) /
+                                                                                                                                                                3600000
+                                                                                                                                                            ) +
+                                                                                                                                                            1) *
+                                                                                                                                                        response.data.data.weekendpeakhourly;
+                                                                                                                                                    const nonPeakFee =
+                                                                                                                                                        (Math.floor(
+                                                                                                                                                                (endDateTime -
+                                                                                                                                                                    new Date(bookingDateFormatted + " " + this.endPeak)) /
+                                                                                                                                                                3600000
+                                                                                                                                                            ) +
+                                                                                                                                                            1) *
+                                                                                                                                                        response.data.data.weekendpeaknonhourly;
+                                                                                                                                                    fee = peakFee + nonPeakFee;
+                                                                                                                                                }
+
+                                                                                                                                                // if booking start and end in non peak
+                                                                                                                                                // else if ((endDateTime > (new Date(bookingDateFormatted + " " + this.endPeak))) && (startDateTime > (new Date(bookingDateFormatted + " " + this.startPeak)))) {
+                                                                                                                                                else {
+                                                                                                                                                    const duration =
+                                                                                                                                                        Math.floor((endDateTime - startDateTime) / 3600000) + 1;
+                                                                                                                                                    fee = duration * response.data.data.weekendnonpeakhourly;
+                                                                                                                                                }
+
+                                                                                                                                            }
+
+                                                                                                                                            // weekday
+                                                                                                                                            else {
+                                                                                                                                                // for (const eachCarpark of response.data.data.carparks) {
+                                                                                                                                                // if booking start and end in peak
+                                                                                                                                                if (
+                                                                                                                                                    endDateTime <
+                                                                                                                                                    new Date(bookingDateFormatted + " " + this.endPeak) &&
+                                                                                                                                                    startDateTime >
+                                                                                                                                                    new Date(bookingDateFormatted + " " + this.startPeak)
+                                                                                                                                                ) {
+                                                                                                                                                    const duration =
+                                                                                                                                                        Math.floor((endDateTime - startDateTime) / 3600000) + 1;
+                                                                                                                                                    fee = duration * response.data.data.weekdaypeakhourly;
+                                                                                                                                                }
+
+                                                                                                                                                // if booking start in non peak and end in peak
+                                                                                                                                                else if (
+                                                                                                                                                    new Date(bookingDateFormatted + " " + this.startPeak) <
+                                                                                                                                                    endDateTime && endDateTime <
+                                                                                                                                                    new Date(bookingDateFormatted + " " + this.endPeak) &&
+                                                                                                                                                    startDateTime <
+                                                                                                                                                    new Date(bookingDateFormatted + " " + this.startPeak)
+                                                                                                                                                ) {
+                                                                                                                                                    const peakFee =
+                                                                                                                                                        (Math.floor(
+                                                                                                                                                                (new Date(bookingDateFormatted + " " + this.startPeak) -
+                                                                                                                                                                    startDateTime) /
+                                                                                                                                                                3600000
+                                                                                                                                                            ) +
+                                                                                                                                                            1) *
+                                                                                                                                                        response.data.data.weekdaypeakhourly;
+                                                                                                                                                    const nonPeakFee = (Math.floor((endDateTime - new Date(bookingDateFormatted + " " + this.startPeak)) / 3600000) + 1) * response.data.data.weekdaynonpeakhourly;
+                                                                                                                                                    fee = peakFee + nonPeakFee;
+                                                                                                                                                }
+
+                                                                                                                                                // if booking start in peak and end in non peak
+                                                                                                                                                else if (
+                                                                                                                                                    endDateTime >
+                                                                                                                                                    new Date(bookingDateFormatted + " " + this.endPeak) &&
+                                                                                                                                                    startDateTime <
+                                                                                                                                                    new Date(bookingDateFormatted + " " + this.endPeak)
+                                                                                                                                                ) {
+                                                                                                                                                    const peakFee =
+                                                                                                                                                        (Math.floor(
+                                                                                                                                                                (new Date(bookingDateFormatted + " " + this.endPeak) -
+                                                                                                                                                                    startDateTime) /
+                                                                                                                                                                3600000
+                                                                                                                                                            ) +
+                                                                                                                                                            1) *
+                                                                                                                                                        response.data.data.weekdaypeakhourly
+                                                                                                                                                    const nonPeakFee =
+                                                                                                                                                        (Math.floor(
+                                                                                                                                                                (endDateTime -
+                                                                                                                                                                    new Date(bookingDateFormatted + " " + this.endPeak)) /
+                                                                                                                                                                3600000
+                                                                                                                                                            ) +
+                                                                                                                                                            1) *
+                                                                                                                                                        response.data.data.weekdaynonpeakhourly;
+                                                                                                                                                    fee = peakFee + nonPeakFee;
+                                                                                                                                                }
+
+                                                                                                                                                // if booking start and end in non peak
+                                                                                                                                                // else if ((endDateTime > (new Date(bookingDateFormatted + " " + this.endPeak))) && (startDateTime > (new Date(bookingDateFormatted + " " + this.startPeak)))) {
+                                                                                                                                                else {
+                                                                                                                                                    const duration =
+                                                                                                                                                        Math.floor((endDateTime - startDateTime) / 3600000) + 1;
+                                                                                                                                                    fee = duration * response.data.data.weekdaynonpeakhourly;
+                                                                                                                                                }
+
+                                                                                                                                            }
+                                                                                                                                            this.carparksArraySimu[6].data["totalFee"] = this.formatMoney(fee / 100)
+
+
+                                                                                                                                            ///////////////8
+                                                                                                                                            const url = "http://127.0.0.1:5004/getCarparkPrice/8"
+                                                                                                                                            axios
+                                                                                                                                                .get(url)
+                                                                                                                                                .then((response) => {
+                                                                                                                                                    let fee = 0
+                                                                                                                                                    // weekend
+                                                                                                                                                    if (startDateTime.getDay() == 6 || startDateTime.getDay() == 0) {
+                                                                                                                                                        // for (const eachCarpark of response.data.data.carparks) {
+                                                                                                                                                        // if booking start and end in peak
+                                                                                                                                                        if (
+                                                                                                                                                            endDateTime <
+                                                                                                                                                            new Date(bookingDateFormatted + " " + this.endPeak) &&
+                                                                                                                                                            startDateTime >
+                                                                                                                                                            new Date(bookingDateFormatted + " " + this.startPeak)
+                                                                                                                                                        ) {
+                                                                                                                                                            const duration =
+                                                                                                                                                                Math.floor((endDateTime - startDateTime) / 3600000) + 1;
+                                                                                                                                                            fee = duration * response.data.data.weekendpeakhourly;
+                                                                                                                                                        }
+
+                                                                                                                                                        // if booking start in non peak and end in peak
+                                                                                                                                                        else if (
+                                                                                                                                                            endDateTime <
+                                                                                                                                                            new Date(bookingDateFormatted + " " + this.endPeak) &&
+                                                                                                                                                            startDateTime <
+                                                                                                                                                            new Date(bookingDateFormatted + " " + this.startPeak)
+                                                                                                                                                        ) {
+                                                                                                                                                            const peakFee =
+                                                                                                                                                                (Math.floor(
+                                                                                                                                                                        (new Date(bookingDateFormatted + " " + this.startPeak) -
+                                                                                                                                                                            startDateTime) /
+                                                                                                                                                                        3600000
+                                                                                                                                                                    ) +
+                                                                                                                                                                    1) *
+                                                                                                                                                                response.data.data.weekendpeakhourly;
+                                                                                                                                                            const nonPeakFee = (Math.floor((endDateTime - new Date(bookingDateFormatted + " " + this.startPeak)) / 3600000) + 1) * response.data.data.weekendnonpeakhourly;
+                                                                                                                                                            fee = peakFee + nonPeakFee;
+                                                                                                                                                        }
+
+                                                                                                                                                        // if booking start in peak and end in non peak
+                                                                                                                                                        else if (
+                                                                                                                                                            endDateTime >
+                                                                                                                                                            new Date(bookingDateFormatted + " " + this.endPeak) &&
+                                                                                                                                                            startDateTime <
+                                                                                                                                                            new Date(bookingDateFormatted + " " + this.endPeak)
+                                                                                                                                                        ) {
+                                                                                                                                                            const peakFee =
+                                                                                                                                                                (Math.floor(
+                                                                                                                                                                        (new Date(bookingDateFormatted + " " + this.endPeak) -
+                                                                                                                                                                            startDateTime) /
+                                                                                                                                                                        3600000
+                                                                                                                                                                    ) +
+                                                                                                                                                                    1) *
+                                                                                                                                                                response.data.data.weekendpeakhourly;
+                                                                                                                                                            const nonPeakFee =
+                                                                                                                                                                (Math.floor(
+                                                                                                                                                                        (endDateTime -
+                                                                                                                                                                            new Date(bookingDateFormatted + " " + this.endPeak)) /
+                                                                                                                                                                        3600000
+                                                                                                                                                                    ) +
+                                                                                                                                                                    1) *
+                                                                                                                                                                response.data.data.weekendpeaknonhourly;
+                                                                                                                                                            fee = peakFee + nonPeakFee;
+                                                                                                                                                        }
+
+                                                                                                                                                        // if booking start and end in non peak
+                                                                                                                                                        // else if ((endDateTime > (new Date(bookingDateFormatted + " " + this.endPeak))) && (startDateTime > (new Date(bookingDateFormatted + " " + this.startPeak)))) {
+                                                                                                                                                        else {
+                                                                                                                                                            const duration =
+                                                                                                                                                                Math.floor((endDateTime - startDateTime) / 3600000) + 1;
+                                                                                                                                                            fee = duration * response.data.data.weekendnonpeakhourly;
+                                                                                                                                                        }
+
+                                                                                                                                                    }
+
+                                                                                                                                                    // weekday
+                                                                                                                                                    else {
+                                                                                                                                                        // for (const eachCarpark of response.data.data.carparks) {
+                                                                                                                                                        // if booking start and end in peak
+                                                                                                                                                        if (
+                                                                                                                                                            endDateTime <
+                                                                                                                                                            new Date(bookingDateFormatted + " " + this.endPeak) &&
+                                                                                                                                                            startDateTime >
+                                                                                                                                                            new Date(bookingDateFormatted + " " + this.startPeak)
+                                                                                                                                                        ) {
+                                                                                                                                                            const duration =
+                                                                                                                                                                Math.floor((endDateTime - startDateTime) / 3600000) + 1;
+                                                                                                                                                            fee = duration * response.data.data.weekdaypeakhourly;
+                                                                                                                                                        }
+
+                                                                                                                                                        // if booking start in non peak and end in peak
+                                                                                                                                                        else if (
+                                                                                                                                                            new Date(bookingDateFormatted + " " + this.startPeak) <
+                                                                                                                                                            endDateTime && endDateTime <
+                                                                                                                                                            new Date(bookingDateFormatted + " " + this.endPeak) &&
+                                                                                                                                                            startDateTime <
+                                                                                                                                                            new Date(bookingDateFormatted + " " + this.startPeak)
+                                                                                                                                                        ) {
+                                                                                                                                                            const peakFee =
+                                                                                                                                                                (Math.floor(
+                                                                                                                                                                        (new Date(bookingDateFormatted + " " + this.startPeak) -
+                                                                                                                                                                            startDateTime) /
+                                                                                                                                                                        3600000
+                                                                                                                                                                    ) +
+                                                                                                                                                                    1) *
+                                                                                                                                                                response.data.data.weekdaypeakhourly;
+                                                                                                                                                            const nonPeakFee = (Math.floor((endDateTime - new Date(bookingDateFormatted + " " + this.startPeak)) / 3600000) + 1) * response.data.data.weekdaynonpeakhourly;
+                                                                                                                                                            fee = peakFee + nonPeakFee;
+                                                                                                                                                        }
+
+                                                                                                                                                        // if booking start in peak and end in non peak
+                                                                                                                                                        else if (
+                                                                                                                                                            endDateTime >
+                                                                                                                                                            new Date(bookingDateFormatted + " " + this.endPeak) &&
+                                                                                                                                                            startDateTime <
+                                                                                                                                                            new Date(bookingDateFormatted + " " + this.endPeak)
+                                                                                                                                                        ) {
+                                                                                                                                                            const peakFee =
+                                                                                                                                                                (Math.floor(
+                                                                                                                                                                        (new Date(bookingDateFormatted + " " + this.endPeak) -
+                                                                                                                                                                            startDateTime) /
+                                                                                                                                                                        3600000
+                                                                                                                                                                    ) +
+                                                                                                                                                                    1) *
+                                                                                                                                                                response.data.data.weekdaypeakhourly
+                                                                                                                                                            const nonPeakFee =
+                                                                                                                                                                (Math.floor(
+                                                                                                                                                                        (endDateTime -
+                                                                                                                                                                            new Date(bookingDateFormatted + " " + this.endPeak)) /
+                                                                                                                                                                        3600000
+                                                                                                                                                                    ) +
+                                                                                                                                                                    1) *
+                                                                                                                                                                response.data.data.weekdaynonpeakhourly;
+                                                                                                                                                            fee = peakFee + nonPeakFee;
+                                                                                                                                                        }
+
+                                                                                                                                                        // if booking start and end in non peak
+                                                                                                                                                        // else if ((endDateTime > (new Date(bookingDateFormatted + " " + this.endPeak))) && (startDateTime > (new Date(bookingDateFormatted + " " + this.startPeak)))) {
+                                                                                                                                                        else {
+                                                                                                                                                            const duration =
+                                                                                                                                                                Math.floor((endDateTime - startDateTime) / 3600000) + 1;
+                                                                                                                                                            fee = duration * response.data.data.weekdaynonpeakhourly;
+                                                                                                                                                        }
+
+                                                                                                                                                    }
+                                                                                                                                                    this.carparksArraySimu[7].data["totalFee"] = this.formatMoney(fee / 100)
+                                                                                                                                                    this.changeTab()
+
+
+                                                                                                                                                })
+
+                                                                                                                                        })
+                                                                                                                                })
+
+                                                                                                                        })
+                                                                                                                })
+                                                                                                        })
+                                                                                                })
+                                                                                        })
+                                                                                        .catch((error) => {
+                                                                                            console.log(error)
+                                                                                        })
+
+
+
+
+                                                                                })
+                                                                                .catch((error) => {
+                                                                                    console.log(error);
+                                                                                });
+
 
                                                                         })
                                                                 })
