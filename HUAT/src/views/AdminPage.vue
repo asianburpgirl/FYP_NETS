@@ -22,8 +22,9 @@
           />
         </ion-col>
       </ion-row>
+      
 
-      <ion-row class="ion-align-items-center">
+      <!-- <ion-row class="ion-align-items-center">
         <ion-col>
           <h4 class="ion-text-center">Number of bookings per subscription</h4>
           <GChart
@@ -32,13 +33,14 @@
             :options="ColumnChartOptions"
           />
         </ion-col>
-      </ion-row>
+      </ion-row> -->
 
       <div class="ion-padding-top">
         <ion-button expand="block" href="/">
         Logout
       </ion-button>
       </div>
+      <admin-bottom-tab></admin-bottom-tab>
     </ion-grid>
   </base-layout>
 </template>
@@ -52,7 +54,9 @@ import {
 } from "@ionic/vue";
 import { GChart } from "vue-google-charts";
 import { defineComponent } from "vue";
+import adminBottomTab from './adminBottomTab.vue';
 import axios from "axios";
+import adminBottomTabVue from "./adminBottomTab.vue";
 export default defineComponent({
   components: {
     GChart,

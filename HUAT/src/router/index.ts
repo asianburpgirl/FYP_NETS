@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from "@ionic/vue-router";
 import { RouteRecordRaw } from "vue-router";
+import adminBottomTab from "../views/adminBottomTab.vue";
 import TabsPage from "../views/BottomTabs.vue";
 import LoginPage from "../views/LoginPage.vue";
 import viewBooking from "../views/viewBooking.vue";
@@ -24,6 +25,12 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: "/admin",
     component: AdminPage,
+    children: [
+      {
+        path: " ",
+        redirect: "/admin"
+      }
+    ]
   },
   {
     path: "/tabs/",
@@ -109,29 +116,5 @@ const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes,
 });
-
-// router.beforeEach((to, from, next) => {
-//   const authUser = JSON.parse(localStorage.getItem("userData")!);
-//   console.log(authUser.role);
-//   if (to.meta.requiresAuth) {
-//     if (to.meta.adminAuth) {
-//       if (authUser.role === "Admin"){
-//         next("/admin");
-//       }else{
-//         next("/tabs/home");
-//       }
-//     } 
-//     else if (to.meta.userAuth) {
-//       if (authUser.role === "User"){
-//         next("/tabs/home");
-//       }else{
-//         next("/admin");
-//       }
-//     }
-//   } 
-//   else {
-//     next();
-//   }
-// });
 
 export default router;

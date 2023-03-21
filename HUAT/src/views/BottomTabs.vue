@@ -33,7 +33,6 @@
 </template>
 
 <script>
-const userRole = localStorage.getItem("userData");
 import {
   IonTabBar,
   IonTabButton,
@@ -58,14 +57,6 @@ export default defineComponent({
   },
   setup() {
     return { card, albums, home, map, person };
-  },
-  async created() {
-    if (
-      //if user is admin or super admin
-      userRole === "Admin"
-    ) {
-      this.isAuthorized = true;
-    }
   },
 });
 </script>
