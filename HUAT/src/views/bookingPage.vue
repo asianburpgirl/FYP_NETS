@@ -281,6 +281,7 @@ export default defineComponent({
               handlerMessage.value = "Alert confirmed";
 
               // update booking status to "cancel"
+              refund(amount)
               let url = "http://127.0.0.1:5001/bookings/" + bookingID;
               axios
                 .put(url, {
@@ -293,8 +294,20 @@ export default defineComponent({
                     .put(url, {
                       bookingID: bookingID,
                     })
+
+                    // MIN PLEASE CHECK HEH
+                    // ADD A COLUMN IN SQL
+                    
                     .then((response) => {
                       sucessMsg(amount, response.data.data);
+                      // currently hardcoded
+                      url = "http://127.0.0.1:5004/lotAdj/1/2/-1" 
+                      axios
+                        .get(url)
+                        .then((response) => {
+                            console.log(response)
+                            
+                        })
                     })
                     .catch((error) => {
                       console.log(error.message);
@@ -318,6 +331,7 @@ export default defineComponent({
           {
             text: "Okay",
             handler: () => {
+              
               location.reload();
             },
           },
@@ -326,6 +340,22 @@ export default defineComponent({
 
       await alert.present();
     };
+
+    const refund = async (amount) => {
+      
+      const userData = JSON.parse(localStorage.getItem("userData"));
+      console.log(userData)
+      const url = "http://127.0.0.1:5006/deduct"
+        axios
+          .post(url, {
+            "amount": amount,
+            "userID": userData['userID']
+          })
+          .then((response) => {
+            console.log(response)
+          })
+    };
+    
 
     return {
       confirmationAlert,
@@ -464,6 +494,18 @@ export default defineComponent({
           console.log(error.message);
         });
     },
+    // cancelRefund(amount) {
+    //   this.userData = JSON.parse(localStorage.getItem("userData"));
+    //   const url = "http://127.0.0.1:5006/deduct"
+    //     axios
+    //       .post(url, {
+    //         "amount": amount,
+    //         "userID": this.userData
+    //       })
+    //       .then((response) => {
+    //         console.log(response)
+    //       })
+    // },
 
     getUserBooking() {
       this.userData = JSON.parse(localStorage.getItem("userData"));
