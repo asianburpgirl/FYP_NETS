@@ -162,7 +162,7 @@ export default defineComponent({
                             type: response.data.data.bookings[eachTrans]['transType'],
                             colordeduct: "danger",
                             colortopup: "success",
-                            colorrefund: "medium",
+                            // colorrefund: "medium",
                             
                         });
                     }
