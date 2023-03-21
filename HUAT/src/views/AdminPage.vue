@@ -25,11 +25,11 @@
 
       <ion-row class="ion-align-items-center">
         <ion-col>
-          <h4 class="ion-text-center">Number of bookings per subscription</h4>
+          <h4 class="ion-text-center">Peak Time analysis</h4>
           <GChart
             type="LineChart"
             :data="LineChartData"
-            :options="ColumnChartOptions"
+            :options="LineChartOptions"
           />
         </ion-col>
       </ion-row>
@@ -65,10 +65,8 @@ export default defineComponent({
     return {
       carparksArraySimu: [],
       PieChartData: [["Bookings", "Percentage of bookings"]],
-      LineChartData: [["Carpark Location", "Time"]],
-      ColumnChartData: [
-        ["Carpark Name", "Subscription Plan", "No. of Subscribers"],
-      ],
+      LineChartData: [["Time", "Number of bookings"]],
+      ColumnChartData: [["Carpark Name", "Subscription Plan", "No. of Subscribers"],],
       PieChartoptions: {
         title: "Percentage of bookings per location",
         pieHole: 0.1,
@@ -76,7 +74,7 @@ export default defineComponent({
         // height: 400
       },
       LineChartOptions: {
-        title: "Number of bookings per location",
+        title: "Peak Time Analysis",
         legend: {
           position: "bottom",
         },
@@ -116,26 +114,6 @@ export default defineComponent({
           console.log(error.message);
         });
     },
-    getLineChart() {
-      let LineData = [];
-      const url = "http://localhost:5001/bookings";
-
-      axios
-        .get(url)
-        .then((response) => {
-          LineData = response.data.data.carparks;
-          for (let i = 0; i < LineData.length; i++) {
-            this.LineChartData.push([
-              LineData[i]["bookingLocation"],
-              LineData[i]["bookingAmt"],
-            ]);
-          }
-          return LineData;
-        })
-        .catch((error) => {
-          console.log(error.message);
-        });
-    },
     getColumnChart() {
       let columnData = [];
       const url = "http://localhost:5003/carparks";
@@ -153,6 +131,34 @@ export default defineComponent({
             ]);
           }
           return columnData;
+        })
+        .catch((error) => {
+          console.log(error.message);
+        });
+    },
+    getLineChart() {
+      const timeAxis = { '1': 0, '2': 0, '3': 0, '4': 0, '5': 0, '6': 0, '7': 0, '8': 0, '9': 0, '10': 0, '11': 0, '12': 0,
+      '13': 0, '14': 0, '15': 0, '16': 0, '17': 0, '18': 0, '19': 0, '20': 0, '21': 0, '22': 0, '23': 0, '24': 0};
+      let LineData = [];
+      const url = "http://localhost:5001/bookings";
+
+      axios
+        .get(url)
+        .then((response) => {
+          LineData = response.data.data.bookings;
+          console.log(LineData)
+          for (let i = 0; i < LineData.length; i++) {
+            for (const num in timeAxis){
+              if (num == parseInt(LineData[i]["bookingStartDateTime"].slice(17, 20))){
+                timeAxis[num] += 1;
+              }
+            }
+          }
+          console.log(timeAxis)
+          for (const number in timeAxis){
+            this.LineChartData.push([number, timeAxis[number]])
+          }
+          return this.LineChartData;
         })
         .catch((error) => {
           console.log(error.message);
