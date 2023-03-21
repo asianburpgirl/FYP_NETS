@@ -25,7 +25,7 @@ def getDestination():
      with app.app_context():
         import carpark
         return carpark.get_all()
-     
+      
 def getCoord():
     locationList = getDestination()
     return locationList
