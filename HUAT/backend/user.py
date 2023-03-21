@@ -53,7 +53,6 @@ class User(db.Model):
             "role": self.role
         }
 
-
 #Get All Users
 @app.route("/users")
 def get_all():
@@ -240,7 +239,6 @@ def getBalance(userID):
                 }
             }
         )
-        
     return jsonify(
         {
             "code": 404,
@@ -322,8 +320,5 @@ def addThirty(userID, balance):
     ), 404
 
 
-
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5002, debug=True)
-
-

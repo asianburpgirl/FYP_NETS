@@ -4,12 +4,12 @@
   <h2 v-if="subscriptionPlan=='mostVisited'">
     Your Favourite Carparks
     </h2>
-    <ul v-for="eachCarpark in commonThreeCarpark" :key="eachCarpark" >
-        <div v-if="subscriptionPlan=='mostVisited'">
+
+    <div v-if="subscriptionPlan=='mostVisited'">
+        <ul v-for="eachCarpark in commonThreeCarpark" :key="eachCarpark" >
             <li>{{ eachCarpark }}</li>
-        </div>
-        
-    </ul>
+        </ul>
+    </div>
   
   <ion-list v-if="subscriptionPlan=='mostVisited'">
     <br> 
@@ -204,7 +204,6 @@ export default defineComponent({
             
         },
     getCommonBookings(){
-        
       const url = "http://127.0.0.1:5001/commonCarparks/" + parseInt(this.userData.userID)
     axios.get(url)
         .then((response) => {
@@ -216,7 +215,6 @@ export default defineComponent({
                 this.userSpending =  response.data.data.totalPrice
                 this.subsAmt = (this.userSpending * 3 * 0.95).toFixed(2)
                 this.checkIfSufficientBalance(this.subsAmt)
-                
                 })
                 .catch((error) => {
                     console.log(error);

@@ -3,7 +3,6 @@ import { RouteRecordRaw } from "vue-router";
 import adminBottomTab from "../views/adminBottomTab.vue";
 import TabsPage from "../views/BottomTabs.vue";
 import LoginPage from "../views/LoginPage.vue";
-import viewBooking from "../views/viewBooking.vue";
 import buySubscription from "../views/buySubscription.vue";
 import nearbymePage from "../views/nearbymePage.vue";
 import register from "../views/registerPage.vue";
@@ -62,10 +61,7 @@ const routes: Array<RouteRecordRaw> = [
       },
     ],
   },
-  {
-    path: "/viewBooking",
-    component: viewBooking,
-  },
+  
   {
     path: "/nearbyme",
     component: nearbymePage,
