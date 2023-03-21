@@ -91,3 +91,18 @@ INSERT INTO users(email, name, phoneNum, username, password, balance,role) VALUE
 ("johntan99@gmail.com","John Tan", 91234567, "johntan99", "admin123", 1.23 , "Admin"),
 ("testLimIsSmart@gmail.com","Test Lim", 92345678, "test", "test", 92.42, "Admin"),
 ("testtest@gmail.com","Test Tan", 91234567, "test2", "test2", 9.10, "User");
+
+
+
+CREATE TABLE transaction (
+    transID INT(11) NOT NULL AUTO_INCREMENT,
+    transDate DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP , 
+    transType VARCHAR(128) NOT NULL , 
+    amount FLOAT(5,2) NOT NULL, 
+    userID INT NOT NULL , 
+    PRIMARY KEY (transID));
+
+INSERT INTO `transaction` (`transID`, `transDate`, `transType`, `amount`,`userID`) VALUES
+(NULL, CURRENT_TIMESTAMP, 'topup', 5.00, '2'),
+(NULL, CURRENT_TIMESTAMP, 'deduct', 1.02, '2'),
+(NULL, CURRENT_TIMESTAMP, 'topup', 11.00, '2');

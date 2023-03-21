@@ -4,8 +4,11 @@
   <h2 v-if="subscriptionPlan=='mostVisited'">
     Your Favourite Carparks
     </h2>
-    <ul v-for="eachCarpark in commonThreeCarpark" :key="eachCarpark" v-if="subscriptionPlan=='mostVisited'">
-        <li>{{ eachCarpark }}</li>
+    <ul v-for="eachCarpark in commonThreeCarpark" :key="eachCarpark" >
+        <div v-if="subscriptionPlan=='mostVisited'">
+            <li>{{ eachCarpark }}</li>
+        </div>
+        
     </ul>
   
   <ion-list v-if="subscriptionPlan=='mostVisited'">
@@ -164,7 +167,7 @@ export default defineComponent({
         if (subscriptionPlan =="mostVisited"){
             planType = 1
         }
-      let url = "http://127.0.0.1:5005/subs/" + parseInt(this.userData.userID) + "&"+ planType
+      const url = "http://127.0.0.1:5005/subs/" + parseInt(this.userData.userID) + "&"+ planType
       axios.get(url)
           .then((response) => {
             this.userSubscribed = response.data.data.subscriptionsExists

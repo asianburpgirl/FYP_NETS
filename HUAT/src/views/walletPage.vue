@@ -27,12 +27,15 @@
                 <ion-label class="ion-text-right">Amount</ion-label>
             </ion-item>
     
-            <ion-item v-for="eachBooking in transactionDetails" :key="eachBooking">
+            <ion-item v-for="eachTrans in trans" :key="eachTrans">
                 <!-- <ion-label color="{{ eachBooking.color }}">Booking</ion-label> -->
-                <ion-label>{{eachBooking.bookingID}}</ion-label>
-                <ion-label>{{ eachBooking.bookingDate }}
+                <ion-label>{{eachTrans.transID}}</ion-label>
+                <ion-label>{{ eachTrans.transDate }}
                 </ion-label>
-                <ion-label :color="eachBooking.color" class="ion-text-right">- ${{ eachBooking.amount }}</ion-label>
+                
+                <ion-label v-if="eachTrans.type == 'topup'" :color="eachTrans.colortopup" class="ion-text-right"> ${{ eachTrans.amount }}</ion-label>
+                <ion-label v-if="eachTrans.type == 'deduct'" :color="eachTrans.colordeduct" class="ion-text-right">- ${{ eachTrans.amount }}</ion-label>
+                
             </ion-item>
         </ion-list>
     </base-layout>
@@ -79,6 +82,7 @@ export default defineComponent({
             balance: 0,
             userData: {},
             transactionDetails: [],
+            trans: [],
         };
     },
     methods: {
@@ -142,10 +146,39 @@ export default defineComponent({
                 path: "/" + route,
             });
         },
+        getTrans() {
+            this.userData = JSON.parse(localStorage.getItem("userData"));
+            const url = "http://localhost:5006/transaction/" + this.userData.userID;
+            axios
+                .get(url)
+                .then((response) => {
+                    console.log(response.data.data.bookings)
+                    for (const eachTrans in response.data.data.bookings) {
+                        console.log(response.data.data.bookings[eachTrans]['amount'])
+                        this.trans.push({
+                            amount: this.formatMoney(response.data.data.bookings[eachTrans]['amount']),
+                            transID: response.data.data.bookings[eachTrans]['transID'],
+                            transDate: response.data.data.bookings[eachTrans]['transDate'].slice(4, 17),
+                            type: response.data.data.bookings[eachTrans]['transType'],
+                            colordeduct: "danger",
+                            colortopup: "success",
+                            // colorrefund: "medium",
+                            
+                        });
+                    }
+                    console.log(this.trans)
+                    // this.balance = response.data.data.balance;
+                })
+                .catch((error) => {
+                    console.log(error.message);
+                });
+        }
     },
     mounted() {
-        this.loadUserData(), this.getBalance();
+        this.loadUserData(), 
+        this.getBalance();
         this.getUserBooking();
+        this.getTrans()
     },
 });
 </script>
