@@ -9,7 +9,7 @@
             </ion-toolbar>
         </ion-header>
         <ion-content class="ion-padding">
-            <ion-img src='assets/images/nets.png'></ion-img>
+            <!-- <ion-img src='assets/images/nets.png'></ion-img> -->
             <ion-row class="ion-padding-top">
                 <ion-col>
                     <ion-button expand="block" @click="routeTen()">$10</ion-button>
@@ -34,7 +34,7 @@ import {
     IonContent,
     IonToolbar,
     IonBackButton,
-    IonImg,
+    // IonImg,
     IonButtons,
     IonCol,
     IonRow
@@ -51,7 +51,7 @@ export default defineComponent({
         IonTitle,
         IonContent,
         IonToolbar,
-        IonImg,
+        // IonImg,
         IonButtons,
         IonCol,
         IonRow
