@@ -191,7 +191,7 @@
               <ion-button
                 expand="block"
                 @click="
-                  confirmationAlert(eachBooking.bookingID, eachBooking.amount)
+                  confirmationAlert(eachBooking.bookingID, eachBooking.amount,eachBooking.bookingLocation)
                 "
                 color="danger"
                 >Cancel</ion-button
@@ -268,7 +268,7 @@ export default defineComponent({
   },
   setup() {
     const handlerMessage = ref("");
-    const confirmationAlert = async (bookingID, amount) => {
+    const confirmationAlert = async (bookingID, amount,bookingLocation) => {
       let amount2 = amount
       amount2 = amount2.toString();
       const dotExists = amount.includes(".");
@@ -317,39 +317,47 @@ export default defineComponent({
                     .put(url, {
                       bookingID: bookingID,
                     })
-
-                    // MIN PLEASE CHECK HEH
-                    // ADD A COLUMN IN SQL
                     
                     .then((response) => {
-
-                      // sucessMsg(amount, response.data.data);
-                      // // currently hardcoded
-                      // url = "http://127.0.0.1:5004/lotAdj/1/2/-1" 
-                      // axios
-                      //   .get(url)
-                      //   .then((response) => {
-                      //       console.log(response)
-                            
-                      //   })
-
+                      // update lot to plus one
                       const balance = response.data.data.toString();
-                      const dotExists = balance.includes(".");
-                      let newFloat = balance;
-                      if (dotExists) {
-                          newFloat = balance.split(".");
-                          if (newFloat[1].length == 1) {
-                              newFloat[1] += "0";
-                          } else if (newFloat[1].length == 0) {
-                              newFloat[1] += "00";
+                      url = "http://127.0.0.1:5003/carparks"
+                      axios
+                        .get(url)
+                        .then((response) => {
+                          let newFloat = balance;
+                          const carparks = response.data.data.carparks
+                          for (const eachCarpark of carparks){
+                            if (eachCarpark.carparkName == bookingLocation){
+                              console.log(bookingLocation)
+                               // /lotAdj/<int:carparkid>/<int:parkingtype>/<string:lotadjustment>"
+                                url = "http://127.0.0.1:5004/lotAdj/" + eachCarpark.carparkID+ "/2/-1" 
+                                axios
+                                  .get(url)
+                                  .then((response) => {
+                                      console.log(response)   
+                                      const dotExists = balance.includes(".");
+                                      if (dotExists) {
+                                          newFloat = balance.split(".");
+                                          if (newFloat[1].length == 1) {
+                                              newFloat[1] += "0";
+                                          } else if (newFloat[1].length == 0) {
+                                              newFloat[1] += "00";
+                                          }
+                                          newFloat = newFloat.join(".");
+                                      } else {
+                                          newFloat += ".00";
+                                      }  
+                                      sucessMsg(amount, newFloat);
+                                  })
+                              
+                              
+                            }
                           }
-                          newFloat = newFloat.join(".");
-                      } else {
-                          newFloat += ".00";
-                      }
-
-                      sucessMsg(amount, newFloat);
-
+                          
+                        })
+                      
+                      
                     })
                     .catch((error) => {
                       console.log(error.message);
@@ -386,7 +394,6 @@ export default defineComponent({
     const refund = async (amount) => {
       
       const userData = JSON.parse(localStorage.getItem("userData"));
-      console.log(userData)
       const url = "http://127.0.0.1:5006/deduct"
         axios
           .post(url, {
@@ -426,7 +433,6 @@ export default defineComponent({
   },
   methods: {
     changeStatus(){
-      console.log("H")
       console.log(this.bookingStatusToShow)
     },
     routeUser(route) {

@@ -16,11 +16,11 @@ CREATE TABLE bookings(
     PRIMARY KEY (bookingID));
 	
 INSERT INTO `bookings` (`bookingID`, `bookingDateTime`, `bookingLocation`, `locationName`,`bookingStartDateTime`, `bookingEndDateTime`, `status`, `bookingRef`, `bookingAmt`, `userID`) 
-VALUES (NULL, CURRENT_TIMESTAMP,  'ION Orchard','2 Orchard Turn, Singapore 238801', '2023-02-01 15:30:00', '2023-02-01 11:30:00', 'Booked', 'aasS234Fa3Af3ff319fD', 1.50, '1'),
-(NULL, '2023-01-28 11:30:00', 'ION Orchard', '2 Orchard Turn, Singapore 238801', '2023-01-30 12:30:00', '2023-01-30 12:30:00', 'Booked', 'S124fdf13Rafdf', 3.01, '2'),
-(NULL, '2023-01-30 16:03:12', 'Paragon Shopping Centre','290 Orchard Rd, Singapore 238859', '2023-01-28 12:00:00', '2023-01-28 01:00:00', 'Booked', '22afsadsf4df13Rafdf', 2.51, '1'),
-(NULL, '2023-02-01 12:43:50', '*SCAPE', '2 Orchard Link, Singapore 237978', '2023-01-28 12:00:00', '2023-01-28 01:00:00', 'Booked', '22afsadsf4df13Rafdf', 12.10, '2'),
-(NULL, '2023-05-05 12:44:10', 'Wisma Atria', '435 Orchard Rd, Singapore 238877', '2023-01-28 12:00:00', '2023-01-28 01:00:00', 'Booked', '22afsadsf4df13Rafdf', 0.51, '2');
+VALUES (NULL, CURRENT_TIMESTAMP,  'ION Orchard','2 Orchard Turn, Singapore 238801', '2023-02-01 15:30:00', '2023-02-01 11:30:00', 'Booked', 'aasS234Fa3Af3ff319fD', 1.50, '3'),
+(NULL, '2023-01-28 11:30:00', 'ION Orchard', '2 Orchard Turn, Singapore 238801', '2023-01-30 12:30:00', '2023-01-30 12:30:00', 'Booked', 'S124fdf13Rafdf', 3.01, '3'),
+(NULL, '2023-01-30 16:03:12', 'Paragon Shopping Centre','290 Orchard Rd, Singapore 238859', '2023-01-28 12:00:00', '2023-01-28 01:00:00', 'Booked', '22afsadsf4df13Rafdf', 2.51, '3'),
+(NULL, '2023-02-01 12:43:50', '*SCAPE', '2 Orchard Link, Singapore 237978', '2023-01-28 12:00:00', '2023-01-28 01:00:00', 'Booked', '22afsadsf4df13Rafdf', 12.10, '3'),
+(NULL, '2023-05-05 12:44:10', 'Wisma Atria', '435 Orchard Rd, Singapore 238877', '2023-01-28 12:00:00', '2023-01-28 01:00:00', 'Booked', '22afsadsf4df13Rafdf', 0.51, '3');
 
 CREATE TABLE subscriptions( 
 	subscriptionID INT(11) NOT NULL AUTO_INCREMENT , 
@@ -63,17 +63,18 @@ CREATE TABLE carparkDetails (
     seasonweekdaynonpeak INT NOT NULL,
     seasonweekendpeak INT NOT NULL,
     seasonweekendnonpeak INT NOT NULL,
+    chosen INT NOT NULL,
   	PRIMARY KEY (carparkID));
 
-INSERT INTO carparkDetails(carparkName,carparkLocation,latitude, longitude ,imagePath,maxCapacity,currentCapacity, hourlyweekdaypeak,hourlyweekdaynonpeak,hourlyweekendpeak,hourlyweekendnonpeak,seasonweekdaypeak,seasonweekdaynonpeak,seasonweekendpeak,seasonweekendnonpeak) VALUES 
-("ION Orchard","2 Orchard Turn, Singapore 238801",1.3041540462448922, 103.83195992607827, "assets/images/ion.jpg",82, 82,2.5,2,3,2.5,16,12,135,143),
-("313@Somerset","313 Orchard Rd, Singapore 238895",1.301171207812743, 103.8386220085623,"assets/images/313.jpg", 100, 40,3,1.5,10,5,124,187,135,176),
-("Paragon Shopping Centre","290 Orchard Rd, Singapore 238859",1.3040258775031617, 103.83608284915861,"assets/images/paragon.jpg", 85, 41,4,4,8,4.5,124,187,135,176),
-("*SCAPE","2 Orchard Link, Singapore 237978",1.3010677408660067, 103.83576204980196,"assets/images/scape.jpg", 85, 20,4.5,4,7.5,7.5,124,187,135,176),
-("Takashimaya Shopping Centre","391 Orchard Rd, Singapore 238872",1.3033454254185042, 103.83455711763565,"assets/images/takashimaya.jpeg", 70, 0,5,3,6,3,124,187,135,176),
-("Tangs Plaza","310 Orchard Road Tang Plaza, 238864",1.3050314731714412, 103.83297614415605,"assets/images/tangs.jpg", 105, 90,4,3.5,10,9,124,187,135,176),
-("Wheelock Place","501 Orchard Rd, Singapore 238880",1.3048859701842488, 103.83048138946437, "assets/images/Wheelock.png",30, 30,5,4.5,7,5,.5198,112,135,134),
-("Wisma Atria","435 Orchard Rd, Singapore 238877",1.303842974291844, 103.8333226716273, "assets/images/wisma.jpeg",103, 29,6.50,3,8.5,7,123,143,135,198);
+INSERT INTO carparkDetails(carparkName,carparkLocation,latitude, longitude ,imagePath,maxCapacity,currentCapacity, hourlyweekdaypeak,hourlyweekdaynonpeak,hourlyweekendpeak,hourlyweekendnonpeak,seasonweekdaypeak,seasonweekdaynonpeak,seasonweekendpeak,seasonweekendnonpeak,chosen) VALUES 
+("ION Orchard","2 Orchard Turn, Singapore 238801",1.3041540462448922, 103.83195992607827, "assets/images/ion.jpg",82, 82,2.5,2,3,2.5,16,12,135,143,0),
+("313@Somerset","313 Orchard Rd, Singapore 238895",1.301171207812743, 103.8386220085623,"assets/images/313.jpg", 100, 40,3,1.5,10,5,124,187,135,176,0),
+("Paragon Shopping Centre","290 Orchard Rd, Singapore 238859",1.3040258775031617, 103.83608284915861,"assets/images/paragon.jpg", 85, 41,4,4,8,4.5,124,187,135,176,0),
+("*SCAPE","2 Orchard Link, Singapore 237978",1.3010677408660067, 103.83576204980196,"assets/images/scape.jpg", 85, 20,4.5,4,7.5,7.5,124,187,135,176,0),
+("Takashimaya Shopping Centre","391 Orchard Rd, Singapore 238872",1.3033454254185042, 103.83455711763565,"assets/images/takashimaya.jpeg", 70, 0,5,3,6,3,124,187,135,176,0),
+("Tangs Plaza","310 Orchard Road Tang Plaza, 238864",1.3050314731714412, 103.83297614415605,"assets/images/tangs.jpg", 105, 90,4,3.5,10,9,124,187,135,176,0),
+("Wheelock Place","501 Orchard Rd, Singapore 238880",1.3048859701842488, 103.83048138946437, "assets/images/Wheelock.png",30, 30,5,4.5,7,5,.5198,112,135,134,0),
+("Wisma Atria","435 Orchard Rd, Singapore 238877",1.303842974291844, 103.8333226716273, "assets/images/wisma.jpeg",103, 29,6.50,3,8.5,7,123,143,135,198,0);
 
 
 CREATE TABLE users (
