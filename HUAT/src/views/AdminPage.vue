@@ -294,9 +294,9 @@ export default defineComponent({
   // Calls function on page load
   mounted() {
     this.getSimulator();
-    this.getLineChart();
     this.getPieChart();
     this.getColumnChart();
+    this.getLineChart();
   },
 });
 </script>
