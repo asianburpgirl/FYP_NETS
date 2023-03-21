@@ -64,8 +64,8 @@ const routes: Array<RouteRecordRaw> = [
     component: nearbymePage,
   },
   {
-    path: "/buySubscription",
-    component: buySubscription,
+    path: '/buySubscription/:subscriptionPlan',
+    component: buySubscription
   },
   {
     path: "/register",

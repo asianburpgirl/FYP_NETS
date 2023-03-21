@@ -22,6 +22,18 @@
           />
         </ion-col>
       </ion-row>
+
+      <ion-row class="ion-align-items-center">
+        <ion-col>
+          <h4 class="ion-text-center">Number of bookings per subscription</h4>
+          <GChart
+            type="LineChart"
+            :data="LineChartData"
+            :options="ColumnChartOptions"
+          />
+        </ion-col>
+      </ion-row>
+
       <div class="ion-padding-top">
         <ion-button expand="block" href="/">
         Logout
@@ -53,7 +65,7 @@ export default defineComponent({
     return {
       carparksArraySimu: [],
       PieChartData: [["Bookings", "Percentage of bookings"]],
-      BarChartData: [["Booking Location", "No. of Bookings"]],
+      LineChartData: [["Carpark Location", "Time"]],
       ColumnChartData: [
         ["Carpark Name", "Subscription Plan", "No. of Subscribers"],
       ],
@@ -63,7 +75,7 @@ export default defineComponent({
         // width: 400,
         // height: 400
       },
-      BarChartOptions: {
+      LineChartOptions: {
         title: "Number of bookings per location",
         legend: {
           position: "bottom",
@@ -104,21 +116,21 @@ export default defineComponent({
           console.log(error.message);
         });
     },
-    getBarChart() {
-      let barData = [];
-      const url = "http://localhost:5003/carparks";
+    getLineChart() {
+      let LineData = [];
+      const url = "http://localhost:5001/bookings";
 
       axios
         .get(url)
         .then((response) => {
-          barData = response.data.data.carparks;
-          for (let i = 0; i < barData.length; i++) {
-            this.BarChartData.push([
-              barData[i]["carparkName"],
-              barData[i]["currentCapacity"],
+          LineData = response.data.data.carparks;
+          for (let i = 0; i < LineData.length; i++) {
+            this.LineChartData.push([
+              LineData[i]["bookingLocation"],
+              LineData[i]["bookingAmt"],
             ]);
           }
-          return barData;
+          return LineData;
         })
         .catch((error) => {
           console.log(error.message);
@@ -276,7 +288,7 @@ export default defineComponent({
   // Calls function on page load
   mounted() {
     this.getSimulator();
-    this.getBarChart();
+    this.getLineChart();
     this.getPieChart();
     this.getColumnChart();
   },
