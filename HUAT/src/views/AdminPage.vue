@@ -6,8 +6,8 @@
           <h4 class="ion-text-center">Percentage of bookings per location</h4>
           <GChart
             type="PieChart"
-            :options="PieChartoptions"
             :data="PieChartData"
+            :options="PieChartoptions"
           />
         </ion-col>
       </ion-row>
