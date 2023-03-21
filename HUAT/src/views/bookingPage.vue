@@ -296,14 +296,17 @@ export default defineComponent({
                     })
 
                     // MIN PLEASE CHECK HEH
+                    // ADD A COLUMN IN SQL
+                    
                     .then((response) => {
                       sucessMsg(amount, response.data.data);
-                      
+                      // currently hardcoded
                       url = "http://127.0.0.1:5004/lotAdj/1/2/-1" 
                       axios
                         .get(url)
                         .then((response) => {
                             console.log(response)
+                            
                         })
                     })
                     .catch((error) => {
