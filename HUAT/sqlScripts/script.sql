@@ -67,13 +67,13 @@ CREATE TABLE carparkDetails (
   	PRIMARY KEY (carparkID));
 
 INSERT INTO carparkDetails(carparkName,carparkLocation,latitude, longitude ,imagePath,maxCapacity,currentCapacity, hourlyweekdaypeak,hourlyweekdaynonpeak,hourlyweekendpeak,hourlyweekendnonpeak,seasonweekdaypeak,seasonweekdaynonpeak,seasonweekendpeak,seasonweekendnonpeak,chosen) VALUES 
-("ION Orchard","2 Orchard Turn, Singapore 238801",1.3041540462448922, 103.83195992607827, "assets/images/ion.jpg",82, 82,2.5,2,3,2.5,16,12,135,143,0),
+("ION Orchard","2 Orchard Turn, Singapore 238801",1.3041540462448922, 103.83195992607827, "assets/images/ion.jpg",82, 82,2.5,2,3,2.5,16,12,135,143,1),
 ("313@Somerset","313 Orchard Rd, Singapore 238895",1.301171207812743, 103.8386220085623,"assets/images/313.jpg", 100, 40,3,1.5,10,5,124,187,135,176,0),
-("Paragon Shopping Centre","290 Orchard Rd, Singapore 238859",1.3040258775031617, 103.83608284915861,"assets/images/paragon.jpg", 85, 41,4,4,8,4.5,124,187,135,176,0),
+("Paragon Shopping Centre","290 Orchard Rd, Singapore 238859",1.3040258775031617, 103.83608284915861,"assets/images/paragon.jpg", 85, 41,4,4,8,4.5,124,187,135,176,1),
 ("*SCAPE","2 Orchard Link, Singapore 237978",1.3010677408660067, 103.83576204980196,"assets/images/scape.jpg", 85, 20,4.5,4,7.5,7.5,124,187,135,176,0),
 ("Takashimaya Shopping Centre","391 Orchard Rd, Singapore 238872",1.3033454254185042, 103.83455711763565,"assets/images/takashimaya.jpeg", 70, 0,5,3,6,3,124,187,135,176,0),
-("Tangs Plaza","310 Orchard Road Tang Plaza, 238864",1.3050314731714412, 103.83297614415605,"assets/images/tangs.jpg", 105, 90,4,3.5,10,9,124,187,135,176,0),
-("Wheelock Place","501 Orchard Rd, Singapore 238880",1.3048859701842488, 103.83048138946437, "assets/images/Wheelock.png",30, 30,5,4.5,7,5,.5198,112,135,134,0),
+("Tangs Plaza","310 Orchard Road Tang Plaza, 238864",1.3050314731714412, 103.83297614415605,"assets/images/tangs.jpg", 105, 90,4,3.5,10,9,124,187,135,176,1),
+("Wheelock Place","501 Orchard Rd, Singapore 238880",1.3048859701842488, 103.83048138946437, "assets/images/Wheelock.png",30, 30,5,4.5,7,5,.5198,112,135,134,1),
 ("Wisma Atria","435 Orchard Rd, Singapore 238877",1.303842974291844, 103.8333226716273, "assets/images/wisma.jpeg",103, 29,6.50,3,8.5,7,123,143,135,198,0);
 
 
@@ -91,7 +91,7 @@ CREATE TABLE users (
 INSERT INTO users(email, name, phoneNum, username, password, balance,role) VALUES
 ("johntan99@gmail.com","John Tan", 91234567, "johntan99", "admin123", 1.23 , "Admin"),
 ("testLimIsSmart@gmail.com","Test Lim", 92345678, "test", "test", 92.42, "Admin"),
-("testtest@gmail.com","Test Tan", 91234567, "test2", "test2", 9.10, "User");
+("testtest@gmail.com","Test Tan", 91234567, "test2", "test2", 43.10, "User");
 
 
 
@@ -104,6 +104,6 @@ CREATE TABLE transaction (
     PRIMARY KEY (transID));
 
 INSERT INTO `transaction` (`transID`, `transDate`, `transType`, `amount`,`userID`) VALUES
-(NULL, CURRENT_TIMESTAMP, 'topup', 5.00, '2'),
-(NULL, CURRENT_TIMESTAMP, 'deduct', 1.02, '2'),
-(NULL, CURRENT_TIMESTAMP, 'topup', 11.00, '2');
+(NULL, '2023-01-06 22:58:38', 'topup', 11.00, '3'),
+(NULL, '2023-03-06 23:58:38', 'deduct', 1.02, '3'),
+(NULL, '2023-03-16 13:58:38', 'topup', 5.00, '3');
