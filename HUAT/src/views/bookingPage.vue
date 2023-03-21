@@ -26,7 +26,6 @@
         </ion-toolbar>
       </ion-header>
 
-      <ion-content class="ion-padding-top">
         <ion-item>
           <ion-label position="stacked">
             Booking Date: {{ bookingInfo.startDate }}</ion-label
@@ -100,8 +99,15 @@
         >
           <ion-button @click="saveEditBooking()"> Save </ion-button>
         </ion-row>
-      </ion-content>
+      
     </ion-modal>
+
+    <ion-select placeholder="Status" class="ion-padding-top ion-padding-bottom" v-model="bookingStatusToShow"  @ionChange="changeStatus()">
+      <ion-select-option value="upcoming">Upcoming</ion-select-option>
+      <ion-select-option value="past">Past</ion-select-option>
+      <ion-select-option  value="all">All</ion-select-option>
+    </ion-select>
+
     <ion-card v-for="eachBooking in bookingDetails" :key="eachBooking">
       <ion-img :src="eachBooking.imagePath"></ion-img>
       <ion-card-header>
@@ -145,9 +151,9 @@
               >
             </ion-item>
           </ion-list> -->
-          <ion-button size="small" fill="outline" slot="start"
+          <!-- <ion-button size="small" fill="outline" slot="start"
             >Directions</ion-button
-          >
+          > -->
           <div class="ion-padding-top"> 
             <ion-card-subtitle
             >Booking Ref: <u>{{ eachBooking.bookingRef }}</u></ion-card-subtitle
@@ -208,8 +214,9 @@
 <script>
 import { arrowBackOutline } from "ionicons/icons";
 import {
+  IonSelectOption,
+  IonSelect,
   IonHeader,
-  IonContent,
   IonCard,
   IonCardHeader,
   IonCardSubtitle,
@@ -236,8 +243,9 @@ import axios from "axios";
 
 export default defineComponent({
   components: {
+    IonSelectOption,
+    IonSelect,
     IonHeader,
-    IonContent,
     IonCard,
     IonCardHeader,
     IonCardSubtitle,
@@ -261,6 +269,21 @@ export default defineComponent({
   setup() {
     const handlerMessage = ref("");
     const confirmationAlert = async (bookingID, amount) => {
+      let amount2 = amount
+      amount2 = amount2.toString();
+      const dotExists = amount.includes(".");
+      if (dotExists) {
+        amount2 = amount2.split(".");
+          if (amount2[1].length == 1) {
+            amount2[1] += "0";
+          } else if (amount[1].length == 0) {
+            amount2[1] += "00";
+          }
+          amount = amount2.join(".");
+      } else {
+        amount += ".00";
+      }
+
       const alert = await alertController.create({
         header: "Are you sure you want to delete this booking? ",
         subHeader: "$" + amount + " will be refunded back to your account",
@@ -299,15 +322,34 @@ export default defineComponent({
                     // ADD A COLUMN IN SQL
                     
                     .then((response) => {
-                      sucessMsg(amount, response.data.data);
-                      // currently hardcoded
-                      url = "http://127.0.0.1:5004/lotAdj/1/2/-1" 
-                      axios
-                        .get(url)
-                        .then((response) => {
-                            console.log(response)
+
+                      // sucessMsg(amount, response.data.data);
+                      // // currently hardcoded
+                      // url = "http://127.0.0.1:5004/lotAdj/1/2/-1" 
+                      // axios
+                      //   .get(url)
+                      //   .then((response) => {
+                      //       console.log(response)
                             
-                        })
+                      //   })
+
+                      const balance = response.data.data.toString();
+                      const dotExists = balance.includes(".");
+                      let newFloat = balance;
+                      if (dotExists) {
+                          newFloat = balance.split(".");
+                          if (newFloat[1].length == 1) {
+                              newFloat[1] += "0";
+                          } else if (newFloat[1].length == 0) {
+                              newFloat[1] += "00";
+                          }
+                          newFloat = newFloat.join(".");
+                      } else {
+                          newFloat += ".00";
+                      }
+
+                      sucessMsg(amount, newFloat);
+
                     })
                     .catch((error) => {
                       console.log(error.message);
@@ -326,7 +368,7 @@ export default defineComponent({
     const sucessMsg = async (amount, balance) => {
       const alert = await alertController.create({
         header: "Success!",
-        subHeader: "$" + amount + " refunded. Balance is " + "$" + balance,
+        subHeader: "$" + amount+ " refunded. Balance is " + "$" +balance,
         buttons: [
           {
             text: "Okay",
@@ -365,6 +407,7 @@ export default defineComponent({
   },
   data() {
     return {
+      bookingStatusToShow: "upcoming",
       bookingDetails: [],
       userData: {},
       editBookingOpen: false,
@@ -382,6 +425,10 @@ export default defineComponent({
     };
   },
   methods: {
+    changeStatus(){
+      console.log("H")
+      console.log(this.bookingStatusToShow)
+    },
     routeUser(route) {
       this.$router.push({
         path: "/" + route,
@@ -471,7 +518,6 @@ export default defineComponent({
           bookingEndDateTime: newEndDateTime,
         })
         .then((response) => {
-          console.log(response)
           location.reload()
         })
         .catch((error) => {
@@ -487,7 +533,6 @@ export default defineComponent({
       axios
         .delete(url)
         .then((response) => {
-          // console.log(response);
           location.reload();
         })
         .catch((error) => {
@@ -551,7 +596,6 @@ export default defineComponent({
                   userID: eachBooking.userID,
                   imagePath: imagePath,
                 });
-                console.log(this.bookingDetails);
               })
               .catch((error) => {
                 console.log(error.message);

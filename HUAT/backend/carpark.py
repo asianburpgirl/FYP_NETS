@@ -5,7 +5,7 @@ from os import environ
 import json
 # import json
 from os import environ
-# import random
+import random
 # import string
 
 app = Flask(__name__)
@@ -38,8 +38,9 @@ class Carpark(db.Model):
     seasonweekdaynonpeak = db.Column(db.Integer, nullable=False)
     seasonweekendpeak = db.Column(db.Integer, nullable=False)
     seasonweekendnonpeak = db.Column(db.Integer, nullable=False)
+    chosen = db.Column(db.Integer, nullable=False)
 
-    def __init__(self, carparkID, carparkName, carparkLocation, latitude, longitude,imagePath, maxCapacity, currentCapacity, hourlyweekdaypeak, hourlyweekdaynonpeak, hourlyweekendpeak, hourlyweekendnonpeak, seasonweekdaypeak, seasonweekdaynonpeak, seasonweekendpeak, seasonweekendnonpeak):
+    def __init__(self, carparkID, carparkName, carparkLocation, latitude, longitude,imagePath, maxCapacity, currentCapacity, hourlyweekdaypeak, hourlyweekdaynonpeak, hourlyweekendpeak, hourlyweekendnonpeak, seasonweekdaypeak, seasonweekdaynonpeak, seasonweekendpeak, seasonweekendnonpeak, chosen = chosen):
         self.carparkID = carparkID
         self.carparkName = carparkName
         self.carparkLocation = carparkLocation
@@ -56,6 +57,7 @@ class Carpark(db.Model):
         self.seasonweekdaynonpeak = seasonweekdaynonpeak
         self.seasonweekendpeak = seasonweekendpeak
         self.seasonweekendnonpeak = seasonweekendnonpeak
+        self.chosen = chosen
 
     def json(self):
         return {
@@ -75,7 +77,53 @@ class Carpark(db.Model):
             "seasonweekdaynonpeak": self.seasonweekdaynonpeak, 
             "seasonweekendpeak": self.seasonweekendpeak, 
             "seasonweekendnonpeak": self.seasonweekendnonpeak,
+            "chosen": self.chosen,
         }
+
+class Booking(db.Model):
+    __tablename__ = 'bookings'
+
+    bookingID = db.Column(db.Integer, primary_key=True)
+    bookingDateTime = db.Column(db.DateTime, nullable=False)
+    bookingLocation = db.Column(db.String(128), nullable=False)
+    locationName = db.Column(db.String(128), nullable=False)
+    bookingStartDateTime = db.Column(db.DateTime, nullable=False)
+    bookingEndDateTime = db.Column(db.DateTime, nullable=False)
+    status = db.Column(db.String(128), nullable=False)
+    bookingRef = db.Column(db.String(128), nullable=False)
+    bookingAmt = db.Column(db.Float, nullable=False)
+    userID = db.Column(db.ForeignKey('users.userID', ondelete='CASCADE', onupdate='CASCADE'), nullable=False, index=True)
+
+    
+    def __init__(self, bookingID,   bookingLocation, locationName, bookingStartDateTime, 
+    bookingEndDateTime, status, userID, bookingRef, bookingAmt, bookingDateTime):
+        self.bookingDateTime = bookingDateTime
+        self.bookingID = bookingID
+        self.bookingLocation = bookingLocation
+        self.locationName = locationName
+        self.bookingStartDateTime = bookingStartDateTime
+        self.bookingEndDateTime = bookingEndDateTime
+        self.status = status
+        self.bookingRef = bookingRef
+        self.userID = userID
+        self.bookingAmt = bookingAmt
+
+    def json(self):
+        return {
+            "bookingID": self.bookingID,
+            "bookingLocation": self.bookingLocation,
+            "locationName": self.locationName,
+            "bookingStartDateTime": self.bookingStartDateTime,
+            "bookingEndDateTime": self.bookingEndDateTime,
+            "status": self.status,
+            "bookingRef": self.bookingRef,
+            "userID": self.userID,
+            "bookingAmt": self.bookingAmt,
+            "bookingDateTime": self.bookingDateTime
+        }
+    def getAllBookings():
+        bookingList = Booking.query.all()
+        return bookingList.json()
 
 # Get All carparks
 @app.route("/carparks")
@@ -160,6 +208,70 @@ def getCarparkImage():
             "message": "There are no such carparks."
         }
     ), 404
+    
+# categorise carparks into 4 tiers
+@app.route("/carparkCat")
+def categoriseCarparkTiers():
+    bookings = Booking.query.all()
+    carparks = Carpark.query.all()
+    
+    bookings_dict = {}
+    if len(bookings):
+        #get all carpark names
+        carpark_names = []
+        for eachCarpark in carparks:
+            carpark_names.append(eachCarpark.carparkName)
+        # sort all carparks from most popular to least popular
+        for eachBooking in bookings:
+            if eachBooking.bookingLocation in carpark_names:
+                carpark_names.remove(eachBooking.bookingLocation)
+            if eachBooking.bookingLocation in bookings_dict:
+                    bookings_dict[eachBooking.bookingLocation] += 1
+            else:
+                bookings_dict[eachBooking.bookingLocation] = 1
+        bookings_sorted = dict(sorted(bookings_dict.items(), key=lambda x:x[1], reverse= True))
+        bookings_list = []
+        for location, count in bookings_sorted.items():
+            bookings_list.append({"location": location, "count": count})
+        
+        # in case there is a carpark without any booking
+        for missingCarparks in carpark_names:
+            bookings_list.append({"location": missingCarparks, "count": 0})
+        
+        #splitting into tiers 
+        no_of_tier = 4 
+        tieredBooking = {}
+        carparkInEachGroup = len(bookings_list)//no_of_tier 
+        count = 1
+        myList= []
+        for i in range(0, len(bookings_list)):
+             myList.append(bookings_list[i])
+             if len(myList) == carparkInEachGroup:
+                 tieredBooking[count] = myList
+                 count += 1
+                 myList= []
+        print(tieredBooking)
+        chosenCarpark = []
+        for (index,eachTier) in tieredBooking.items():
+            chosenCarpark.append(random.choices(eachTier))
+            
+        print(chosenCarpark)
+            
+        return jsonify(
+            {
+                "code": 200,
+                "data": {
+                    "bookings": chosenCarpark,
+                }
+            }
+        )
+    return jsonify(
+        {
+            "code": 404,
+            "message": "There are no applications."
+        }
+    ), 404
+
     
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5003, debug=True)
