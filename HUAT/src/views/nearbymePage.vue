@@ -46,34 +46,35 @@
         
             <ion-grid class="ion-padding-top">
                 <ion-card v-for="carpark in carparkArrayToShow" :key="carpark">
-                    <ion-img :src="carpark.image"></ion-img>
-    
-                    <ion-card-header>
-                        <ion-card-title>{{ carpark.data.carparklocation }}</ion-card-title>
-                        <ion-card-subtitle></ion-card-subtitle>
-                        <ion-card-subtitle>{{ carpark.data.carparkaddress }}</ion-card-subtitle>
-                        <h3>
-                            <b> {{ carpark.availableLots }}</b> lots available
-                        </h3>
-                        <h3 v-if="this.startTime != '' &&
-              this.endTime !='' && this.bookingDate != '' ">
-                            <b> Total: ${{ carpark.data.totalFee }}</b>
-                        </h3>
-                        <h4>
-                            <u>{{ carpark.distance_km }},</u>
-                            <u>{{ carpark.duration_mins }} </u> away from you
-                        </h4>
-                        <ion-row class="ion-padding-top ion-justify-content-center ion-padding-bottom">
-                            <ion-button shape="round" @click="confirmationAlert(carpark,this.bookingDate,this.startTime,this.endTime,this.userData )" v-if="carpark.data.totalFee <= userBalance">
-                                Book
-                            </ion-button>
-                            <ion-text color="danger" v-if="carpark.data.totalFee > userBalance">
-                                <b> 
-                                    Insufficient credit
-                                </b>
-                            </ion-text>
-                        </ion-row>
-                    </ion-card-header>
+                    <div v-if="carpark.data.lotbalancehourly != 0">
+                        <ion-img :src="carpark.image"></ion-img>
+                        <ion-card-header>
+                            <ion-card-title>{{ carpark.data.carparklocation }}</ion-card-title>
+                            <ion-card-subtitle></ion-card-subtitle>
+                            <ion-card-subtitle>{{ carpark.data.carparkaddress }}</ion-card-subtitle>
+                            <h3>
+                                <b> {{ carpark.availableLots }}</b> lots available
+                            </h3>
+                            <h3 v-if="this.startTime != '' &&
+                this.endTime !='' && this.bookingDate != '' ">
+                                <b> Total: ${{ carpark.data.totalFee }}</b>
+                            </h3>
+                            <h4>
+                                <u>{{ carpark.distance_km }},</u>
+                                <u>{{ carpark.duration_mins }} </u> away from you
+                            </h4>
+                            <ion-row class="ion-padding-top ion-justify-content-center ion-padding-bottom">
+                                <ion-button shape="round" @click="confirmationAlert(carpark,this.bookingDate,this.startTime,this.endTime,this.userData )" v-if="carpark.data.totalFee <= userBalance">
+                                    Book
+                                </ion-button>
+                                <ion-text color="danger" v-if="carpark.data.totalFee > userBalance">
+                                    <b> 
+                                        Insufficient credit
+                                    </b>
+                                </ion-text>
+                            </ion-row>
+                        </ion-card-header>
+                    </div>
                 </ion-card>
             </ion-grid>
     
@@ -287,7 +288,21 @@ export default defineComponent({
                                 .then((response) => {
                                     // deduct money
                                     url = "http://127.0.0.1:5001/updateBalance/" + response.data.data.bookingID;
-                                    const bookingAmount = response.data.data.bookingAmt
+                                    let bookingAmount = response.data.data.bookingAmt
+                                    bookingAmount = bookingAmount.toString();
+                                    const dotExists = bookingAmount.includes(".");
+                                    let newFloat = bookingAmount;
+                                    if (dotExists) {
+                                        newFloat = bookingAmount.split(".");
+                                        if (newFloat[1].length == 1) {
+                                            newFloat[1] += "0";
+                                        } else if (newFloat[1].length == 0) {
+                                            newFloat[1] += "00";
+                                        }
+                                        newFloat = newFloat.join(".");
+                                    } else {
+                                        newFloat += ".00";
+                                    }
                                     axios
                                         .put(url, {
                                             bookingID: response.data.data.bookingID,
@@ -298,10 +313,8 @@ export default defineComponent({
                                             const url = "http://127.0.0.1:5004/lotAdj/" + carparkID + "/2/1"
                                             axios
                                                 .get(url)
-                                                .then((response) => {
-                                                    console.log(response)
-                                                    sucessMsg(bookingAmount, balance);
-
+                                                .then((response) => { 
+                                                    sucessMsg(newFloat, balance);
                                                 })
                                                 .catch((error) => {
                                                     console.log(error.message);
@@ -461,7 +474,7 @@ export default defineComponent({
             const lotsAvailWeight = 1 // lots --> 40 higher lots better
             const priceWeight = 0.5 // price in dollars --> 19.5. lower price better 
             this.carparkArrayToShow = JSON.parse(JSON.stringify(this.carparksArraySimu));
-            for (let eachCarpark of this.carparkArrayToShow){
+            for (const eachCarpark of this.carparkArrayToShow){
                 eachCarpark["points"] = distanceWeight * eachCarpark.distance_km_value +lotsAvailWeight * eachCarpark.data.lotbalancehourly + priceWeight *  eachCarpark.data.totalFee
             }
             this.carparkArrayToShow = this.carparkArrayToShow.sort(function(a, b) {
@@ -520,7 +533,7 @@ export default defineComponent({
                     this.carparksArraySimu.push({
                         data: response.data.data,
                         image: "assets/images/paragon.jpg",
-                        availableLots: response.data.data.lotbalancehourly - response.data.data.lotusehourly,
+                        availableLots: response.data.data.lotbalancehourly,
                         // lat: 1.3040258775031617,
                         // long: 103.83608284915861
                     })
@@ -535,7 +548,7 @@ export default defineComponent({
                             this.carparksArraySimu.push({
                                 data: response.data.data,
                                 image: "assets/images/ion.jpg",
-                                availableLots: response.data.data.lotbalancehourly - response.data.data.lotusehourly,
+                                availableLots: response.data.data.lotbalancehourly,
                                 // lat: 1.3040258775031617,
                                 // long: 103.83608284915861
                             })
@@ -550,7 +563,7 @@ export default defineComponent({
                                     this.carparksArraySimu.push({
                                         data: response.data.data,
                                         image: "assets/images/takashimaya.jpeg",
-                                        availableLots: response.data.data.lotbalancehourly - response.data.data.lotusehourly,
+                                        availableLots: response.data.data.lotbalancehourly,
                                         //         lat: 1.3033454254185042,
                                         // long: 103.83455711763565
                                     })
@@ -565,7 +578,7 @@ export default defineComponent({
                                             this.carparksArraySimu.push({
                                                 data: response.data.data,
                                                 image: "assets/images/tangs.jpg",
-                                                availableLots: response.data.data.lotbalancehourly - response.data.data.lotusehourly,
+                                                availableLots: response.data.data.lotbalancehourly,
                                                 //             lat: 1.3040258775031617,
                                                 // long: 103.83608284915861
                                             })
@@ -580,7 +593,7 @@ export default defineComponent({
                                                     this.carparksArraySimu.push({
                                                         data: response.data.data,
                                                         image: "assets/images/Wheelock.png",
-                                                        availableLots: response.data.data.lotbalancehourly - response.data.data.lotusehourly,
+                                                        availableLots: response.data.data.lotbalancehourly,
                                                         //               lat: 1.3050314731714412,
                                                         // long: 103.83297614415605
                                                     })
@@ -595,7 +608,7 @@ export default defineComponent({
                                                             this.carparksArraySimu.push({
                                                                 data: response.data.data,
                                                                 image: "assets/images/313.jpg",
-                                                                availableLots: response.data.data.lotbalancehourly - response.data.data.lotusehourly,
+                                                                availableLots: response.data.data.lotbalancehourly,
                                                                 //                   lat: 1.301171207812743,
                                                                 // long: 103.8386220085623
                                                             })
@@ -610,7 +623,7 @@ export default defineComponent({
                                                                     this.carparksArraySimu.push({
                                                                         data: response.data.data,
                                                                         image: "assets/images/scape.jpg",
-                                                                        availableLots: response.data.data.lotbalancehourly - response.data.data.lotusehourly,
+                                                                        availableLots: response.data.data.lotbalancehourly,
                                                                         //                     lat: 1.3010677408660067,
                                                                         // long: 103.83576204980196
                                                                     })
@@ -625,11 +638,12 @@ export default defineComponent({
                                         
                                                                             this.carparksArraySimu.push({
                                                                                 data: response.data.data,
-                                                                                availableLots: response.data.data.lotbalancehourly - response.data.data.lotusehourly,
+                                                                                availableLots: response.data.data.lotbalancehourly,
                                                                                 image: "assets/images/wisma.jpeg",
                                                                                 // lat: 1.303842974291844,
                                                                                 // long: 103.8333226716273
                                                                             })
+                                                                            console.log(this.carparksArraySimu)
                                                                             
                                                                             this.combinedLatLang += "1.303842974291844" + "," + "103.8333226716273" + "|";
                                                                             
@@ -661,6 +675,7 @@ export default defineComponent({
                                                                                             this.carparksArraySimu[i]["duration_mins"] = destinations[i].duration_in_traffic.text;
                                                                                         }
                                                                                         
+
             // for (let i = 0; i < this.carparksArraySimu.length ; i++) {
             const bookingDateFormatted = this.bookingDate.substring(0, 10);
             const startDateTime = new Date(bookingDateFormatted + " " + this.startTime.substring(11, 19));

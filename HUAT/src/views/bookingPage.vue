@@ -26,7 +26,6 @@
         </ion-toolbar>
       </ion-header>
 
-      <ion-content class="ion-padding-top">
         <ion-item>
           <ion-label position="stacked">
             Booking Date: {{ bookingInfo.startDate }}</ion-label
@@ -100,8 +99,15 @@
         >
           <ion-button @click="saveEditBooking()"> Save </ion-button>
         </ion-row>
-      </ion-content>
+      
     </ion-modal>
+
+    <ion-select placeholder="Status" class="ion-padding-top ion-padding-bottom" v-model="bookingStatusToShow"  @ionChange="changeStatus()">
+      <ion-select-option value="upcoming">Upcoming</ion-select-option>
+      <ion-select-option value="past">Past</ion-select-option>
+      <ion-select-option  value="all">All</ion-select-option>
+    </ion-select>
+
     <ion-card v-for="eachBooking in bookingDetails" :key="eachBooking">
       <ion-img :src="eachBooking.imagePath"></ion-img>
       <ion-card-header>
@@ -145,9 +151,9 @@
               >
             </ion-item>
           </ion-list> -->
-          <ion-button size="small" fill="outline" slot="start"
+          <!-- <ion-button size="small" fill="outline" slot="start"
             >Directions</ion-button
-          >
+          > -->
           <div class="ion-padding-top"> 
             <ion-card-subtitle
             >Booking Ref: <u>{{ eachBooking.bookingRef }}</u></ion-card-subtitle
@@ -185,7 +191,7 @@
               <ion-button
                 expand="block"
                 @click="
-                  confirmationAlert(eachBooking.bookingID, eachBooking.amount)
+                  confirmationAlert(eachBooking.bookingID, eachBooking.amount,eachBooking.bookingLocation)
                 "
                 color="danger"
                 >Cancel</ion-button
@@ -208,8 +214,9 @@
 <script>
 import { arrowBackOutline } from "ionicons/icons";
 import {
+  IonSelectOption,
+  IonSelect,
   IonHeader,
-  IonContent,
   IonCard,
   IonCardHeader,
   IonCardSubtitle,
@@ -236,8 +243,9 @@ import axios from "axios";
 
 export default defineComponent({
   components: {
+    IonSelectOption,
+    IonSelect,
     IonHeader,
-    IonContent,
     IonCard,
     IonCardHeader,
     IonCardSubtitle,
@@ -260,7 +268,22 @@ export default defineComponent({
   },
   setup() {
     const handlerMessage = ref("");
-    const confirmationAlert = async (bookingID, amount) => {
+    const confirmationAlert = async (bookingID, amount,bookingLocation) => {
+      let amount2 = amount
+      amount2 = amount2.toString();
+      const dotExists = amount.includes(".");
+      if (dotExists) {
+        amount2 = amount2.split(".");
+          if (amount2[1].length == 1) {
+            amount2[1] += "0";
+          } else if (amount[1].length == 0) {
+            amount2[1] += "00";
+          }
+          amount = amount2.join(".");
+      } else {
+        amount += ".00";
+      }
+
       const alert = await alertController.create({
         header: "Are you sure you want to delete this booking? ",
         subHeader: "$" + amount + " will be refunded back to your account",
@@ -281,6 +304,7 @@ export default defineComponent({
               handlerMessage.value = "Alert confirmed";
 
               // update booking status to "cancel"
+              refund(amount)
               let url = "http://127.0.0.1:5001/bookings/" + bookingID;
               axios
                 .put(url, {
@@ -293,8 +317,47 @@ export default defineComponent({
                     .put(url, {
                       bookingID: bookingID,
                     })
+                    
                     .then((response) => {
-                      sucessMsg(amount, response.data.data);
+                      // update lot to plus one
+                      const balance = response.data.data.toString();
+                      url = "http://127.0.0.1:5003/carparks"
+                      axios
+                        .get(url)
+                        .then((response) => {
+                          let newFloat = balance;
+                          const carparks = response.data.data.carparks
+                          for (const eachCarpark of carparks){
+                            if (eachCarpark.carparkName == bookingLocation){
+                              console.log(bookingLocation)
+                               // /lotAdj/<int:carparkid>/<int:parkingtype>/<string:lotadjustment>"
+                                url = "http://127.0.0.1:5004/lotAdj/" + eachCarpark.carparkID+ "/2/-1" 
+                                axios
+                                  .get(url)
+                                  .then((response) => {
+                                      console.log(response)   
+                                      const dotExists = balance.includes(".");
+                                      if (dotExists) {
+                                          newFloat = balance.split(".");
+                                          if (newFloat[1].length == 1) {
+                                              newFloat[1] += "0";
+                                          } else if (newFloat[1].length == 0) {
+                                              newFloat[1] += "00";
+                                          }
+                                          newFloat = newFloat.join(".");
+                                      } else {
+                                          newFloat += ".00";
+                                      }  
+                                      sucessMsg(amount, newFloat);
+                                  })
+                              
+                              
+                            }
+                          }
+                          
+                        })
+                      
+                      
                     })
                     .catch((error) => {
                       console.log(error.message);
@@ -313,11 +376,12 @@ export default defineComponent({
     const sucessMsg = async (amount, balance) => {
       const alert = await alertController.create({
         header: "Success!",
-        subHeader: "$" + amount + " refunded. Balance is " + "$" + balance,
+        subHeader: "$" + amount+ " refunded. Balance is " + "$" +balance,
         buttons: [
           {
             text: "Okay",
             handler: () => {
+              
               location.reload();
             },
           },
@@ -327,6 +391,21 @@ export default defineComponent({
       await alert.present();
     };
 
+    const refund = async (amount) => {
+      
+      const userData = JSON.parse(localStorage.getItem("userData"));
+      const url = "http://127.0.0.1:5006/deduct"
+        axios
+          .post(url, {
+            "amount": amount,
+            "userID": userData['userID']
+          })
+          .then((response) => {
+            console.log(response)
+          })
+    };
+    
+
     return {
       confirmationAlert,
       sucessMsg,
@@ -335,6 +414,7 @@ export default defineComponent({
   },
   data() {
     return {
+      bookingStatusToShow: "upcoming",
       bookingDetails: [],
       userData: {},
       editBookingOpen: false,
@@ -352,6 +432,9 @@ export default defineComponent({
     };
   },
   methods: {
+    changeStatus(){
+      console.log(this.bookingStatusToShow)
+    },
     routeUser(route) {
       this.$router.push({
         path: "/" + route,
@@ -441,7 +524,6 @@ export default defineComponent({
           bookingEndDateTime: newEndDateTime,
         })
         .then((response) => {
-          console.log(response)
           location.reload()
         })
         .catch((error) => {
@@ -457,13 +539,24 @@ export default defineComponent({
       axios
         .delete(url)
         .then((response) => {
-          // console.log(response);
           location.reload();
         })
         .catch((error) => {
           console.log(error.message);
         });
     },
+    // cancelRefund(amount) {
+    //   this.userData = JSON.parse(localStorage.getItem("userData"));
+    //   const url = "http://127.0.0.1:5006/deduct"
+    //     axios
+    //       .post(url, {
+    //         "amount": amount,
+    //         "userID": this.userData
+    //       })
+    //       .then((response) => {
+    //         console.log(response)
+    //       })
+    // },
 
     getUserBooking() {
       this.userData = JSON.parse(localStorage.getItem("userData"));
@@ -509,7 +602,6 @@ export default defineComponent({
                   userID: eachBooking.userID,
                   imagePath: imagePath,
                 });
-                console.log(this.bookingDetails);
               })
               .catch((error) => {
                 console.log(error.message);

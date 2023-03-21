@@ -123,10 +123,19 @@ export default defineComponent({
             userSpending: 0,
             userHasPlan1: false,
             userHasPlan2: false
-            
         }
     },
   methods: {
+    load(){
+      const url = "http://127.0.0.1:5003/carparkCat"
+      axios.get(url)
+          .then((response) => {
+            console.log(response)
+            })
+          .catch((error) => {
+              console.log(error);
+          });
+    },
     checkUserHasPlan(){
       let url = "http://127.0.0.1:5005/subs/" + parseInt(this.userData.userID) + "&"+ 1
       axios.get(url)
@@ -183,6 +192,7 @@ export default defineComponent({
     
   },
   mounted() {
+        this.load()
         this.loadUserData()
         this.getCommonBookings()
         this.checkUserHasPlan()

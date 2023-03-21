@@ -76,6 +76,7 @@ export default defineComponent({
                 .then((response) => {
                     this.userData = JSON.parse(localStorage.getItem("userData"));
                     this.userData.balance = response.data.data
+                    this.addTopup(10)
                     localStorage.setItem("userData", JSON.stringify(this.userData));
                     this.$router.push('/success').then(() => window.location.reload())
                 })
@@ -92,6 +93,7 @@ export default defineComponent({
                 .then((response) => {
                     this.userData = JSON.parse(localStorage.getItem("userData"));
                     this.userData.balance = response.data.data
+                    this.addTopup(20)
                     localStorage.setItem("userData", JSON.stringify(this.userData));
                     this.$router.push('/success').then(() => window.location.reload())
                 })
@@ -108,6 +110,7 @@ export default defineComponent({
                 .then((response) => {
                     this.userData = JSON.parse(localStorage.getItem("userData"));
                     this.userData.balance = response.data.data
+                    this.addTopup(30)
                     localStorage.setItem("userData", JSON.stringify(this.userData));
                     this.$router.push('/success').then(() => window.location.reload())
                 })
@@ -115,6 +118,17 @@ export default defineComponent({
                     console.log(error.message);
                 });
         },
+        addTopup(amount) {
+            const url = "http://127.0.0.1:5006/topup"
+                axios
+                .post(url, {
+                    "amount": amount,
+                    "userID": this.userData.userID
+                })
+                .then((response) => {
+                    console.log(response)
+                })
+            },
     },
     mounted() {
         this.loadUserData()
