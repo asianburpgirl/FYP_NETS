@@ -2,15 +2,15 @@
     <base-layout needToolBar="y" pageTitle="Home">
     
         <!-- this is for ease of development -->
-        <ion-grid>
+        <!-- <ion-grid>
             <ion-row class="ion-justify-content-center">
                 <ion-button color="dark" @click="changeRole('Admin')"> Admin </ion-button>
                 <ion-button color="dark" @click="changeRole('User')"> User </ion-button>
             </ion-row>
-        </ion-grid>
+        </ion-grid> -->
     
         <!-- admin home -->
-        <ion-grid v-if="userRole == 'Admin'">
+        <!-- <ion-grid v-if="userRole == 'Admin'">
     
             <ion-row class="ion-align-items-center">
                 <ion-col>
@@ -19,23 +19,16 @@
                 </ion-col>
             </ion-row>
     
-            <!-- <ion-row class="ion-align-items-center">
-                                                                <ion-col>
-                                                                    <h4 class="ion-text-center">Current Capacity per location</h4>
-                                                                    <GChart type="BarChart" :data="BarChartData" :options="BarChartOptions" />
-                                                                </ion-col>
-                                                            </ion-row> -->
-    
             <ion-row class="ion-align-items-center">
                 <ion-col>
                     <h4 class="ion-text-center">Number of bookings per subscription</h4>
                     <GChart type="ColumnChart" :data="ColumnChartData" :options="ColumnChartOptions" />
                 </ion-col>
             </ion-row>
-        </ion-grid>
+        </ion-grid> -->
     
         <!-- User home -->
-        <ion-grid v-if="userRole == 'User'">
+        <ion-grid>
             <h4 class="ion-text-start">Carpark Details</h4>
             <ion-card v-for="carpark in carparksArraySimu" :key="carpark">
                 <ion-img :src="carpark.image"></ion-img>
@@ -50,10 +43,11 @@
 </template>
 
 <script>
+const userRole = localStorage.getItem("userData");
 import {
-    IonButton,
-    IonRow,
-    IonCol,
+    // IonButton,
+    // IonRow,
+    // IonCol,
     IonGrid,
     IonImg,
     IonCardHeader,
@@ -71,10 +65,10 @@ import {
 import axios from "axios";
 export default defineComponent({
     components: {
-        GChart,
-        IonButton,
-        IonRow,
-        IonCol,
+        // GChart,
+        // IonButton,
+        // IonRow,
+        // IonCol,
         IonGrid,
         IonImg,
         IonCardHeader,
@@ -84,8 +78,6 @@ export default defineComponent({
     },
     data() {
         return {
-            userRole: "",
-            userData: {},
             carparksArraySimu: [],
 
             PieChartData: [
@@ -122,16 +114,16 @@ export default defineComponent({
         };
     },
     methods: {
-        changeRole(role) {
-            this.userRole = role;
-            this.getSimulator()
+        // changeRole(role) {
+        //     this.userRole = role;
+        //     this.getSimulator()
 
-        },
-        loadUserData() {
-            this.userData = JSON.parse(localStorage.getItem("userData"));
-            this.userRole = this.userData.role;
+        // },
+        // loadUserData() {
+        //     this.userData = JSON.parse(localStorage.getItem("userData"));
+        //     this.userRole = this.userData.role;
 
-        },
+        // },
         getPieChart() {
             let pieData = [];
 
@@ -310,10 +302,18 @@ export default defineComponent({
 
         },
     },
+    async created() {
+    if (
+      //if user is admin or super admin
+      userRole === "User"
+    ) {
+      this.isAuthorized = true;
+    }
+  },
     // Calls function on page load
     mounted() {
         this.getSimulator()
-        this.loadUserData();
+        // this.loadUserData();
         this.getBarChart();
         this.getPieChart();
         this.getColumnChart();

@@ -104,9 +104,16 @@ def login_by_username():
 # create user
 @app.route("/users" , methods = ['POST'])
 def createUser():
+    userIDList = []
+    users = User.query.all()
+    
+    userID = 1
+    if len(users):
+        for eachBooking in users:
+            userIDList.append(eachBooking.userID)
+        userIDList.sort( reverse=True)
+        userID = userIDList[0] +1 
 
-    # bookingID = request.json.get('bookingID' , None)
-    userID = ''.join(random.SystemRandom().choice(string.digits) for _ in range(6))
     email = request.json.get('email' , None)
     name = request.json.get('name' , None)
     phoneNum = request.json.get('phoneNum' , None)
