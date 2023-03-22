@@ -6,6 +6,7 @@ import json
 # import json
 from os import environ
 import random
+import datetime
 # import string
 
 app = Flask(__name__)
@@ -20,7 +21,7 @@ CORS(app)
 
 
 class Carpark(db.Model):
-    __tablename__ = 'carparkdetails'
+    __tablename__ = 'carparkDetails'
 
     carparkID = db.Column(db.Integer, primary_key=True)
     carparkName = db.Column(db.String(100), nullable=False)
@@ -40,7 +41,7 @@ class Carpark(db.Model):
     seasonweekendnonpeak = db.Column(db.Integer, nullable=False)
     chosen = db.Column(db.Integer, nullable=False)
 
-    def __init__(self, carparkID, carparkName, carparkLocation, latitude, longitude,imagePath, maxCapacity, currentCapacity, hourlyweekdaypeak, hourlyweekdaynonpeak, hourlyweekendpeak, hourlyweekendnonpeak, seasonweekdaypeak, seasonweekdaynonpeak, seasonweekendpeak, seasonweekendnonpeak, chosen = chosen):
+    def __init__(self, carparkID, carparkName, carparkLocation, latitude, longitude,imagePath, maxCapacity, currentCapacity, hourlyweekdaypeak, hourlyweekdaynonpeak, hourlyweekendpeak, hourlyweekendnonpeak, seasonweekdaypeak, seasonweekdaynonpeak, seasonweekendpeak, seasonweekendnonpeak, chosen):
         self.carparkID = carparkID
         self.carparkName = carparkName
         self.carparkLocation = carparkLocation
@@ -129,6 +130,7 @@ class Booking(db.Model):
 @app.route("/carparks")
 def get_all():
     carparkList = Carpark.query.all()
+
     if len(carparkList):
         return jsonify(
             {
@@ -209,69 +211,95 @@ def getCarparkImage():
         }
     ), 404
     
-# categorise carparks into 4 tiers
+#categorise carparks into 4 tiers
 @app.route("/carparkCat")
 def categoriseCarparkTiers():
-    bookings = Booking.query.all()
-    carparks = Carpark.query.all()
-    
-    bookings_dict = {}
-    if len(bookings):
+    today = datetime.datetime.today()
+    today = today.day
+    if today == 1:
+        bookings = Booking.query.all()
+        carparks = Carpark.query.all()
+        
+        bookings_dict = {}
+        if len(bookings):
         #get all carpark names
-        carpark_names = []
-        for eachCarpark in carparks:
-            carpark_names.append(eachCarpark.carparkName)
-        # sort all carparks from most popular to least popular
-        for eachBooking in bookings:
-            if eachBooking.bookingLocation in carpark_names:
-                carpark_names.remove(eachBooking.bookingLocation)
-            if eachBooking.bookingLocation in bookings_dict:
-                    bookings_dict[eachBooking.bookingLocation] += 1
-            else:
-                bookings_dict[eachBooking.bookingLocation] = 1
-        bookings_sorted = dict(sorted(bookings_dict.items(), key=lambda x:x[1], reverse= True))
-        bookings_list = []
-        for location, count in bookings_sorted.items():
-            bookings_list.append({"location": location, "count": count})
-        
-        # in case there is a carpark without any booking
-        for missingCarparks in carpark_names:
-            bookings_list.append({"location": missingCarparks, "count": 0})
-        
-        #splitting into tiers 
-        no_of_tier = 4 
-        tieredBooking = {}
-        carparkInEachGroup = len(bookings_list)//no_of_tier 
-        count = 1
-        myList= []
-        for i in range(0, len(bookings_list)):
-             myList.append(bookings_list[i])
-             if len(myList) == carparkInEachGroup:
-                 tieredBooking[count] = myList
-                 count += 1
-                 myList= []
-        print(tieredBooking)
-        chosenCarpark = []
-        for (index,eachTier) in tieredBooking.items():
-            chosenCarpark.append(random.choices(eachTier))
+            carpark_names = []
+            for eachCarpark in carparks:
+                carpark_names.append(eachCarpark.carparkName)
+            # sort all carparks from most popular to least popular
+            for eachBooking in bookings:
+                if eachBooking.bookingLocation in carpark_names:
+                    carpark_names.remove(eachBooking.bookingLocation)
+                if eachBooking.bookingLocation in bookings_dict:
+                        bookings_dict[eachBooking.bookingLocation] += 1
+                else:
+                    bookings_dict[eachBooking.bookingLocation] = 1
+            bookings_sorted = dict(sorted(bookings_dict.items(), key=lambda x:x[1], reverse= True))
+            bookings_list = []
+            for location, count in bookings_sorted.items():
+                bookings_list.append({"location": location, "count": count})
             
-        print(chosenCarpark)
+            # in case there is a carpark without any booking
+            for missingCarparks in carpark_names:
+                bookings_list.append({"location": missingCarparks, "count": 0})
             
-        return jsonify(
-            {
-                "code": 200,
-                "data": {
-                    "bookings": chosenCarpark,
+            #splitting into tiers 
+            no_of_tier = 4 
+            tieredBooking = {}
+            carparkInEachGroup = len(bookings_list)//no_of_tier 
+            count = 1
+            myList= []
+            for i in range(0, len(bookings_list)):
+                myList.append(bookings_list[i])
+                if len(myList) == carparkInEachGroup:
+                    tieredBooking[count] = myList
+                    count += 1
+                    myList= []
+
+            chosenCarpark = []
+            for (index,eachTier) in tieredBooking.items():
+                chosenCarpark.append(random.choices(eachTier))
+            
+            for eachCarpark in carparks:
+                for eachCarpark2 in chosenCarpark:
+                    if eachCarpark.carparkName == eachCarpark2[0]["location"]:
+                        eachCarpark.chosen = 1
+            db.session.commit()
+            return jsonify(
+                {
+                    "code": 200,
+                    "data": {
+                        "bookings": chosenCarpark,
+                    }
                 }
-            }
-        )
+            )
     return jsonify(
         {
             "code": 404,
             "message": "There are no applications."
         }
     ), 404
+    
+# return carparks with chosen == 1. ie chosen for the month
+@app.route("/chosenCarparks")
+def get_chosen_carparks():
+    carparks = Carpark.query.filter_by(chosen=1).all()
 
+    if carparks:
+        return jsonify(
+            {
+                "code": 200,
+                "data": {
+                    "carparks": [carpark.json() for carpark in carparks]
+                }
+            }
+        )
+    return jsonify(
+        {
+            "code": 404,
+            "message": "There are no such carparks."
+        }
+    ), 404
     
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5003, debug=True)

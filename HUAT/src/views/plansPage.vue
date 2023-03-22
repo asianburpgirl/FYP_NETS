@@ -1,6 +1,6 @@
 <template>
   <base-layout pageTitle="Subscription Plans" pageToGoBack="/tabs/" needToolBar="y">
-      <ion-card>
+      <ion-card v-if="userHasPlan2==false"  >
           <ion-grid>
           <ion-card-header>
             <ion-card-title>Just for you</ion-card-title>
@@ -11,11 +11,13 @@
             You are paying: ${{ userSpending }} a month 
             <br>
             You save: ${{ userSave }} per month
+            <br> 
+            Price: ${{ subsAmtPlan1 }} per month
             
             <br />
             <ion-item lines="none" >
               <ion-button  
-              v-if="userHasPlan1==false"                
+              v-if="userHasPlan1==false && userHasPlan2==false "                
                 slot ="end"
                 color="success"
                 size="large"
@@ -23,7 +25,7 @@
                 Subscribe</ion-button
               >
               <ion-button  
-                v-if="userHasPlan1==true"   
+                v-if="userHasPlan1==true || userHasPlan2==true "   
                 slot ="end"
                 color="success"
                 size="large"
@@ -31,19 +33,33 @@
                 Subscribed</ion-button
               >
             </ion-item>
+            <br>
+              <ion-button  
+              v-if="userHasPlan1==true || userHasPlan2==true "   
+                color="danger"
+                size="large"
+                @click="confirmationAlert(this.userData)">
+                Cancel</ion-button
+              >
           </ion-card-header>
         </ion-grid>
       </ion-card>
       
-      <ion-card>
+      <ion-card v-if="userHasPlan1==false "  >
         <ion-grid>
           <ion-card-header>
             <ion-card-title>Monthly Subscription</ion-card-title>
-            <ion-card-subtitle> Monthly subscription for a fixed fee!</ion-card-subtitle> 
-            <br />
+            <ion-card-subtitle> Monthly subscription for these carparks for a fixed fee!</ion-card-subtitle> 
+            <ul v-for="eachCarpark in subscriptionFourCarpark" :key="eachCarpark">
+              <li>{{ eachCarpark.carparkName }}</li>
+            </ul>
+            <br> 
+            Price: ${{ subsAmtPlan2 }} per month
+            <br>
+            
             <ion-item lines="none" >
               <ion-button         
-              v-if="userHasPlan2==false"           
+              v-if="userHasPlan2==false && userHasPlan1==false"           
                 slot ="end"
                 color="success"
                 size="large"
@@ -52,13 +68,22 @@
                 Subscribe</ion-button
               >
               <ion-button          
-              v-if="userHasPlan2==true"       
+              v-if="userHasPlan2==true || userHasPlan1==true "       
                 slot ="end"
                 color="success"
-                size="large">
+                size="large"
+                disabled = true>
                 Subscribed</ion-button
               >
             </ion-item>
+            <br>
+              <ion-button  
+                v-if="userHasPlan1==true || userHasPlan2==true "   
+                color="danger"
+                size="large"
+                @click="confirmationAlert(this.userData)">
+                Cancel</ion-button
+              >
           </ion-card-header>
         </ion-grid>
       </ion-card>
@@ -94,11 +119,12 @@ import {
   IonGrid,
   IonCard,
   IonCardHeader,
+  alertController
   // IonRow,
   // IonCol
 
 } from "@ionic/vue";
-import { defineComponent } from "vue";
+import { defineComponent,ref } from "vue";
 // import ExploreContainer from '@/components/ExploreContainer.vue';
 import axios from "axios";
 
@@ -119,18 +145,112 @@ export default defineComponent({
         return {
             userData: {},
             commonThreeCarpark : [],
+            subscriptionFourCarpark : [],
             userSave: 0,
             userSpending: 0,
+            subsAmtPlan1: 0,
+            subsAmtPlan2: 20,
             userHasPlan1: false,
-            userHasPlan2: false
+            userHasPlan2: false,
+            subUserHas: 0,
         }
     },
+
+  setup() {
+    const handlerMessage = ref("");
+    const confirmationAlert = async (userData) => {
+        const alert = await alertController.create({
+            header: "Delete your subscription? ",
+            buttons: [{
+                    text: "Cancel",
+                    cssClass: "alert-button-cancel",
+                    role: "cancel",
+                    handler: () => {
+                        handlerMessage.value = "Alert canceled";
+                        },
+                    },
+                    {
+                        text: "Yes",
+                        cssClass: "alert-button-confirm",
+                        role: "confirm",
+                        handler: () => { 
+                            //get sub ID of user subscription
+                            const url = "http://127.0.0.1:5005/subs/" + parseInt(userData.userID) 
+                                axios.get(url)
+                                    .then((response) => {
+                                      const subToDeleteID =  response.data.data.subscriptions[0].subsID
+                                      //delete id = sub id         
+                                      const url = "http://127.0.0.1:5005/subs/" + subToDeleteID
+                                      axios.delete(url)
+                                          .then((response) => {
+                                            
+                                            sucessMsg()
+                                          })
+                                          .catch((error) => {
+                                              console.log(error);
+                                          });
+
+                                      })
+                                    .catch((error) => {
+                                        console.log(error);
+                                    });  
+                        },
+                    },
+            ]
+        });
+        await alert.present();
+    };
+        
+        const sucessMsg = async () => {
+            const alert = await alertController.create({
+                header: "Success!",
+                subHeader: "The subscription plan has been deleted",
+                buttons: [{
+                    text: "Okay",
+                    handler: () => {
+                      location.reload()
+                        
+                        // this.$router.push('/success').then(() => window.location.reload())
+                    },
+                }, ],
+            });
+            await alert.present();
+        };
+        
+      
+      
+      return {  confirmationAlert, sucessMsg };
+      
+      // mostVisited or monthlyPlan
+    },
   methods: {
-    load(){
-      const url = "http://127.0.0.1:5003/carparkCat"
+    cancelSub2(){
+      // get sub ID of user subscription
+      const url = "http://127.0.0.1:5005/subs/" + parseInt(this.userData.userID) 
       axios.get(url)
           .then((response) => {
-            console.log(response)
+            const subToDeleteID =  response.data.data.subscriptions[0].subsID
+            //delete id = sub id         
+            const url = "http://127.0.0.1:5005/subs/" + subToDeleteID
+            axios.delete(url)
+                .then((response) => {
+                  location.reload()
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+
+            })
+          .catch((error) => {
+              console.log(error);
+          });
+      
+    },
+    getCarparksMonthlySubs(){
+      const url = "http://127.0.0.1:5003/chosenCarparks"
+      axios.get(url)
+          .then((response) => {
+            this.subscriptionFourCarpark = response.data.data.carparks
             })
           .catch((error) => {
               console.log(error);
@@ -140,7 +260,6 @@ export default defineComponent({
       let url = "http://127.0.0.1:5005/subs/" + parseInt(this.userData.userID) + "&"+ 1
       axios.get(url)
           .then((response) => {
-            console.log(response.data.data,"1")
             this.userHasPlan1 = response.data.data.subscriptionsExists
             
                 })
@@ -150,7 +269,6 @@ export default defineComponent({
       url = "http://127.0.0.1:5005/subs/" + parseInt(this.userData.userID) + "&"+ 2
         axios.get(url)
             .then((response) => {
-              console.log(response.data.data,"2")
               this.userHasPlan2 = response.data.data.subscriptionsExists
             })
             .catch((error) => {
@@ -181,8 +299,7 @@ export default defineComponent({
         .then((response) => {
           this.userSave = response.data.data.discount
           this.userSpending =  response.data.data.totalPrice
-
-           
+          this.subsAmtPlan1 = (this.userSpending * 3 * 0.95).toFixed(2)
         })
         .catch((error) => {
             console.log(error);
@@ -192,7 +309,8 @@ export default defineComponent({
     
   },
   mounted() {
-        this.load()
+        
+        this.getCarparksMonthlySubs()
         this.loadUserData()
         this.getCommonBookings()
         this.checkUserHasPlan()

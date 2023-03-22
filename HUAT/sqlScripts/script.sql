@@ -23,27 +23,15 @@ VALUES (NULL, CURRENT_TIMESTAMP,  'ION Orchard','2 Orchard Turn, Singapore 23880
 (NULL, '2023-05-05 12:44:10', 'Wisma Atria', '435 Orchard Rd, Singapore 238877', '2023-01-28 12:00:00', '2023-01-28 01:00:00', 'Booked', '22afsadsf4df13Rafdf', 0.51, '3');
 
 CREATE TABLE subscriptions( 
-	subscriptionID INT(11) NOT NULL AUTO_INCREMENT , 
-    subscriptionType VARCHAR(128) NOT NULL ,
-    subscriptionsStartTime DATETIME NOT NULL, 
-    subscriptionsEndTime DATETIME NOT NULL, 
-    bookingLocation VARCHAR(128) NOT NULL , 
-    locationName VARCHAR(128) NOT NULL ,
+	subsID INT(11) NOT NULL AUTO_INCREMENT , 
+    -- subsDateTime DATETIME NOT NULL, 
+    subsDateTime INT NOT NULL,  
+    subsTypeID VARCHAR(128) NOT NULL ,
     status VARCHAR(128) NOT NULL , 
-    subscriptionRef VARCHAR(128) NOT NULL,
-    subscriptionAmt FLOAT(5,2) NOT NULL, 
+    subsRef VARCHAR(128) NOT NULL,
+    subsAmt FLOAT(5,2) NOT NULL, 
     userID INT NOT NULL , 
-    PRIMARY KEY (subscriptionID));
-	
-INSERT INTO `subscriptions` (`subscriptionID`, `subscriptionType`, `subscriptionsStartTime`, 
-`subscriptionsEndTime`, `bookingLocation`, `locationName`, 
-`status`,  `subscriptionRef`, `subscriptionAmt`, `userID`) 
-VALUES (NULL, 'Hourly','2023-02-01 15:30:00', '2023-02-05 15:30:00',
-'Funan','99 City Hall Street, Singapore 755666', 'Subscribed', 'aasS234Fa3Af3ff319fD', 1.00, '1'),
-(NULL, 'Complmentary','2023-02-01 12:30:00', '2023-02-05 15:30:00',
-'Funan','99 City Hall Street, Singapore 755666', 'Subscribed', 'b1sS2a4FA5Af3f5d19fT', 100.51, '1'),
-(NULL, 'Complmentary','2023-02-01 12:30:00', '2023-02-15 17:00:00',
-'Funan','99 City Hall Street, Singapore 755666', 'Subscribed', '1SsS26A4A5Af3Ufd19Y3', 0, '2');
+    PRIMARY KEY (subsID));
 
 
 CREATE TABLE carparkDetails (
@@ -107,3 +95,5 @@ INSERT INTO `transaction` (`transID`, `transDate`, `transType`, `amount`,`userID
 (NULL, '2023-01-06 22:58:38', 'topup', 11.00, '3'),
 (NULL, '2023-03-06 23:58:38', 'deduct', 1.02, '3'),
 (NULL, '2023-03-16 13:58:38', 'topup', 5.00, '3');
+
+
