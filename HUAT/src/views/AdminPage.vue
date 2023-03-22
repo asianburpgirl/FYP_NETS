@@ -3,18 +3,16 @@
     <ion-grid>
       <ion-row class="ion-align-items-center">
         <ion-col>
-          <h4 class="ion-text-center">Percentage of bookings per location</h4>
           <GChart
             type="PieChart"
-            :options="PieChartoptions"
             :data="PieChartData"
+            :options="PieChartoptions"
           />
         </ion-col>
       </ion-row>
 
       <ion-row class="ion-align-items-center">
         <ion-col>
-          <h4 class="ion-text-center">Number of bookings per subscription</h4>
           <GChart
             type="ColumnChart"
             :data="ColumnChartData"
@@ -25,11 +23,20 @@
 
       <!-- <ion-row class="ion-align-items-center">
         <ion-col>
-          <h4 class="ion-text-center">Number of bookings per subscription</h4>
           <GChart
             type="LineChart"
             :data="LineChartData"
-            :options="ColumnChartOptions"
+            :options="LineChartOptions"
+          />
+        </ion-col>
+      </ion-row>
+
+      <ion-row class="ion-align-items-center">
+        <ion-col>
+          <GChart
+            type="ColumnChart"
+            :data="BarChartData"
+            :options="BarChartOptions"
           />
         </ion-col>
       </ion-row> -->
@@ -58,39 +65,40 @@ export default defineComponent({
     return {
       carparksArraySimu: [],
       PieChartData: [["Bookings", "Percentage of bookings"]],
-      LineChartData: [["Carpark Location", "Time"]],
-      ColumnChartData: [
-        ["Carpark Name", "Subscription Plan", "No. of Subscribers"],
-      ],
+      ColumnChartData: [["Carpark Name", "Subscription Plan", "No. of Subscribers"]],
+      LineChartData: [["Time", "Number of bookings"]],
+      BarChartData: [['Month','Revenue']],
       PieChartoptions: {
         title: "Percentage of bookings per location",
         pieHole: 0.1,
         // width: 400,
         // height: 400
       },
-      LineChartOptions: {
-        title: "Number of bookings per location",
-        legend: {
-          position: "bottom",
-        },
-        // width: 400,
-        // height: 400
-      },
       ColumnChartOptions: {
         title: "Number of bookings per subscription",
-        legend: {
-          position: "bottom",
-        },
+        legend: { position: "bottom" },
         // width: 400,
         // height: 400
       },
+      LineChartOptions: {
+        title: "Peak Time Analysis",
+        legend: { position: "bottom" },
+        // width: 400,
+        // height: 400
+      },
+      BarChartOptions: {
+        title: "Revenue per month",
+        legend: { position: "bottom" },
+        // width: 400,
+        // height: 400
+      }
     };
   },
   methods: {
     getPieChart() {
       let pieData = [];
-
       const url = "http://localhost:5001/bookings";
+      
       axios
         .get(url)
         .then((response) => {
@@ -104,26 +112,6 @@ export default defineComponent({
           }
           return pieData;
           // console.log(response.data.data.bookings)
-        })
-        .catch((error) => {
-          console.log(error.message);
-        });
-    },
-    getLineChart() {
-      let LineData = [];
-      const url = "http://localhost:5001/bookings";
-
-      axios
-        .get(url)
-        .then((response) => {
-          LineData = response.data.data.carparks;
-          for (let i = 0; i < LineData.length; i++) {
-            this.LineChartData.push([
-              LineData[i]["bookingLocation"],
-              LineData[i]["bookingAmt"],
-            ]);
-          }
-          return LineData;
         })
         .catch((error) => {
           console.log(error.message);
@@ -146,6 +134,61 @@ export default defineComponent({
             ]);
           }
           return columnData;
+        })
+        .catch((error) => {
+          console.log(error.message);
+        });
+    },
+    getLineChart() {
+      const timeAxis = { '1': 0, '2': 0, '3': 0, '4': 0, '5': 0, '6': 0, '7': 0, '8': 0, '9': 0, '10': 0, '11': 0, '12': 0,
+      '13': 0, '14': 0, '15': 0, '16': 0, '17': 0, '18': 0, '19': 0, '20': 0, '21': 0, '22': 0, '23': 0, '24': 0};
+      let LineData = [];
+      const url = "http://localhost:5001/bookings";
+
+      axios
+        .get(url)
+        .then((response) => {
+          LineData = response.data.data.bookings;
+          console.log(LineData)
+          for (let i = 0; i < LineData.length; i++) {
+            for (const num in timeAxis){
+              if (num == parseInt(LineData[i]["bookingStartDateTime"].slice(17, 20))){
+                timeAxis[num] += 1;
+              }
+            }
+          }
+          console.log(timeAxis)
+          for (const number in timeAxis){
+            this.LineChartData.push([number + ":00", timeAxis[number]])
+          }
+          return this.LineChartData;
+        })
+        .catch((error) => {
+          console.log(error.message);
+        });
+    },
+    getBarChart() {
+      const months = {'Jan': 0, 'Feb': 0, 'Mar': 0, 'Apr': 0, 'May': 0, 'Jun': 0, 'Jul': 0, 'Aug': 0, 'Sep': 0, 'Nov': 0, 'Oct': 0, 'Dec': 0}
+      let BarData = [];
+      const url = "http://localhost:5006/transaction";
+
+      axios
+        .get(url)
+        .then((response) => {
+          BarData = response.data.data.transactions;
+          console.log(BarData)
+          for (let i = 0; i < BarData.length; i++) {
+            for (const month in months) {
+              if (month == BarData[i]["transDate"].slice(8, 11) && BarData[i]["transType"] == "topup") {
+                months[month] += BarData[i]["amount"]
+              }
+            }
+          }
+          console.log(months)
+          for (const mon in months){
+            this.BarChartData.push([mon, months[mon]])
+          }
+          return this.BarChartData;
         })
         .catch((error) => {
           console.log(error.message);
@@ -281,9 +324,10 @@ export default defineComponent({
   // Calls function on page load
   mounted() {
     this.getSimulator();
-    this.getLineChart();
     this.getPieChart();
     this.getColumnChart();
+    this.getLineChart();
+    this.getBarChart();
   },
 });
 </script>

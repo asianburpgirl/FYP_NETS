@@ -15,16 +15,15 @@ app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL') or 'mysql+mysqlconn
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {'pool_recycle': 299}
 
-
 db = SQLAlchemy(app)
 CORS(app)
-
 
 class Subscription(db.Model):
     __tablename__ = 'subscriptions'
 
     subsID = db.Column(db.Integer, primary_key=True)
     # subsDateTime = db.Column(db.DateTime, nullable=True)
+    # not using the date time now, i put here just in case
     subsDateTime = db.Column(db.Integer,  nullable=False)
     subsTypeID = db.Column(db.Integer,  nullable=False)
     status = db.Column(db.String(128), nullable=False)
@@ -95,7 +94,6 @@ class User(db.Model):
         return user.json()
 
 
-
 # Get All Subscriptions
 @app.route("/subs")
 def get_all():
@@ -150,7 +148,8 @@ def check_if_subs_exists(userID,subsID):
             {
                 "code": 200,
                 "data": {
-                    "subscriptionsExists": subsExists
+                    "subscriptionsExists": subsExists,
+                    
                 }
             }
         )
@@ -161,7 +160,7 @@ def check_if_subs_exists(userID,subsID):
             "code": 404,
             "message": "There are no subscriptions."
         }
-    ), 404
+    ),404
     
 # Create a new subscription
 @app.route("/subs", methods=['POST'])

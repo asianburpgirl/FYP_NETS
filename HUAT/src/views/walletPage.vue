@@ -30,7 +30,7 @@
             <ion-item v-for="eachTrans in trans" :key="eachTrans">
                 <!-- <ion-label color="{{ eachBooking.color }}">Booking</ion-label> -->
                 <ion-label>{{eachTrans.transID}}</ion-label>
-                <ion-label>{{ eachTrans.transDate }}
+                <ion-label>{{ eachTrans.transDateClean }}
                 </ion-label>
                 
                 <ion-label v-if="eachTrans.type == 'topup'" :color="eachTrans.colortopup" class="ion-text-right"> ${{ eachTrans.amount }}</ion-label>
@@ -152,21 +152,25 @@ export default defineComponent({
             axios
                 .get(url)
                 .then((response) => {
-                    console.log(response.data.data.bookings)
                     for (const eachTrans in response.data.data.bookings) {
-                        console.log(response.data.data.bookings[eachTrans]['amount'])
                         this.trans.push({
                             amount: this.formatMoney(response.data.data.bookings[eachTrans]['amount']),
                             transID: response.data.data.bookings[eachTrans]['transID'],
-                            transDate: response.data.data.bookings[eachTrans]['transDate'].slice(4, 17),
+                            transDateClean: response.data.data.bookings[eachTrans]['transDate'].slice(4, 17),
+                            transDate: response.data.data.bookings[eachTrans]['transDate'],
                             type: response.data.data.bookings[eachTrans]['transType'],
                             colordeduct: "danger",
                             colortopup: "success",
-                            // colorrefund: "medium",
-                            
+                            // colorrefund: "medium",       
+                        });
+                        this.trans= this.trans.sort(function(a, b) {
+                            const keyA = a.transDate;
+                            const keyB = b.transDate;
+                            if (keyA > keyB) return -1;
+                            if (keyA < keyB) return 1;
+                            return 0;
                         });
                     }
-                    console.log(this.trans)
                     // this.balance = response.data.data.balance;
                 })
                 .catch((error) => {
