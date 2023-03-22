@@ -28,20 +28,13 @@
       </ion-item>
     </ion-list>
     <div class="ion-text-center ion-padding-top">
-      <ion-button shape="round" expand="block"> Save </ion-button>
+      <ion-button expand="block"> Save </ion-button>
     </div>
   </base-layout>
 </template>
 
 <script lang="ts">
-import {
-    IonLabel,
-    IonItem,
-    IonList,
-    IonButton,
-    IonInput
-  
-} from "@ionic/vue";
+import { IonLabel, IonItem, IonList, IonButton, IonInput } from "@ionic/vue";
 import { defineComponent } from "vue";
 import { add, card, home, star, wallet } from "ionicons/icons";
 
@@ -51,7 +44,7 @@ export default defineComponent({
     IonItem,
     IonList,
     IonButton,
-    IonInput
+    IonInput,
   },
 });
 </script>

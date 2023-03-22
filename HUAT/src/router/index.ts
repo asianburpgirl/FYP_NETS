@@ -17,6 +17,7 @@ import successPage from "../views/successPage.vue";
 import AdminPage from "../views/AdminPage.vue";
 import AdminUserPage from "../views/adminUsers.vue";
 import AdminBookingPage from "../views/adminBookings.vue";
+import AdminProfile from "../views/adminProfile.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -42,6 +43,10 @@ const routes: Array<RouteRecordRaw> = [
       {
         path: "adminBookings",
         component: AdminBookingPage
+      },
+      {
+        path: "adminProfile",
+        component: AdminProfile
       },
     ]
   },

@@ -15,7 +15,12 @@
 
         <ion-tab-button tab="person" href="/adminTabs/adminUsers">
           <ion-icon :icon="person" />
-          <ion-label> Users</ion-label>
+          <ion-label>Users</ion-label>
+        </ion-tab-button>
+
+        <ion-tab-button tab="person" href="/adminTabs/adminProfile">
+          <ion-icon :icon="person" />
+          <ion-label>Profile</ion-label>
         </ion-tab-button>
       </ion-tab-bar>
     </ion-tabs>
