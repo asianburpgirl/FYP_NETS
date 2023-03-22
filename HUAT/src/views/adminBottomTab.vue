@@ -13,8 +13,8 @@
           <ion-label>Bookings</ion-label>
         </ion-tab-button>
 
-        <ion-tab-button tab="person" href="/adminTabs/adminUsers">
-          <ion-icon :icon="person" />
+        <ion-tab-button tab="users" href="/adminTabs/adminUsers">
+          <ion-icon :icon="star" />
           <ion-label>Users</ion-label>
         </ion-tab-button>
 
@@ -37,7 +37,7 @@ import {
   IonPage,
   IonRouterOutlet,
 } from "@ionic/vue";
-import { albums, card, home, person } from "ionicons/icons";
+import { albums, card, home, person, star } from "ionicons/icons";
 import { defineComponent } from "vue";
 
 export default defineComponent({
@@ -51,7 +51,7 @@ export default defineComponent({
     IonRouterOutlet,
   },
   setup() {
-    return { card, albums, home, person };
+    return { card, albums, home, person, star };
   },
 });
 </script>
