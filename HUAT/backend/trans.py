@@ -125,8 +125,15 @@ def get_by_user(userID):
 # Create a transaction for topup
 @app.route("/topup", methods=['POST'])
 def topupTrans():
-
-    transID = ''.join(random.SystemRandom().choice(string.digits) for _ in range(6))
+    transactionsIDList = []
+    transactions = Transaction.query.all()
+    transID = 1
+    if len(transactions):
+        for eachTrans in transactions:
+            transactionsIDList.append(eachTrans.transID)
+        transactionsIDList.sort( reverse=True)
+        transID = transactionsIDList[0] +1 
+        
     transDate = datetime.datetime.now()
     transType = "topup"
     amount = request.json.get('amount', None)

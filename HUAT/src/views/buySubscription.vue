@@ -10,6 +10,13 @@
             <li>{{ eachCarpark }}</li>
         </ul>
     </div>
+
+    <div v-if="subscriptionPlan=='monthlyPlan'">
+        Park at 4 random carparks chosen every month for free!
+        <ul v-for="eachCarpark in subscriptionFourCarpark" :key="eachCarpark" >
+            <li>{{ eachCarpark.carparkName }}</li>
+        </ul>
+    </div>
   
   <ion-list v-if="subscriptionPlan=='mostVisited'">
     <br> 
@@ -46,7 +53,7 @@
 
 
     <ion-row class="ion-justify-content-center ion-padding-bottom" v-if="userSubscribed==false">
-        <ion-button :disabled=!userSufficientBalance shape="round" @click="confirmationAlert(subsAmt)">
+        <ion-button :disabled=!userSufficientBalance shape="round" @click="confirmationAlert(subsAmt, userData,subsType)">
             Subscribe
         </ion-button>
     </ion-row>
@@ -59,6 +66,7 @@
 import {  IonList, IonRow,IonButton,IonText, alertController  } from "@ionic/vue";
 import { defineComponent,ref } from "vue";
 import { useRoute } from 'vue-router';
+import { useRouter } from 'vue-router';
 import BaseLayout from "../components/baseLayout.vue";
 import axios from "axios";
 // import { arrowBack, home, star } from 'ionicons/icons';
@@ -73,7 +81,7 @@ export default defineComponent({
   },
   setup() {
     const handlerMessage = ref("");
-    const confirmationAlert = async ( subsAmt) => {
+    const confirmationAlert = async ( subsAmt, userData,subsType) => {
         const alert = await alertController.create({
             header: "Confirm your subscription? ",
             subHeader: "$" + subsAmt+ " will be deducted from your account",
@@ -89,14 +97,14 @@ export default defineComponent({
                         text: "Yes",
                         cssClass: "alert-button-confirm",
                         role: "confirm",
-                        handler: () => {
+                        handler: () => {                            
                             const url="http://127.0.0.1:5005/subs" 
                             axios.post(url, { 
-                                subsTypeID : "1",
+                                subsTypeID : subsType,
                                 subsDateTime: 1,
                                 subsAmt: subsAmt,
                                 status: "Subscribed",
-                                userID: 1
+                                userID: userData.userID,
                             })
                             .then((response) => {
                             // this.userSave = response.data.data.discount
@@ -126,6 +134,7 @@ export default defineComponent({
         });
         await alert.present();
     };
+        const router = useRouter();
         const sucessMsg = async (amount, balance) => {
             const alert = await alertController.create({
                 header: "Success!",
@@ -133,8 +142,8 @@ export default defineComponent({
                 buttons: [{
                     text: "Okay",
                     handler: () => {
-                        
-                        this.$router.push("/tabs/plans")
+                        router.push("/tabs/plans").then(() => window.location.reload());
+                        // this.$router.push('/success').then(() => window.location.reload())
                     },
                 }, ],
             });
@@ -143,7 +152,7 @@ export default defineComponent({
         
       const route = useRoute();
       const { subscriptionPlan } = route.params;
-      return { subscriptionPlan, confirmationAlert, sucessMsg };
+      return { subscriptionPlan, confirmationAlert, sucessMsg, router };
       
       // mostVisited or monthlyPlan
     },
@@ -151,28 +160,46 @@ export default defineComponent({
         return {
             userData: {},
             commonThreeCarpark : [],
+            subscriptionFourCarpark: [],
             userSave: 0,
             userSpending: 0,
             subsAmt :0,
             userSufficientBalance: false,
-            userSubscribed: false
+            userSubscribed: false,
+            subsType: 0
         }
     },
   methods: {
-    
+    getCarparksMonthlySubs(){
+      const url = "http://127.0.0.1:5003/chosenCarparks"
+      axios.get(url)
+          .then((response) => {
+            this.subscriptionFourCarpark = response.data.data.carparks
+            this.subsAmt = 20
+            this.checkIfSufficientBalance(this.subsAmt)
+            })
+          .catch((error) => {
+              console.log(error);
+          });
+    },
     checkUserHasPlan(){
         const route = useRoute();
       const { subscriptionPlan } = route.params;
         let planType = 2
+        this.subsType = 2
         if (subscriptionPlan =="mostVisited"){
             planType = 1
+            this.subsType = 1
+            this.getCommonBookings()
+        }
+        else{
+            this.getCarparksMonthlySubs()
         }
       const url = "http://127.0.0.1:5005/subs/" + parseInt(this.userData.userID) + "&"+ planType
       axios.get(url)
           .then((response) => {
             this.userSubscribed = response.data.data.subscriptionsExists
-            
-                })
+            })
           .catch((error) => {
               console.log(error);
           });
@@ -185,19 +212,16 @@ export default defineComponent({
     },
     checkIfSufficientBalance(amountToCheck){
         const url = "http://127.0.0.1:5002/getBalance/" + parseInt(this.userData.userID)
-    axios.get(url)
-        .then((response) => {
-           const userBalance= response.data.data.balance
-           if (userBalance >amountToCheck ){
-            this.userSufficientBalance = true
-           }
-        })
-        .catch((error) => {
-            console.log(error);
-        });
-    },
-    changeCarParkChoice(){
-      this.getCarparkPrices()
+        axios.get(url)
+            .then((response) => {
+            const userBalance= response.data.data.balance
+            if (userBalance >amountToCheck ){
+                this.userSufficientBalance = true
+            }
+            })
+            .catch((error) => {
+                console.log(error);
+            });
     },
     loadUserData() {
             this.userData = JSON.parse(localStorage.getItem("userData"));
@@ -230,8 +254,7 @@ export default defineComponent({
   mounted() {
         this.loadUserData()
         this.checkUserHasPlan()
-        this.getCommonBookings()
-        
+
     }
 
 });
