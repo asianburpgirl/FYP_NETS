@@ -332,9 +332,11 @@ export default defineComponent({
                               console.log(bookingLocation)
                                // /lotAdj/<int:carparkid>/<int:parkingtype>/<string:lotadjustment>"
                                 url = "http://127.0.0.1:5004/lotAdj/" + eachCarpark.carparkID+ "/2/-1" 
+                                console.log(eachCarpark.carparkID)
                                 axios
                                   .get(url)
                                   .then((response) => {
+                                      
                                       console.log(response)   
                                       const dotExists = balance.includes(".");
                                       if (dotExists) {

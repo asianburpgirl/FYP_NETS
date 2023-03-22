@@ -15,6 +15,8 @@ import NETSAmountPage from "../views/NETSAmountPage.vue";
 import StripeAmountPage from "../views/StripeAmountPage.vue";
 import successPage from "../views/successPage.vue";
 import AdminPage from "../views/AdminPage.vue";
+import AdminUserPage from "../views/adminUsers.vue";
+import AdminBookingPage from "../views/adminBookings.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -22,13 +24,25 @@ const routes: Array<RouteRecordRaw> = [
     component: LoginPage,
   },
   {
-    path: "/admin",
-    component: AdminPage,
+    path: "/adminTabs/",
+    component: adminBottomTab,
     children: [
       {
-        path: " ",
-        redirect: "/admin"
-      }
+        path: "",
+        redirect: "/adminTabs/adminHome"
+      },
+      {
+        path: "adminHome",
+        component: AdminPage
+      },
+      {
+        path: "adminUsers",
+        component: AdminUserPage
+      },
+      {
+        path: "adminBookings",
+        component: AdminBookingPage
+      },
     ]
   },
   {

@@ -145,7 +145,7 @@ export default defineComponent({
                         localStorage.setItem("userData", JSON.stringify(response.data.data));
                         console.log(response.data.data);
                         if (response.data.data.role === 'Admin'){
-                            router.push("admin");
+                            router.push("adminTabs");
                         }else{
                             router.push("tabs");
                         }
