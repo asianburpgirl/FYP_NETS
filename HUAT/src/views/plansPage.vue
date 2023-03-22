@@ -87,26 +87,6 @@
           </ion-card-header>
         </ion-grid>
       </ion-card>
-
-      <!-- <ion-card>
-        <ion-grid>
-          <ion-card-header>
-            <ion-card-title>Off Peak Discount</ion-card-title>
-            <ion-card-subtitle> 10% discount on all carparks for non-peak parking!</ion-card-subtitle> 
-            <br />
-            <ion-item lines="none" >
-              <ion-button                
-                slot ="end"
-                color="success"
-                size="large"
-                @click="routeUser('buySubscription/nonPeak')">
-                Buy</ion-button
-              >
-            </ion-item>
-          </ion-card-header>
-        </ion-grid>
-      </ion-card> -->
-
   </base-layout>
 </template>
 
@@ -120,12 +100,9 @@ import {
   IonCard,
   IonCardHeader,
   alertController
-  // IonRow,
-  // IonCol
 
 } from "@ionic/vue";
 import { defineComponent,ref } from "vue";
-// import ExploreContainer from '@/components/ExploreContainer.vue';
 import axios from "axios";
 
 export default defineComponent({
@@ -137,8 +114,6 @@ export default defineComponent({
     IonGrid,
     IonCard,
     IonCardHeader,
-    // IonRow,
-    // IonCol
      
   },
   data() {
@@ -209,43 +184,15 @@ export default defineComponent({
                     text: "Okay",
                     handler: () => {
                       location.reload()
-                        
-                        // this.$router.push('/success').then(() => window.location.reload())
                     },
                 }, ],
             });
             await alert.present();
         };
-        
-      
-      
       return {  confirmationAlert, sucessMsg };
       
-      // mostVisited or monthlyPlan
     },
   methods: {
-    cancelSub2(){
-      // get sub ID of user subscription
-      const url = "http://127.0.0.1:5005/subs/" + parseInt(this.userData.userID) 
-      axios.get(url)
-          .then((response) => {
-            const subToDeleteID =  response.data.data.subscriptions[0].subsID
-            //delete id = sub id         
-            const url = "http://127.0.0.1:5005/subs/" + subToDeleteID
-            axios.delete(url)
-                .then((response) => {
-                  location.reload()
-                })
-                .catch((error) => {
-                    console.log(error);
-                });
-
-            })
-          .catch((error) => {
-              console.log(error);
-          });
-      
-    },
     getCarparksMonthlySubs(){
       const url = "http://127.0.0.1:5003/chosenCarparks"
       axios.get(url)
@@ -304,26 +251,18 @@ export default defineComponent({
         .catch((error) => {
             console.log(error);
         });
-
     }
-    
   },
   mounted() {
-        
         this.getCarparksMonthlySubs()
         this.loadUserData()
         this.getCommonBookings()
         this.checkUserHasPlan()
     }
-
-
   })
 </script>
 
 
-
 <style scoped>
-.item-inner {
-  padding: 0;
-}
+
 </style>
