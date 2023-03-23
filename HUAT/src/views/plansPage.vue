@@ -246,7 +246,7 @@ export default defineComponent({
         .then((response) => {
           this.userSave = response.data.data.discount
           this.userSpending =  response.data.data.totalPrice
-          this.subsAmtPlan1 = (this.userSpending * 3 * 0.95).toFixed(2)
+          this.subsAmtPlan1 = Math.max((this.userSpending * 3 * 0.95).toFixed(2),10)
         })
         .catch((error) => {
             console.log(error);
