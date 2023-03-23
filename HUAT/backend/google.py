@@ -20,22 +20,94 @@ db = SQLAlchemy(app)
 CORS(app)
 
 
-@app.route('/')
-def getDestination():
-     with app.app_context():
-        import carpark
-        return carpark.get_all()
-      
-def getCoord():
-    locationList = getDestination()
-    return locationList
+class Carpark(db.Model):
+    __tablename__ = 'carparkDetails'
+
+    carparkID = db.Column(db.Integer, primary_key=True)
+    carparkName = db.Column(db.String(100), nullable=False)
+    carparkLocation = db.Column(db.String(100), nullable=False)
+    latitude = db.Column(db.Float, nullable=False)
+    longitude = db.Column(db.Float, nullable=False)
+    imagePath = db.Column(db.String(100), nullable=False)
+    maxCapacity = db.Column(db.Integer, nullable=False)
+    currentCapacity = db.Column(db.Integer, nullable=False)
+    hourlyweekdaypeak = db.Column(db.Integer, nullable=False)
+    hourlyweekdaynonpeak = db.Column(db.Integer, nullable=False)
+    hourlyweekendpeak = db.Column(db.Integer, nullable=False)
+    hourlyweekendnonpeak = db.Column(db.Integer, nullable=False)
+    seasonweekdaypeak = db.Column(db.Integer, nullable=False)
+    seasonweekdaynonpeak = db.Column(db.Integer, nullable=False)
+    seasonweekendpeak = db.Column(db.Integer, nullable=False)
+    seasonweekendnonpeak = db.Column(db.Integer, nullable=False)
+    chosen = db.Column(db.Integer, nullable=False)
+
+    def __init__(self, carparkID, carparkName, carparkLocation, latitude, longitude,imagePath, maxCapacity, currentCapacity, hourlyweekdaypeak, hourlyweekdaynonpeak, hourlyweekendpeak, hourlyweekendnonpeak, seasonweekdaypeak, seasonweekdaynonpeak, seasonweekendpeak, seasonweekendnonpeak, chosen):
+        self.carparkID = carparkID
+        self.carparkName = carparkName
+        self.carparkLocation = carparkLocation
+        self.latitude = latitude
+        self.longitude = longitude
+        self.imagePath = imagePath
+        self.maxCapacity = maxCapacity
+        self.currentCapacity = currentCapacity
+        self.hourlyweekdaypeak = hourlyweekdaypeak
+        self.hourlyweekdaynonpeak = hourlyweekdaynonpeak
+        self.hourlyweekendpeak = hourlyweekendpeak
+        self.hourlyweekendnonpeak = hourlyweekendnonpeak
+        self.seasonweekdaypeak = seasonweekdaypeak
+        self.seasonweekdaynonpeak = seasonweekdaynonpeak
+        self.seasonweekendpeak = seasonweekendpeak
+        self.seasonweekendnonpeak = seasonweekendnonpeak
+        self.chosen = chosen
+
+    def json(self):
+        return {
+            "carparkID": self.carparkID,
+            "carparkName": self.carparkName,
+            "caparkLocation": self.carparkLocation,
+            "latitude": self.latitude,
+            "longitude": self.longitude,
+            "imagePath": self.imagePath,
+            "maxCapacity": self.maxCapacity,
+            "currentCapacity": self.currentCapacity,
+            "hourlyweekdaypeak": self.hourlyweekdaypeak,
+            "hourlyweekdaynonpeak": self.hourlyweekdaynonpeak,
+            "hourlyweekendpeak": self.hourlyweekendpeak,
+            "hourlyweekendnonpeak": self.hourlyweekendnonpeak,
+            "seasonweekdaypeak": self.seasonweekdaypeak, 
+            "seasonweekdaynonpeak": self.seasonweekdaynonpeak, 
+            "seasonweekendpeak": self.seasonweekendpeak, 
+            "seasonweekendnonpeak": self.seasonweekendnonpeak,
+            "chosen": self.chosen,
+        }
+
+
+@app.route("/")
+def get_all():
+    carparkList = Carpark.query.all()
+
+    if len(carparkList):
+        return jsonify(
+            {
+                "code": 200,
+                "data": {
+                    "carparks": [carpark.json() for carpark in carparkList]
+                }
+            }
+        )
+    return jsonify(
+        {
+            "code": 404,
+            "message": "There are no carparks."
+        }
+    ), 404
 
 # http://127.0.0.1:5009/getCoords
 @app.route('/getCoords',  methods = ['POST'])
 def getLatLong():
     latitude = ''
     longitude = ''
-    destination = getCoord()
+    destination = get_all()
     locationList = []
     myString = "" 
     origin = request.json.get('origin',None)
