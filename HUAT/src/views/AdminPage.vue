@@ -76,26 +76,29 @@ export default defineComponent({
       LineChartData: [["Time", "Number of bookings"]],
       BarChartData: [['Month','Revenue']],
       PieChartoptions: {
-        title: "Percentage of bookings per location",
+        title: "% of bookings per location",
         pieHole: 0.1,
         // width: 400,
         // height: 400
       },
       ColumnChartOptions: {
-        title: "Number of bookings per subscription",
+        title: "No. of bookings per subscription",
         legend: { position: "bottom" },
+        colors: ['#ADD8E6', 'orange']
         // width: 400,
         // height: 400
       },
       LineChartOptions: {
         title: "Peak Time Analysis",
         legend: { position: "bottom" },
+        colors: ['#e2431e']
         // width: 400,
         // height: 400
       },
       BarChartOptions: {
         title: "Revenue per month",
         legend: { position: "bottom" },
+        colors: ['#90EE90']
         // width: 400,
         // height: 400
       }
@@ -103,6 +106,8 @@ export default defineComponent({
   },
   methods: {
     getPieChart() {
+      const locations = [];
+      const count = {};
       let pieData = [];
       const url = "http://localhost:5001/bookings";
       
@@ -110,15 +115,29 @@ export default defineComponent({
         .get(url)
         .then((response) => {
           pieData = response.data.data.bookings;
-          // console.log(pieData)
-          for (let i = 0; i < pieData.length; i++) {
-            this.PieChartData.push([
-              pieData[i]["bookingLocation"],
-              pieData[i]["bookingID"],
-            ]);
+          console.log(pieData)
+          for (let i = 0; i < pieData.length; i++){
+            if (!locations.includes(pieData[i]["bookingLocation"])) {
+              locations.push(pieData[i]["bookingLocation"])
+            }
           }
-          return pieData;
-          // console.log(response.data.data.bookings)
+          // console.log(locations)
+          for (let i = 0; i < locations.length; i++){
+            count[locations[i]] = 0;
+          }
+          // console.log(count)
+          for (let i = 0; i < pieData.length; i++){
+            for (const cnt in count){
+              if (cnt == pieData[i]["bookingLocation"]){
+                count[cnt] += 1;
+              }
+            }
+          }
+          // console.log(count)
+          for (const cnnt in count){
+            this.PieChartData.push([cnnt, count[cnnt]])
+          }
+          return this.PieChartData;
         })
         .catch((error) => {
           console.log(error.message);
@@ -156,7 +175,7 @@ export default defineComponent({
         .get(url)
         .then((response) => {
           LineData = response.data.data.bookings;
-          console.log(LineData)
+          // console.log(LineData)
           for (let i = 0; i < LineData.length; i++) {
             for (const num in timeAxis){
               if (num == parseInt(LineData[i]["bookingStartDateTime"].slice(17, 20))){
@@ -164,7 +183,7 @@ export default defineComponent({
               }
             }
           }
-          console.log(timeAxis)
+          // console.log(timeAxis)
           for (const number in timeAxis){
             this.LineChartData.push([number + ":00", timeAxis[number]])
           }
@@ -183,7 +202,7 @@ export default defineComponent({
         .get(url)
         .then((response) => {
           BarData = response.data.data.transactions;
-          console.log(BarData)
+          // console.log(BarData)
           for (let i = 0; i < BarData.length; i++) {
             for (const month in months) {
               if (month == BarData[i]["transDate"].slice(8, 11) && BarData[i]["transType"] == "topup") {
@@ -191,7 +210,7 @@ export default defineComponent({
               }
             }
           }
-          console.log(months)
+          // console.log(months)
           for (const mon in months){
             this.BarChartData.push([mon, months[mon]])
           }
