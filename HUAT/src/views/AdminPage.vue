@@ -41,6 +41,18 @@
         </ion-col>
       </ion-row>
 
+      <ion-row class="ion-align-items-center">
+        <ion-col>
+          <h3>No. of bookings per location</h3>
+          <GChart
+            type="GeoChart"
+            :data="GeoChartData"
+            :options="GeoChartOptions"
+            :settings="settings"
+          />
+        </ion-col>
+      </ion-row>
+
       <div class="ion-padding-top">
         <ion-button expand="block" href="/">
         Logout
@@ -75,6 +87,7 @@ export default defineComponent({
       ColumnChartData: [["Carpark Name", "Subscription Plan", "No. of Subscribers"]],
       LineChartData: [["Time", "Number of bookings"]],
       BarChartData: [['Month','Revenue']],
+      GeoChartData: [['Places', 'No. of Bookings']],
       PieChartoptions: {
         title: "% of bookings per location",
         pieHole: 0.1,
@@ -101,6 +114,16 @@ export default defineComponent({
         colors: ['#90EE90']
         // width: 400,
         // height: 400
+      },
+      GeoChartOptions: {
+        region: 'SG',
+        displayMode: 'markers',
+        datalessRegionColor: 'lightblue',
+        colorAxis: {colors: ['green', 'red']}
+      },
+      settings: {
+        packages: ['geochart'],
+        mapsApiKey: 'AIzaSyAJXGx7T2ypt5Ew5-9SbDTWF9gqloQUJwI'
       }
     };
   },
@@ -115,7 +138,7 @@ export default defineComponent({
         .get(url)
         .then((response) => {
           pieData = response.data.data.bookings;
-          console.log(pieData)
+          // console.log(pieData)
           for (let i = 0; i < pieData.length; i++){
             if (!locations.includes(pieData[i]["bookingLocation"])) {
               locations.push(pieData[i]["bookingLocation"])
@@ -215,6 +238,44 @@ export default defineComponent({
             this.BarChartData.push([mon, months[mon]])
           }
           return this.BarChartData;
+        })
+        .catch((error) => {
+          console.log(error.message);
+        });
+    },
+    getGeoChart() {
+      const locations = [];
+      const count = {};
+      let GeoData = [];
+      const url = "http://localhost:5001/bookings";
+      
+      axios
+        .get(url)
+        .then((response) => {
+          GeoData = response.data.data.bookings;
+          // console.log(pieData)
+          for (let i = 0; i < GeoData.length; i++){
+            if (!locations.includes(GeoData[i]["bookingLocation"])) {
+              locations.push(GeoData[i]["bookingLocation"])
+            }
+          }
+          // console.log(locations)
+          for (let i = 0; i < locations.length; i++){
+            count[locations[i]] = 0;
+          }
+          // console.log(count)
+          for (let i = 0; i < GeoData.length; i++){
+            for (const cnt in count){
+              if (cnt == GeoData[i]["bookingLocation"]){
+                count[cnt] += 1;
+              }
+            }
+          }
+          // console.log(count)
+          for (const cnnt in count){
+            this.GeoChartData.push([cnnt, count[cnnt]])
+          }
+          return this.GeoChartData;
         })
         .catch((error) => {
           console.log(error.message);
@@ -354,6 +415,7 @@ export default defineComponent({
     this.getColumnChart();
     this.getLineChart();
     this.getBarChart();
+    this.getGeoChart();
   },
 });
 </script>
