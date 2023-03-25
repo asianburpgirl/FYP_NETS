@@ -139,16 +139,19 @@ export default defineComponent({
         .then((response) => {
           pieData = response.data.data.bookings;
           // console.log(pieData)
+          // Store the locations into a list first (without duplicates)
           for (let i = 0; i < pieData.length; i++){
             if (!locations.includes(pieData[i]["bookingLocation"])) {
               locations.push(pieData[i]["bookingLocation"])
             }
           }
           // console.log(locations)
+          // Next, store them into a dict with value 0
           for (let i = 0; i < locations.length; i++){
             count[locations[i]] = 0;
           }
           // console.log(count)
+          // count the number of bookings per location 
           for (let i = 0; i < pieData.length; i++){
             for (const cnt in count){
               if (cnt == pieData[i]["bookingLocation"]){
@@ -157,6 +160,7 @@ export default defineComponent({
             }
           }
           // console.log(count)
+          // Add it in to the chart
           for (const cnnt in count){
             this.PieChartData.push([cnnt, count[cnnt]])
           }
@@ -254,16 +258,19 @@ export default defineComponent({
         .then((response) => {
           GeoData = response.data.data.bookings;
           // console.log(pieData)
+          // Store the locations into a list first (without duplicates)
           for (let i = 0; i < GeoData.length; i++){
             if (!locations.includes(GeoData[i]["bookingLocation"])) {
               locations.push(GeoData[i]["bookingLocation"])
             }
           }
           // console.log(locations)
+          // Next, store them into a dict with value 0
           for (let i = 0; i < locations.length; i++){
             count[locations[i]] = 0;
           }
           // console.log(count)
+          // count the number of bookings per location 
           for (let i = 0; i < GeoData.length; i++){
             for (const cnt in count){
               if (cnt == GeoData[i]["bookingLocation"]){
@@ -272,6 +279,7 @@ export default defineComponent({
             }
           }
           // console.log(count)
+          // Add it in to the chart
           for (const cnnt in count){
             this.GeoChartData.push([cnnt, count[cnnt]])
           }
