@@ -21,7 +21,7 @@
         </ion-col>
       </ion-row>
 
-      <ion-row class="ion-align-items-center">
+      <!-- <ion-row class="ion-align-items-center">
         <ion-col>
           <GChart
             type="LineChart"
@@ -39,7 +39,7 @@
             :options="BarChartOptions"
           />
         </ion-col>
-      </ion-row>
+      </ion-row> -->
 
       <ion-row class="ion-align-items-center">
         <ion-col>
@@ -54,21 +54,14 @@
       </ion-row>
 
       <div class="ion-padding-top">
-        <ion-button expand="block" href="/">
-        Logout
-      </ion-button>
+        <ion-button expand="block" href="/"> Logout </ion-button>
       </div>
     </ion-grid>
   </base-layout>
 </template>
 
 <script>
-import {
-  IonGrid,
-  IonRow,
-  IonCol,
-  IonButton
-} from "@ionic/vue";
+import { IonGrid, IonRow, IonCol, IonButton } from "@ionic/vue";
 import { GChart } from "vue-google-charts";
 import { defineComponent } from "vue";
 import axios from "axios";
@@ -78,7 +71,7 @@ export default defineComponent({
     IonGrid,
     IonRow,
     IonCol,
-    IonButton
+    IonButton,
   },
   data() {
     return {

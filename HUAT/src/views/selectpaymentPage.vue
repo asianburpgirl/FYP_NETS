@@ -10,30 +10,24 @@
     </ion-header>
 
     <ion-content class="ion-padding">
-
-      <ion-row  class="ion-padding">
-        <ion-col  @click="routeNets('Nets')"> 
-
-        
-              <img src='assets/images/nets.png'/>
-              
-            
-          </ion-col>
-      
-      
-        <ion-col> 
-          <ion-button expand="block" size="large" @click="routeStripe('Stripe')">Others</ion-button>
-        </ion-col>
-      </ion-row>
-
+      <ion-list>
+        <ion-item button @click="routeNets('Nets')">
+          <ion-label>NETS</ion-label>
+        </ion-item>
+        <!-- <ion-item @click="routeNets('Nets')">
+          <img src="assets/images/nets.png" />
+        </ion-item> -->
+        <ion-item button @click="routeStripe('Stripe')">
+          <ion-label>Others</ion-label>
+        </ion-item>
+      </ion-list>
     </ion-content>
   </ion-page>
 </template>
 
-
 <script>
-import { 
-  IonButton, 
+import {
+  // IonButton,
   IonPage,
   IonHeader,
   IonTitle,
@@ -41,15 +35,18 @@ import {
   IonToolbar,
   IonBackButton,
   IonButtons,
-  IonCol,
-  IonRow
-} from '@ionic/vue';
-import { defineComponent } from 'vue'
+  // IonCol,
+  // IonRow,
+  IonList,
+  IonItem,
+  IonLabel
+} from "@ionic/vue";
+import { defineComponent } from "vue";
 import axios from "axios";
 
 export default defineComponent({
-  components: { 
-    IonButton,
+  components: {
+    // IonButton,
     IonBackButton,
     IonPage,
     IonHeader,
@@ -57,15 +54,18 @@ export default defineComponent({
     IonContent,
     IonToolbar,
     IonButtons,
-    IonCol,
-    IonRow
+    // IonCol,
+    // IonRow,
+    IonList,
+    IonItem,
+    IonLabel
   },
   data() {
     return {
       stripe: null,
       balance: 0,
-      userData: {}
-    }
+      userData: {},
+    };
   },
   methods: {
     loadUserData() {
@@ -73,20 +73,19 @@ export default defineComponent({
     },
     routeNets(route) {
       this.$router.push({
-        path: '/' + route,
+        path: "/" + route,
       });
     },
     routeStripe(route) {
       this.$router.push({
-        path: '/' + route,
+        path: "/" + route,
       });
-    }
+    },
   },
   mounted() {
-    this.loadUserData()
-  }
+    this.loadUserData();
+  },
 });
 </script>
 
-<style>
-</style>
+<style></style>

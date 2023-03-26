@@ -3,27 +3,22 @@
     <ion-tabs>
       <ion-router-outlet></ion-router-outlet>
       <ion-tab-bar>
-        <ion-tab-button tab="home" href="/tabs/home">
+        <ion-tab-button tab="home" href="/adminTabs/adminHome">
           <ion-icon :icon="home" />
           <ion-label>Home</ion-label>
         </ion-tab-button>
 
-        <ion-tab-button tab="wallet" href="/tabs/wallet">
-          <ion-icon :icon="card" />
-          <ion-label>Wallet</ion-label>
-        </ion-tab-button>
-
-        <ion-tab-button tab="booking" href="/tabs/bookings">
-          <ion-icon :icon="map" />
+        <ion-tab-button tab="booking" href="/adminTabs/adminBookings">
+          <ion-icon :icon="albums" />
           <ion-label>Bookings</ion-label>
         </ion-tab-button>
 
-        <ion-tab-button tab="plans" href="/tabs/plans">
-          <ion-icon :icon="albums" />
-          <ion-label> Plans</ion-label>
+        <ion-tab-button tab="users" href="/adminTabs/adminUsers">
+          <ion-icon :icon="star" />
+          <ion-label>Users</ion-label>
         </ion-tab-button>
 
-        <ion-tab-button tab="profile" href="/tabs/profile">
+        <ion-tab-button tab="person" href="/adminTabs/adminProfile">
           <ion-icon :icon="person" />
           <ion-label>Profile</ion-label>
         </ion-tab-button>
@@ -42,7 +37,7 @@ import {
   IonPage,
   IonRouterOutlet,
 } from "@ionic/vue";
-import { albums, card, home, map, person } from "ionicons/icons";
+import { albums, card, home, person, star } from "ionicons/icons";
 import { defineComponent } from "vue";
 
 export default defineComponent({
@@ -56,7 +51,7 @@ export default defineComponent({
     IonRouterOutlet,
   },
   setup() {
-    return { card, albums, home, map, person };
+    return { card, albums, home, person, star };
   },
 });
 </script>

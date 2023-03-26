@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from "@ionic/vue-router";
 import { RouteRecordRaw } from "vue-router";
+import adminBottomTab from "../views/adminBottomTab.vue";
 import TabsPage from "../views/BottomTabs.vue";
 import LoginPage from "../views/LoginPage.vue";
 import buySubscription from "../views/buySubscription.vue";
@@ -14,6 +15,9 @@ import NETSAmountPage from "../views/NETSAmountPage.vue";
 import StripeAmountPage from "../views/StripeAmountPage.vue";
 import successPage from "../views/successPage.vue";
 import AdminPage from "../views/AdminPage.vue";
+import AdminUserPage from "../views/adminUsers.vue";
+import AdminBookingPage from "../views/adminBookings.vue";
+import AdminProfile from "../views/adminProfile.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -21,8 +25,30 @@ const routes: Array<RouteRecordRaw> = [
     component: LoginPage,
   },
   {
-    path: "/admin",
-    component: AdminPage,
+    path: "/adminTabs/",
+    component: adminBottomTab,
+    children: [
+      {
+        path: "",
+        redirect: "/adminTabs/adminHome"
+      },
+      {
+        path: "adminHome",
+        component: AdminPage
+      },
+      {
+        path: "adminUsers",
+        component: AdminUserPage
+      },
+      {
+        path: "adminBookings",
+        component: AdminBookingPage
+      },
+      {
+        path: "adminProfile",
+        component: AdminProfile
+      },
+    ]
   },
   {
     path: "/tabs/",
@@ -105,29 +131,5 @@ const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes,
 });
-
-// router.beforeEach((to, from, next) => {
-//   const authUser = JSON.parse(localStorage.getItem("userData")!);
-//   console.log(authUser.role);
-//   if (to.meta.requiresAuth) {
-//     if (to.meta.adminAuth) {
-//       if (authUser.role === "Admin"){
-//         next("/admin");
-//       }else{
-//         next("/tabs/home");
-//       }
-//     } 
-//     else if (to.meta.userAuth) {
-//       if (authUser.role === "User"){
-//         next("/tabs/home");
-//       }else{
-//         next("/admin");
-//       }
-//     }
-//   } 
-//   else {
-//     next();
-//   }
-// });
 
 export default router;

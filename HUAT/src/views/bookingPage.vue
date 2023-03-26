@@ -103,12 +103,12 @@
     </ion-modal>
 
     <ion-select placeholder="Status" class="ion-padding-top ion-padding-bottom" v-model="bookingStatusToShow"  @ionChange="changeStatus()">
+      <ion-select-option  value="all">All</ion-select-option>
       <ion-select-option value="upcoming">Upcoming</ion-select-option>
       <ion-select-option value="past">Past</ion-select-option>
-      <ion-select-option  value="all">All</ion-select-option>
     </ion-select>
 
-    <ion-card v-for="eachBooking in bookingDetails" :key="eachBooking">
+    <ion-card v-for="eachBooking in bookingsToShow" :key="eachBooking">
       <ion-img :src="eachBooking.imagePath"></ion-img>
       <ion-card-header>
         <ion-list lines="none">
@@ -332,9 +332,11 @@ export default defineComponent({
                               console.log(bookingLocation)
                                console.log(eachCarpark,"AAA")
                                 url = "http://127.0.0.1:5004/lotAdj/" + eachCarpark.carparkID+ "/2/-1" 
+                                console.log(eachCarpark.carparkID)
                                 axios
                                   .get(url)
                                   .then((response) => {
+                                      
                                       console.log(response)   
                                       const dotExists = balance.includes(".");
                                       if (dotExists) {
@@ -414,8 +416,13 @@ export default defineComponent({
   },
   data() {
     return {
-      bookingStatusToShow: "upcoming",
+      bookingStatusToShow: "all",
+
       bookingDetails: [],
+      upcomingBookings: [],
+      pastBookings:[],
+      bookingsToShow: [],
+
       userData: {},
       editBookingOpen: false,
 
@@ -433,7 +440,19 @@ export default defineComponent({
   },
   methods: {
     changeStatus(){
-      console.log(this.bookingStatusToShow)
+      console.log("AA")
+      console.log(this.upcomingBookings)
+      console.log(this.pastBookings)
+      if (this.bookingStatusToShow== "upcoming"){
+        this.bookingsToShow = this.upcomingBookings
+      }
+      else if (this.bookingStatusToShow== "past"){
+        this.bookingsToShow = this.pastBookings
+      }
+      else {
+        this.bookingsToShow = this.bookingDetails
+      }
+      //bookingsToShow
     },
     routeUser(route) {
       this.$router.push({
@@ -564,9 +583,10 @@ export default defineComponent({
       axios
         .get(url)
         .then((response) => {
+          const pastBookings = []
+          const upcomingBookings = []
           const data = response.data.data.bookings;
-
-          for (const eachBooking of data) {
+          for (const eachBooking of data) {  
             let startDateTime = new Date(eachBooking.bookingStartDateTime);
             startDateTime = startDateTime.toUTCString();
             const startDateOnly = startDateTime.slice(5, 16);
@@ -585,6 +605,7 @@ export default defineComponent({
                 carparkName: eachBooking.bookingLocation,
               })
               .then((response) => {
+                
                 imagePath = response.data.data.imagePath;
 
                 this.bookingDetails.push({
@@ -602,11 +623,50 @@ export default defineComponent({
                   userID: eachBooking.userID,
                   imagePath: imagePath,
                 });
+                if ( (new Date() -  new Date(eachBooking.bookingStartDateTime)) > 0){
+                  pastBookings.push({
+                  bookingDate: eachBooking.bookingDateTime,
+                  bookingID: eachBooking.bookingID,
+                  bookingLocation: eachBooking.bookingLocation,
+                  locationName: eachBooking.locationName,
+                  startDate: startDateOnly,
+                  startTime: startTimeOnly,
+                  endDate: endDateOnly,
+                  amount: this.formatMoney(eachBooking.bookingAmt),
+                  endTime: endTimeOnly,
+                  status: eachBooking.status,
+                  bookingRef: eachBooking.bookingRef,
+                  userID: eachBooking.userID,
+                  imagePath: imagePath,
+                });
+                }
+                else {
+                  upcomingBookings.push({
+                  bookingDate: eachBooking.bookingDateTime,
+                  bookingID: eachBooking.bookingID,
+                  bookingLocation: eachBooking.bookingLocation,
+                  locationName: eachBooking.locationName,
+                  startDate: startDateOnly,
+                  startTime: startTimeOnly,
+                  endDate: endDateOnly,
+                  amount: this.formatMoney(eachBooking.bookingAmt),
+                  endTime: endTimeOnly,
+                  status: eachBooking.status,
+                  bookingRef: eachBooking.bookingRef,
+                  userID: eachBooking.userID,
+                  imagePath: imagePath,
+                });
+                }
+                this.changeStatus()
+
               })
               .catch((error) => {
                 console.log(error.message);
               });
           }
+          this.pastBookings = pastBookings
+          this.upcomingBookings = upcomingBookings
+          
         })
         .catch((error) => {
           console.log(error.message);

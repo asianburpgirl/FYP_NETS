@@ -3,7 +3,7 @@
         <!-- <h2>Amount</h2> -->
         <ion-card color="primary">
             <ion-card-header>
-                <ion-card-title>${{ balance }}</ion-card-title>
+                <ion-card-title >${{ formatMoney(balance) }}</ion-card-title>
                 <br>
                 <ion-card-subtitle>Top up easily with our in-built payment</ion-card-subtitle>
             </ion-card-header>
