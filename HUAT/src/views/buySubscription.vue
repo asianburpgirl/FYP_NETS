@@ -170,6 +170,25 @@ export default defineComponent({
         }
     },
   methods: {
+    formatMoney(myFloat) { // money in DB store in 1 dp (eg. 12.1), to change to 2 dp (12.10)
+            myFloat = myFloat.toFixed(2)
+            myFloat = myFloat.toString()
+            const dotExists = myFloat.includes('.')
+            let newFloat = myFloat
+            if (dotExists) {
+                newFloat = myFloat.split(".")
+                if ((newFloat[1]).length == 1) {
+                    newFloat[1] += "0"
+                } else if ((newFloat[1]).length == 0) {
+                    newFloat[1] += "00"
+                }
+                newFloat = newFloat.join(".")
+            } else {
+                newFloat += ".00"
+            }
+
+            return newFloat
+        },
     getCarparksMonthlySubs(){
       const url = "http://127.0.0.1:5003/chosenCarparks"
       axios.get(url)
@@ -236,7 +255,7 @@ export default defineComponent({
             axios.post(url2, { discount: 0.1})
                 .then((response) => {
                 this.userSave = response.data.data.discount
-                this.userSpending =  response.data.data.totalPrice
+                this.userSpending =  this.formatMoney(response.data.data.totalPrice)
                 this.subsAmt = (this.userSpending * 3 * 0.95).toFixed(2)
                 this.checkIfSufficientBalance(this.subsAmt)
                 })
