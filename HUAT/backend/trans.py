@@ -82,7 +82,27 @@ class User(db.Model):
             "role": self.role
         }
     
-
+# Get all transactions
+@app.route("/transaction")
+def get_all():
+    userBooking = Transaction.query.all()
+    if len(userBooking):
+        return jsonify(
+            {
+                "code": 200,
+                "data": {
+                    "transactions": [transaction.json() for transaction in userBooking]
+                }
+            }
+        )
+    return jsonify(
+        {
+            "code": 404,
+            "message": "There are no transactions."
+        }
+    ), 404
+    
+# Get transaction based on userID
 @app.route("/transaction/<int:userID>")
 def get_by_user(userID):
     userBooking = Transaction.query.filter_by(userID=userID).all()
@@ -98,7 +118,7 @@ def get_by_user(userID):
     return jsonify(
         {
             "code": 404,
-            "message": "There are no bookings."
+            "message": "There are no transactions."
         }
     ), 404
 

@@ -43,7 +43,7 @@
 </template>
 
 <script>
-const userRole = localStorage.getItem("userData");
+// const userRole = localStorage.getItem("userData");
 import {
     // IonButton,
     // IonRow,
@@ -301,14 +301,6 @@ export default defineComponent({
                 })
 
         },
-    },
-    async created() {
-    if (
-      //if user is admin or super admin
-      userRole === "User"
-    ) {
-      this.isAuthorized = true;
-    }
   },
     // Calls function on page load
     mounted() {

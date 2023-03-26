@@ -5,11 +5,11 @@
                 <ion-buttons slot="start">
                     <ion-back-button defaultHref="/tabs/wallet"></ion-back-button>
                 </ion-buttons>
-                <ion-title class="ion-text-center">Stripe Top-up amount</ion-title>
+                <ion-title class="ion-text-center">Top-up amount</ion-title>
             </ion-toolbar>
         </ion-header>
         <ion-content class="ion-padding">
-            <img src='assets/images/stripe.png' />
+            <!-- <img src='assets/images/stripe.png' /> -->
             <ion-row class="ion-padding-top">
                 <ion-col>
                     <ion-button expand="block" @click="routeTen()">$10</ion-button>

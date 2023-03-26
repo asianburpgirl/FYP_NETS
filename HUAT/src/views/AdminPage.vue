@@ -3,7 +3,6 @@
     <ion-grid>
       <ion-row class="ion-align-items-center">
         <ion-col>
-          <h4 class="ion-text-center">Percentage of bookings per location</h4>
           <GChart
             type="PieChart"
             :data="PieChartData"
@@ -14,7 +13,6 @@
 
       <ion-row class="ion-align-items-center">
         <ion-col>
-          <h4 class="ion-text-center">Number of bookings per subscription</h4>
           <GChart
             type="ColumnChart"
             :data="ColumnChartData"
@@ -23,9 +21,8 @@
         </ion-col>
       </ion-row>
 
-      <ion-row class="ion-align-items-center">
+      <!-- <ion-row class="ion-align-items-center">
         <ion-col>
-          <h4 class="ion-text-center">Peak Time analysis</h4>
           <GChart
             type="LineChart"
             :data="LineChartData"
@@ -34,22 +31,25 @@
         </ion-col>
       </ion-row>
 
+      <ion-row class="ion-align-items-center">
+        <ion-col>
+          <GChart
+            type="ColumnChart"
+            :data="BarChartData"
+            :options="BarChartOptions"
+          />
+        </ion-col>
+      </ion-row> -->
+
       <div class="ion-padding-top">
-        <ion-button expand="block" href="/">
-        Logout
-      </ion-button>
+        <ion-button expand="block" href="/"> Logout </ion-button>
       </div>
     </ion-grid>
   </base-layout>
 </template>
 
 <script>
-import {
-  IonGrid,
-  IonRow,
-  IonCol,
-  IonButton
-} from "@ionic/vue";
+import { IonGrid, IonRow, IonCol, IonButton } from "@ionic/vue";
 import { GChart } from "vue-google-charts";
 import { defineComponent } from "vue";
 import axios from "axios";
@@ -59,43 +59,46 @@ export default defineComponent({
     IonGrid,
     IonRow,
     IonCol,
-    IonButton
+    IonButton,
   },
   data() {
     return {
       carparksArraySimu: [],
       PieChartData: [["Bookings", "Percentage of bookings"]],
+      ColumnChartData: [["Carpark Name", "Subscription Plan", "No. of Subscribers"]],
       LineChartData: [["Time", "Number of bookings"]],
-      ColumnChartData: [["Carpark Name", "Subscription Plan", "No. of Subscribers"],],
+      BarChartData: [['Month','Revenue']],
       PieChartoptions: {
         title: "Percentage of bookings per location",
         pieHole: 0.1,
         // width: 400,
         // height: 400
       },
-      LineChartOptions: {
-        title: "Peak Time Analysis",
-        legend: {
-          position: "bottom",
-        },
-        // width: 400,
-        // height: 400
-      },
       ColumnChartOptions: {
         title: "Number of bookings per subscription",
-        legend: {
-          position: "bottom",
-        },
+        legend: { position: "bottom" },
         // width: 400,
         // height: 400
       },
+      LineChartOptions: {
+        title: "Peak Time Analysis",
+        legend: { position: "bottom" },
+        // width: 400,
+        // height: 400
+      },
+      BarChartOptions: {
+        title: "Revenue per month",
+        legend: { position: "bottom" },
+        // width: 400,
+        // height: 400
+      }
     };
   },
   methods: {
     getPieChart() {
       let pieData = [];
-
       const url = "http://localhost:5001/bookings";
+      
       axios
         .get(url)
         .then((response) => {
@@ -156,9 +159,36 @@ export default defineComponent({
           }
           console.log(timeAxis)
           for (const number in timeAxis){
-            this.LineChartData.push([number, timeAxis[number]])
+            this.LineChartData.push([number + ":00", timeAxis[number]])
           }
           return this.LineChartData;
+        })
+        .catch((error) => {
+          console.log(error.message);
+        });
+    },
+    getBarChart() {
+      const months = {'Jan': 0, 'Feb': 0, 'Mar': 0, 'Apr': 0, 'May': 0, 'Jun': 0, 'Jul': 0, 'Aug': 0, 'Sep': 0, 'Nov': 0, 'Oct': 0, 'Dec': 0}
+      let BarData = [];
+      const url = "http://localhost:5006/transaction";
+
+      axios
+        .get(url)
+        .then((response) => {
+          BarData = response.data.data.transactions;
+          console.log(BarData)
+          for (let i = 0; i < BarData.length; i++) {
+            for (const month in months) {
+              if (month == BarData[i]["transDate"].slice(8, 11) && BarData[i]["transType"] == "topup") {
+                months[month] += BarData[i]["amount"]
+              }
+            }
+          }
+          console.log(months)
+          for (const mon in months){
+            this.BarChartData.push([mon, months[mon]])
+          }
+          return this.BarChartData;
         })
         .catch((error) => {
           console.log(error.message);
@@ -297,6 +327,7 @@ export default defineComponent({
     this.getPieChart();
     this.getColumnChart();
     this.getLineChart();
+    this.getBarChart();
   },
 });
 </script>
