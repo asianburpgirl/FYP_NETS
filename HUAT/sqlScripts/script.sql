@@ -55,8 +55,8 @@ CREATE TABLE carparkDetails (
   	PRIMARY KEY (carparkID));
 
 INSERT INTO carparkDetails(carparkName,carparkLocation,latitude, longitude ,imagePath,maxCapacity,currentCapacity, hourlyweekdaypeak,hourlyweekdaynonpeak,hourlyweekendpeak,hourlyweekendnonpeak,seasonweekdaypeak,seasonweekdaynonpeak,seasonweekendpeak,seasonweekendnonpeak,chosen) VALUES 
-("ION Orchard","2 Orchard Turn, Singapore 238801",1.3041540462448922, 103.83195992607827, "assets/images/ion.jpg",82, 82,2.5,2,3,2.5,16,12,135,143,1),
 ("Paragon Shopping Centre","290 Orchard Rd, Singapore 238859",1.3040258775031617, 103.83608284915861,"assets/images/paragon.jpg", 85, 41,4,4,8,4.5,124,187,135,176,1),
+("ION Orchard","2 Orchard Turn, Singapore 238801",1.3041540462448922, 103.83195992607827, "assets/images/ion.jpg",82, 82,2.5,2,3,2.5,16,12,135,143,1),
 ("Takashimaya Shopping Centre","391 Orchard Rd, Singapore 238872",1.3033454254185042, 103.83455711763565,"assets/images/takashimaya.jpeg", 70, 0,5,3,6,3,124,187,135,176,0),
 ("Tangs Plaza","310 Orchard Road Tang Plaza, 238864",1.3050314731714412, 103.83297614415605,"assets/images/tangs.jpg", 105, 90,4,3.5,10,9,124,187,135,176,1),
 ("Wheelock Place","501 Orchard Rd, Singapore 238880",1.3048859701842488, 103.83048138946437, "assets/images/Wheelock.png",30, 30,5,4.5,7,5,.5198,112,135,134,1),
