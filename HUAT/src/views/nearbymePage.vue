@@ -56,18 +56,37 @@
                                 <b> {{ carpark.availableLots }}</b> lots available
                             </h3>
                             <h3 v-if="this.startTime != '' &&
-                this.endTime !='' && this.bookingDate != '' ">
+                this.endTime !='' && this.bookingDate != '' && ((userHasPlan1== false && userHasPlan2== false) || (userHasPlan1== true && carpark.commonThreeCarpark==false) || (userHasPlan2== true && carpark.subscriptionFourCarpark==false) )" >
                                 <b> Total: ${{ carpark.data.totalFee }}</b>
+                            </h3>
+                            <h3 v-if="this.startTime != '' &&
+                this.endTime !='' && this.bookingDate != '' && userHasPlan2== false  && userHasPlan1== true && carpark.commonThreeCarpark==true">
+                                <b> Original: ${{ carpark.data.totalFee }}</b>
+                                <br>
+                                <b> Discounted : ${{ carpark.data.totalFeeDiscounted }}</b>
                             </h3>
                             <h4>
                                 <u>{{ carpark.distance_km }},</u>
                                 <u>{{ carpark.duration_mins }} </u> away from you
                             </h4>
                             <ion-row class="ion-padding-top ion-justify-content-center ion-padding-bottom">
-                                <ion-button shape="round" @click="confirmationAlert(carpark,this.bookingDate,this.startTime,this.endTime,this.userData )" v-if="carpark.data.totalFee <= userBalance">
-                                    Book
+                                <!-- normal price booking -->
+                <ion-button shape="round" @click="confirmationAlert(carpark,this.bookingDate,this.startTime,this.endTime,this.userData,this.userHasPlan2 )"  v-if="this.startTime != '' &&
+                this.endTime !='' && this.bookingDate != '' && ((userHasPlan1== false && userHasPlan2== false && carpark.data.totalFee <= userBalance) || (userHasPlan1== true && carpark.commonThreeCarpark==false && carpark.data.totalFeeDiscounted <= userBalance) || (userHasPlan2== true && carpark.subscriptionFourCarpark==false) )" >
+                                    Book1
                                 </ion-button>
-                                <ion-text color="danger" v-if="carpark.data.totalFee > userBalance">
+                                <!--  plan 1 booking -->
+                                <ion-button shape="round" @click="confirmationAlert2(carpark,this.bookingDate,this.startTime,this.endTime,this.userData,this.userHasPlan2 )" v-if="this.startTime != '' &&
+                this.endTime !='' && this.bookingDate != '' && (userHasPlan1== true && carpark.commonThreeCarpark==true && carpark.data.totalFeeDiscounted <= userBalance) " >
+                                    Book2
+                                </ion-button>
+                                <!--  plan 2 booking -->
+                                <ion-button shape="round" @click="confirmationAlert3(carpark,this.bookingDate,this.startTime,this.endTime,this.userData,this.userHasPlan2 )"  v-if="this.startTime != '' &&
+                this.endTime !='' && this.bookingDate != ''&& (userHasPlan2== true && carpark.subscriptionFourCarpark==true) " >
+                                    Book3
+                                </ion-button>                               
+
+                                <ion-text color="danger" v-if="((carpark.data.totalFee > userBalance) && (userHasPlan2== false)  && (userHasPlan1== false)) || (carpark.data.totalFeeDiscounted > userBalance && (userHasPlan1== true))">
                                     <b> 
                                         Insufficient credit
                                     </b>
@@ -197,6 +216,8 @@ export default defineComponent({
             selectedLocation: "",
             carparkArrayToShow: [],
             carparksArraySimu: [],
+            commonThreeCarparks: [],
+            subscriptionFourCarpark: [],
 
             pageTab: "recommend",
             dateTimeModal: true,
@@ -219,12 +240,15 @@ export default defineComponent({
             userData: "",
             userBalance: 0,
 
-            errorMessage: ""
+            errorMessage: "",
+            userHasPlan1: false,
+            userHasPlan2: false,
+            discountRate: 0.1
         };
     },
-    setup() {
+    setup() {      
         const handlerMessage = ref("");
-        const confirmationAlert = async (carpark, bookingDate, startTime, endTime, userData) => {
+        const confirmationAlert = async (carpark, bookingDate, startTime, endTime, userData, userHasPlan2) => {
 
             const alert = await alertController.create({
                 header: "Confirm your booking? ",
@@ -272,6 +296,10 @@ export default defineComponent({
 
                             const userID = userData.userID;
 
+                            let bookingAmt= 0
+                            if (userHasPlan2 == false){
+                                bookingAmt= carpark.data.totalFee
+                            }
 
                             let url = "http://127.0.0.1:5001/bookings";
                             axios
@@ -283,7 +311,7 @@ export default defineComponent({
                                     bookingEndDateTime: endDateTimeFormatted,
                                     userID: userID,
                                     status: "Booked",
-                                    bookingAmt: carpark.data.totalFee
+                                    bookingAmt: bookingAmt
                                 })
                                 .then((response) => {
                                     // deduct money
@@ -334,6 +362,229 @@ export default defineComponent({
             });
             await alert.present();
         };
+        const confirmationAlert2 = async (carpark, bookingDate, startTime, endTime, userData, userHasPlan2) => {
+
+const alert = await alertController.create({
+    header: "Confirm your booking? ",
+    subHeader: "$" + carpark.data.totalFeeDiscounted + " will be deducted from your account",
+    buttons: [{
+            text: "Cancel",
+            cssClass: "alert-button-cancel",
+            role: "cancel",
+            handler: () => {
+                handlerMessage.value = "Alert canceled";
+            },
+        },
+        {
+            text: "Yes",
+            cssClass: "alert-button-confirm",
+            role: "confirm",
+            handler: () => {
+                // this.deductLot(carpark.data.carparkid,1,"-1" )
+                handlerMessage.value = "Alert confirmed";
+                const currentDateTime = new Date();
+                const date = currentDateTime.getDate();
+                const month = currentDateTime.getMonth() + 1;
+                const year = currentDateTime.getFullYear();
+
+                const hour = currentDateTime.getHours();
+                const min = currentDateTime.getMinutes();
+                const sec = currentDateTime.getSeconds();
+
+                const currentDateTimeFormatted =
+                    year + "-" + month + "-" + date + " " + hour + ":" + min + ":" + sec;
+
+                bookingDate = bookingDate.substring(0, 10);
+
+                const startDateTimeFormatted =
+                    bookingDate.substring(0, 10) +
+                    " " +
+                    startTime.substring(11, 19);
+                startTime = startTime.substring(11, 19);
+
+                const endDateTimeFormatted =
+                    bookingDate.substring(0, 10) +
+                    " " +
+                    endTime.substring(11, 19);
+                endTime = endTime.substring(11, 19);
+
+                const userID = userData.userID;
+
+                let bookingAmt= 0
+                if (userHasPlan2 == false){
+                    bookingAmt= carpark.data.totalFeeDiscounted
+                }
+
+                let url = "http://127.0.0.1:5001/bookings";
+                axios
+                    .post(url, {
+                        bookingDateTime: currentDateTimeFormatted,
+                        bookingLocation: carpark.data.carparklocation,
+                        locationName: carpark.data.carparkaddress,
+                        bookingStartDateTime: startDateTimeFormatted,
+                        bookingEndDateTime: endDateTimeFormatted,
+                        userID: userID,
+                        status: "Booked",
+                        bookingAmt: bookingAmt
+                    })
+                    .then((response) => {
+                        // deduct money
+                        url = "http://127.0.0.1:5001/updateBalance/" + response.data.data.bookingID;
+                        let bookingAmount = response.data.data.bookingAmt
+                        bookingAmount = bookingAmount.toString();
+                        const dotExists = bookingAmount.includes(".");
+                        let newFloat = bookingAmount;
+                        if (dotExists) {
+                            newFloat = bookingAmount.split(".");
+                            if (newFloat[1].length == 1) {
+                                newFloat[1] += "0";
+                            } else if (newFloat[1].length == 0) {
+                                newFloat[1] += "00";
+                            }
+                            newFloat = newFloat.join(".");
+                        } else {
+                            newFloat += ".00";
+                        }
+                        axios
+                            .put(url, {
+                                bookingID: response.data.data.bookingID,
+                            })
+                            .then((response) => {
+                                const balance = response.data.data
+                                const carparkID = carpark.data.carparkid
+                                const url = "http://127.0.0.1:5004/lotAdj/" + carparkID + "/2/1"
+                                axios
+                                    .get(url)
+                                    .then((response) => { 
+                                        sucessMsg(newFloat, balance);
+                                    })
+                                    .catch((error) => {
+                                        console.log(error.message);
+                                    });
+                            })
+                            .catch((error) => {
+                                console.log(error.message);
+                            });
+
+                    })
+                    .catch((error) => {
+                        console.log(error.message);
+                    });
+            },
+        },
+    ],
+});
+await alert.present();
+};
+        const confirmationAlert3
+         = async (carpark, bookingDate, startTime, endTime, userData, userHasPlan2) => {
+            const alert = await alertController.create({
+                header: "Confirm your booking? ",
+                buttons: [{
+                        text: "Cancel",
+                        cssClass: "alert-button-cancel",
+                        role: "cancel",
+                        handler: () => {
+                            handlerMessage.value = "Alert canceled";
+                        },
+                    },
+                    {
+                        text: "Yes",
+                        cssClass: "alert-button-confirm",
+                        role: "confirm",
+                        handler: () => {
+                            // this.deductLot(carpark.data.carparkid,1,"-1" )
+                            handlerMessage.value = "Alert confirmed";
+                            const currentDateTime = new Date();
+                            const date = currentDateTime.getDate();
+                            const month = currentDateTime.getMonth() + 1;
+                            const year = currentDateTime.getFullYear();
+
+                            const hour = currentDateTime.getHours();
+                            const min = currentDateTime.getMinutes();
+                            const sec = currentDateTime.getSeconds();
+
+                            const currentDateTimeFormatted =
+                                year + "-" + month + "-" + date + " " + hour + ":" + min + ":" + sec;
+
+                            bookingDate = bookingDate.substring(0, 10);
+
+                            const startDateTimeFormatted =
+                                bookingDate.substring(0, 10) +
+                                " " +
+                                startTime.substring(11, 19);
+                            startTime = startTime.substring(11, 19);
+
+                            const endDateTimeFormatted =
+                                bookingDate.substring(0, 10) +
+                                " " +
+                                endTime.substring(11, 19);
+                            endTime = endTime.substring(11, 19);
+
+                            const userID = userData.userID;
+
+               
+                            let url = "http://127.0.0.1:5001/bookings";
+                            axios
+                                .post(url, {
+                                    bookingDateTime: currentDateTimeFormatted,
+                                    bookingLocation: carpark.data.carparklocation,
+                                    locationName: carpark.data.carparkaddress,
+                                    bookingStartDateTime: startDateTimeFormatted,
+                                    bookingEndDateTime: endDateTimeFormatted,
+                                    userID: userID,
+                                    status: "Booked",
+                                    bookingAmt: 0
+                                })
+                                .then((response) => {
+                                    // deduct money
+                                    url = "http://127.0.0.1:5001/updateBalance/" + response.data.data.bookingID;
+                                    let bookingAmount = response.data.data.bookingAmt
+                                    bookingAmount = bookingAmount.toString();
+                                    const dotExists = bookingAmount.includes(".");
+                                    let newFloat = bookingAmount;
+                                    if (dotExists) {
+                                        newFloat = bookingAmount.split(".");
+                                        if (newFloat[1].length == 1) {
+                                            newFloat[1] += "0";
+                                        } else if (newFloat[1].length == 0) {
+                                            newFloat[1] += "00";
+                                        }
+                                        newFloat = newFloat.join(".");
+                                    } else {
+                                        newFloat += ".00";
+                                    }
+                                    axios
+                                        .put(url, {
+                                            bookingID: response.data.data.bookingID,
+                                        })
+                                        .then((response) => {
+                                            const balance = response.data.data
+                                            const carparkID = carpark.data.carparkid
+                                            const url = "http://127.0.0.1:5004/lotAdj/" + carparkID + "/2/1"
+                                            axios
+                                                .get(url)
+                                                .then((response) => { 
+                                                    sucessMsg2();
+                                                })
+                                                .catch((error) => {
+                                                    console.log(error.message);
+                                                });
+                                        })
+                                        .catch((error) => {
+                                            console.log(error.message);
+                                        });
+
+                                })
+                                .catch((error) => {
+                                    console.log(error.message);
+                                });
+                        },
+                    },
+                ],
+            });
+            await alert.present();
+        };
 
         const sucessMsg = async (amount, balance) => {
             const alert = await alertController.create({
@@ -350,13 +601,53 @@ export default defineComponent({
             await alert.present();
         };
 
+        const sucessMsg2 = async () => {
+            const alert = await alertController.create({
+                header: "Sucessfully booked!",
+                buttons: [{
+                    text: "Okay",
+                    handler: () => {
+                        location.reload();
+                    },
+                }, ],
+            });
+
+            await alert.present();
+        };
+
         return {
             confirmationAlert,
+            confirmationAlert2,
+            confirmationAlert3,
             sucessMsg,
+            sucessMsg2,
             arrowBackOutline
         };
     },
     methods: {
+        getCarparksMonthlySubs(){
+        const url = "http://127.0.0.1:5003/chosenCarparks"
+        axios.get(url)
+            .then((response) => {
+                for (const eachCarpark of response.data.data.carparks){
+                    this.subscriptionFourCarpark.push(eachCarpark.carparkName)
+                }
+                // this.subscriptionFourCarpark = response.data.data.carparks
+                })
+            .catch((error) => {
+                console.log(error);
+            });
+        },
+        getUserCommonCarparks(){
+            const url = "http://127.0.0.1:5001/commonCarparks/" + parseInt(this.userData.userID)
+            axios.get(url)
+                .then((response) => {
+                    this.commonThreeCarparks = response.data.data.carparks
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+        },
         formatMoney(myFloat) { // money in DB store in 1 dp (eg. 12.1), to change to 2 dp (12.10)
             myFloat = myFloat.toFixed(2)
             myFloat = myFloat.toString()
@@ -438,6 +729,24 @@ export default defineComponent({
                 this.getSimulator();   
             }
         },
+        checkUserHasPlan(){
+        let url = "http://127.0.0.1:5005/subs/" + parseInt(this.userData.userID) + "&"+ 1
+        axios.get(url)
+            .then((response) => {
+                this.userHasPlan1 = response.data.data.subscriptionsExists
+                    })
+            .catch((error) => {
+                console.log(error);
+            });
+        url = "http://127.0.0.1:5005/subs/" + parseInt(this.userData.userID) + "&"+ 2
+            axios.get(url)
+                .then((response) => {
+                this.userHasPlan2 = response.data.data.subscriptionsExists
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+    },
         limitBookingDate(){
              // to limit booking date to after curent date
              const currentDateTime = new Date();
@@ -473,9 +782,11 @@ export default defineComponent({
             const distanceWeight = 0.01 //distance in meter --> 1026. lower distance better
             const lotsAvailWeight = 1 // lots --> 40 higher lots better
             const priceWeight = 0.5 // price in dollars --> 19.5. lower price better 
+            const planOneWeight = 1000
+            const planTwoWeight = 1000
             this.carparkArrayToShow = JSON.parse(JSON.stringify(this.carparksArraySimu));
             for (const eachCarpark of this.carparkArrayToShow){
-                eachCarpark["points"] = distanceWeight * eachCarpark.distance_km_value +lotsAvailWeight * eachCarpark.data.lotbalancehourly + priceWeight *  eachCarpark.data.totalFee
+                eachCarpark["points"] = distanceWeight * eachCarpark.distance_km_value +lotsAvailWeight * eachCarpark.data.lotbalancehourly + priceWeight *  eachCarpark.data.totalFee + eachCarpark.commonThreeCarpark * planOneWeight +  eachCarpark.subscriptionFourCarpark * planTwoWeight
             }
             this.carparkArrayToShow = this.carparkArrayToShow.sort(function(a, b) {
                 const keyA = a.points;
@@ -522,7 +833,6 @@ export default defineComponent({
         getSimulator() { 
             this.googleMapDistanceUrl = "https://maps.googleapis.com/maps/api/distancematrix/json?origins=";
             this.combinedLatLang = "";
-
             let url = "http://127.0.0.1:5004/getCarpark/1";
             axios
                 .post(url, {
@@ -530,10 +840,24 @@ export default defineComponent({
                     "carparkid": 1
                 })
                 .then((response) => {
+                    let commonThreeCarpark = 0
+                    let subscriptionFourCarpark = 0
+                    for (const eachCarpark of this.commonThreeCarparks){
+                        if (eachCarpark == response.data.data.carparklocation){
+                            commonThreeCarpark = 1
+                        }
+                    }
+                    for (const eachCarpark of this.subscriptionFourCarpark){
+                        if (eachCarpark == response.data.data.carparklocation){
+                            subscriptionFourCarpark = 1
+                        }
+                    }
                     this.carparksArraySimu.push({
                         data: response.data.data,
                         image: "assets/images/paragon.jpg",
                         availableLots: response.data.data.lotbalancehourly,
+                        commonThreeCarpark: commonThreeCarpark,
+                        subscriptionFourCarpark: subscriptionFourCarpark
                         // lat: 1.3040258775031617,
                         // long: 103.83608284915861
                     })
@@ -545,10 +869,24 @@ export default defineComponent({
                             "carparkid": 2
                         })
                         .then((response) => {
+                            let commonThreeCarpark = 0
+                    let subscriptionFourCarpark = 0
+                    for (const eachCarpark of this.commonThreeCarparks){
+                        if (eachCarpark == response.data.data.carparklocation){
+                            commonThreeCarpark = 1
+                        }
+                    }
+                    for (const eachCarpark of this.subscriptionFourCarpark){
+                        if (eachCarpark == response.data.data.carparklocation){
+                            subscriptionFourCarpark = 1
+                        }
+                    }
                             this.carparksArraySimu.push({
                                 data: response.data.data,
                                 image: "assets/images/ion.jpg",
                                 availableLots: response.data.data.lotbalancehourly,
+                                commonThreeCarpark: commonThreeCarpark,
+                                subscriptionFourCarpark: subscriptionFourCarpark
                                 // lat: 1.3040258775031617,
                                 // long: 103.83608284915861
                             })
@@ -560,10 +898,24 @@ export default defineComponent({
                                     "carparkid": 3
                                 })
                                 .then((response) => {
+                                    let commonThreeCarpark = 0
+                    let subscriptionFourCarpark = 0
+                    for (const eachCarpark of this.commonThreeCarparks){
+                        if (eachCarpark == response.data.data.carparklocation){
+                            commonThreeCarpark = 1
+                        }
+                    }
+                    for (const eachCarpark of this.subscriptionFourCarpark){
+                        if (eachCarpark == response.data.data.carparklocation){
+                            subscriptionFourCarpark = 1
+                        }
+                    }
                                     this.carparksArraySimu.push({
                                         data: response.data.data,
                                         image: "assets/images/takashimaya.jpeg",
                                         availableLots: response.data.data.lotbalancehourly,
+                                        commonThreeCarpark: commonThreeCarpark,
+                                        subscriptionFourCarpark: subscriptionFourCarpark
                                         //         lat: 1.3033454254185042,
                                         // long: 103.83455711763565
                                     })
@@ -575,10 +927,24 @@ export default defineComponent({
                                             "carparkid": 4
                                         })
                                         .then((response) => {
+                                            let commonThreeCarpark = 0
+                    let subscriptionFourCarpark = 0
+                    for (const eachCarpark of this.commonThreeCarparks){
+                        if (eachCarpark == response.data.data.carparklocation){
+                            commonThreeCarpark = 1
+                        }
+                    }
+                    for (const eachCarpark of this.subscriptionFourCarpark){
+                        if (eachCarpark == response.data.data.carparklocation){
+                            subscriptionFourCarpark = 1
+                        }
+                    }
                                             this.carparksArraySimu.push({
                                                 data: response.data.data,
                                                 image: "assets/images/tangs.jpg",
                                                 availableLots: response.data.data.lotbalancehourly,
+                                                commonThreeCarpark: commonThreeCarpark,
+                                                subscriptionFourCarpark: subscriptionFourCarpark
                                                 //             lat: 1.3040258775031617,
                                                 // long: 103.83608284915861
                                             })
@@ -590,10 +956,24 @@ export default defineComponent({
                                                     "carparkid": 5
                                                 })
                                                 .then((response) => {
+                                                    let commonThreeCarpark = 0
+                    let subscriptionFourCarpark = 0
+                    for (const eachCarpark of this.commonThreeCarparks){
+                        if (eachCarpark == response.data.data.carparklocation){
+                            commonThreeCarpark = 1
+                        }
+                    }
+                    for (const eachCarpark of this.subscriptionFourCarpark){
+                        if (eachCarpark == response.data.data.carparklocation){
+                            subscriptionFourCarpark = 1
+                        }
+                    }
                                                     this.carparksArraySimu.push({
                                                         data: response.data.data,
                                                         image: "assets/images/Wheelock.png",
                                                         availableLots: response.data.data.lotbalancehourly,
+                                                        commonThreeCarpark: commonThreeCarpark,
+                                                        subscriptionFourCarpark: subscriptionFourCarpark
                                                         //               lat: 1.3050314731714412,
                                                         // long: 103.83297614415605
                                                     })
@@ -605,10 +985,24 @@ export default defineComponent({
                                                             "carparkid": 6
                                                         })
                                                         .then((response) => {
+                                                            let commonThreeCarpark = 0
+                    let subscriptionFourCarpark = 0
+                    for (const eachCarpark of this.commonThreeCarparks){
+                        if (eachCarpark == response.data.data.carparklocation){
+                            commonThreeCarpark = 1
+                        }
+                    }
+                    for (const eachCarpark of this.subscriptionFourCarpark){
+                        if (eachCarpark == response.data.data.carparklocation){
+                            subscriptionFourCarpark = 1
+                        }
+                    }
                                                             this.carparksArraySimu.push({
                                                                 data: response.data.data,
                                                                 image: "assets/images/313.jpg",
                                                                 availableLots: response.data.data.lotbalancehourly,
+                                                                commonThreeCarpark: commonThreeCarpark,
+                                                                subscriptionFourCarpark: subscriptionFourCarpark
                                                                 //                   lat: 1.301171207812743,
                                                                 // long: 103.8386220085623
                                                             })
@@ -620,10 +1014,24 @@ export default defineComponent({
                                                                     "carparkid": 7
                                                                 })
                                                                 .then((response) => {
+                                                                    let commonThreeCarpark = 0
+                    let subscriptionFourCarpark = 0
+                    for (const eachCarpark of this.commonThreeCarparks){
+                        if (eachCarpark == response.data.data.carparklocation){
+                            commonThreeCarpark = 1
+                        }
+                    }
+                    for (const eachCarpark of this.subscriptionFourCarpark){
+                        if (eachCarpark == response.data.data.carparklocation){
+                            subscriptionFourCarpark = 1
+                        }
+                    }
                                                                     this.carparksArraySimu.push({
                                                                         data: response.data.data,
                                                                         image: "assets/images/scape.jpg",
                                                                         availableLots: response.data.data.lotbalancehourly,
+                                                                        commonThreeCarpark: commonThreeCarpark,
+                                                                        subscriptionFourCarpark: subscriptionFourCarpark
                                                                         //                     lat: 1.3010677408660067,
                                                                         // long: 103.83576204980196
                                                                     })
@@ -635,15 +1043,27 @@ export default defineComponent({
                                                                             "carparkid": 8
                                                                         })
                                                                         .then((response) => {
-                                        
+                                                                            let commonThreeCarpark = 0
+                    let subscriptionFourCarpark = 0
+                    for (const eachCarpark of this.commonThreeCarparks){
+                        if (eachCarpark == response.data.data.carparklocation){
+                            commonThreeCarpark = 1
+                        }
+                    }
+                    for (const eachCarpark of this.subscriptionFourCarpark){
+                        if (eachCarpark == response.data.data.carparklocation){
+                            subscriptionFourCarpark = 1
+                        }
+                    }
                                                                             this.carparksArraySimu.push({
                                                                                 data: response.data.data,
                                                                                 availableLots: response.data.data.lotbalancehourly,
+                                                                                commonThreeCarpark: commonThreeCarpark,
+                                                                                subscriptionFourCarpark: subscriptionFourCarpark,
                                                                                 image: "assets/images/wisma.jpeg",
                                                                                 // lat: 1.303842974291844,
                                                                                 // long: 103.8333226716273
                                                                             })
-                                                                            console.log(this.carparksArraySimu)
                                                                             
                                                                             this.combinedLatLang += "1.303842974291844" + "," + "103.8333226716273" + "|";
                                                                             
@@ -661,7 +1081,7 @@ export default defineComponent({
                                                                                     this.combinedLatLang.slice(0, -1) +
                                                                                     "&departure_time=now&key=AIzaSyAJXGx7T2ypt5Ew5-9SbDTWF9gqloQUJwI";
                                                                                     
-                                                                                // this.userOrigin = "1.3064433533620563,103.83276247871694"
+                                                                                this.userOrigin = "1.3064433533620563,103.83276247871694"
                                                                                 const url = "http://127.0.0.1:5009/getCoords";
                                                                                 axios
                                                                                     .post(url, {
@@ -829,6 +1249,7 @@ export default defineComponent({
 
                     }
                     this.carparksArraySimu[0].data["totalFee"] = this.formatMoney(fee / 100)
+                    this.carparksArraySimu[0].data["totalFeeDiscounted"] = this.formatMoney( (fee / 100) * (1-this.discountRate))
 
                     /////////// 2
                     const url = "http://127.0.0.1:5004/getCarparkPrice/2"
@@ -978,6 +1399,7 @@ export default defineComponent({
 
                             }
                             this.carparksArraySimu[1].data["totalFee"] = this.formatMoney(fee / 100)
+                            this.carparksArraySimu[1].data["totalFeeDiscounted"] = this.formatMoney( (fee / 100) * (1-this.discountRate))
 
 
                             ///////////////3
@@ -1127,7 +1549,7 @@ export default defineComponent({
 
                                     }
                                     this.carparksArraySimu[2].data["totalFee"] = this.formatMoney(fee / 100)
-
+                                    this.carparksArraySimu[2].data["totalFeeDiscounted"] = this.formatMoney( (fee / 100) * (1-this.discountRate))
 
                                     /////////// 4
                                     const url = "http://127.0.0.1:5004/getCarparkPrice/4"
@@ -1276,7 +1698,7 @@ export default defineComponent({
 
                                             }
                                             this.carparksArraySimu[3].data["totalFee"] = this.formatMoney(fee / 100)
-
+                                            this.carparksArraySimu[3].data["totalFeeDiscounted"] = this.formatMoney( (fee / 100) * (1-this.discountRate))
 
                                             /////////// 5
                                             const url = "http://127.0.0.1:5004/getCarparkPrice/5"
@@ -1425,7 +1847,7 @@ export default defineComponent({
 
                                                     }
                                                     this.carparksArraySimu[4].data["totalFee"] = this.formatMoney(fee / 100)
-
+                                                    this.carparksArraySimu[4].data["totalFeeDiscounted"] = this.formatMoney( (fee / 100) * (1-this.discountRate))
 
                                                     ///////////////6
                                                     const url = "http://127.0.0.1:5004/getCarparkPrice/6"
@@ -1574,7 +1996,7 @@ export default defineComponent({
 
                                                             }
                                                             this.carparksArraySimu[5].data["totalFee"] = this.formatMoney(fee / 100)
-
+                                                            this.carparksArraySimu[5].data["totalFeeDiscounted"] = this.formatMoney( (fee / 100) * (1-this.discountRate))
                                                             ///////////////7
                                                             const url = "http://127.0.0.1:5004/getCarparkPrice/7"
                                                             axios
@@ -1722,7 +2144,7 @@ export default defineComponent({
 
                                                                     }
                                                                     this.carparksArraySimu[6].data["totalFee"] = this.formatMoney(fee / 100)
-
+                                                                    this.carparksArraySimu[6].data["totalFeeDiscounted"] = this.formatMoney( (fee / 100) * (1-this.discountRate))
 
                                                                     ///////////////8
                                                                     const url = "http://127.0.0.1:5004/getCarparkPrice/8"
@@ -1871,9 +2293,8 @@ export default defineComponent({
 
                                                                             }
                                                                             this.carparksArraySimu[7].data["totalFee"] = this.formatMoney(fee / 100)
+                                                                            this.carparksArraySimu[7].data["totalFeeDiscounted"] = this.formatMoney( (fee / 100) * (1-this.discountRate))
                                                                             this.changeTab()
-
-                                                    
                                                                         })
 
                                                                 })
@@ -1913,6 +2334,9 @@ export default defineComponent({
     mounted() {
         this.loaduser()
         this.limitBookingDate()
+        this.checkUserHasPlan()
+        this.getUserCommonCarparks()
+        this.getCarparksMonthlySubs()
     },
 });
 </script>
@@ -1937,223 +2361,3 @@ ion-img::part(image) {
 
 /* } */
 </style>
-
-
-<!-- [
-    {
-        "data": {
-            "carparkaddress": "290 Orchard Rd",
-            "carparkid": 1,
-            "carparklocation": "Paragon Shopping Centre",
-            "carparkoperatordescription": "",
-            "carparkoperatorid": 0,
-            "carparkpostalcode": "238859",
-            "lotallocatecomplimentary": 100,
-            "lotallocatehourly": 50,
-            "lotallocateseason": 50,
-            "lotbalancecomplimentary": 97,
-            "lotbalancehourly": 32,
-            "lotbalanceseason": 48,
-            "lotusecomplimentary": 3,
-            "lotusehourly": 18,
-            "lotuseseason": 2,
-            "requeststatus": 0,
-            "requesttype": 1000,
-            "totalFee": "16.00"
-        },
-        "image": "assets/images/paragon.jpg",
-        "availableLots": 14,
-        "distance_km": "2.0 km",
-        "distance_km_value": "2.0 km",
-        "duration_mins": "6 mins"
-    },
-    {
-        "data": {
-            "carparkaddress": "2 Orchard Turn",
-            "carparkid": 2,
-            "carparklocation": "ION Orchard",
-            "carparkoperatordescription": "",
-            "carparkoperatorid": 0,
-            "carparkpostalcode": "238859",
-            "lotallocatecomplimentary": 87,
-            "lotallocatehourly": 43,
-            "lotallocateseason": 50,
-            "lotbalancecomplimentary": 74,
-            "lotbalancehourly": 40,
-            "lotbalanceseason": 50,
-            "lotusecomplimentary": 13,
-            "lotusehourly": 3,
-            "lotuseseason": 0,
-            "requeststatus": 0,
-            "requesttype": 1000,
-            "totalFee": "21.60"
-        },
-        "image": "assets/images/ion.jpg",
-        "availableLots": 37,
-        "distance_km": "1.0 km",
-        "distance_km_value": "1.0 km",
-        "duration_mins": "2 mins"
-    },
-    {
-        "data": {
-            "carparkaddress": "391 Orchard Rd",
-            "carparkid": 3,
-            "carparklocation": "Takashimaya Shopping Centre",
-            "carparkoperatordescription": "",
-            "carparkoperatorid": 0,
-            "carparkpostalcode": "238872",
-            "lotallocatecomplimentary": 250,
-            "lotallocatehourly": 89,
-            "lotallocateseason": 30,
-            "lotbalancecomplimentary": 250,
-            "lotbalancehourly": 46,
-            "lotbalanceseason": 28,
-            "lotusecomplimentary": 0,
-            "lotusehourly": 43,
-            "lotuseseason": 2,
-            "requeststatus": 0,
-            "requesttype": 1000,
-            "totalFee": "12.40"
-        },
-        "image": "assets/images/takashimaya.jpeg",
-        "availableLots": 3,
-        "distance_km": "0.8 km",
-        "distance_km_value": "0.8 km",
-        "duration_mins": "3 mins"
-    },
-    {
-        "data": {
-            "carparkaddress": "310 Orchard Road Tang Plaza",
-            "carparkid": 4,
-            "carparklocation": "TANGS at Tang Plaza",
-            "carparkoperatordescription": "",
-            "carparkoperatorid": 0,
-            "carparkpostalcode": "238864",
-            "lotallocatecomplimentary": 40,
-            "lotallocatehourly": 56,
-            "lotallocateseason": 10,
-            "lotbalancecomplimentary": 37,
-            "lotbalancehourly": 45,
-            "lotbalanceseason": 9,
-            "lotusecomplimentary": 3,
-            "lotusehourly": 11,
-            "lotuseseason": 1,
-            "requeststatus": 0,
-            "requesttype": 1000,
-            "totalFee": "21.20"
-        },
-        "image": "assets/images/tangs.jpg",
-        "availableLots": 34,
-        "distance_km": "1.3 km",
-        "distance_km_value": "1.3 km",
-        "duration_mins": "6 mins"
-    },
-    {
-        "data": {
-            "carparkaddress": "501 Orchard Rd",
-            "carparkid": 5,
-            "carparklocation": "Wheelock Place",
-            "carparkoperatordescription": "",
-            "carparkoperatorid": 0,
-            "carparkpostalcode": "238880",
-            "lotallocatecomplimentary": 23,
-            "lotallocatehourly": 40,
-            "lotallocateseason": 39,
-            "lotbalancecomplimentary": 20,
-            "lotbalancehourly": 30,
-            "lotbalanceseason": 6,
-            "lotusecomplimentary": 3,
-            "lotusehourly": 10,
-            "lotuseseason": 33,
-            "requeststatus": 0,
-            "requesttype": 1000,
-            "totalFee": "16.00"
-        },
-        "image": "assets/images/Wheelock.png",
-        "availableLots": 20,
-        "distance_km": "0.5 km",
-        "distance_km_value": "0.5 km",
-        "duration_mins": "1 min"
-    },
-    {
-        "data": {
-            "carparkaddress": "313 Orchard Rd",
-            "carparkid": 6,
-            "carparklocation": "313@Somerset",
-            "carparkoperatordescription": "",
-            "carparkoperatorid": 0,
-            "carparkpostalcode": "238895",
-            "lotallocatecomplimentary": 30,
-            "lotallocatehourly": 72,
-            "lotallocateseason": 32,
-            "lotbalancecomplimentary": 26,
-            "lotbalancehourly": 66,
-            "lotbalanceseason": 27,
-            "lotusecomplimentary": 4,
-            "lotusehourly": 6,
-            "lotuseseason": 5,
-            "requeststatus": 0,
-            "requesttype": 1000,
-            "totalFee": "24.00"
-        },
-        "image": "assets/images/313.jpg",
-        "availableLots": 60,
-        "distance_km": "0.5 km",
-        "distance_km_value": "0.5 km",
-        "duration_mins": "2 mins"
-    },
-    {
-        "data": {
-            "carparkaddress": "2 Orchard Link",
-            "carparkid": 7,
-            "carparklocation": "*SCAPE",
-            "carparkoperatordescription": "",
-            "carparkoperatorid": 0,
-            "carparkpostalcode": "237978",
-            "lotallocatecomplimentary": 33,
-            "lotallocatehourly": 90,
-            "lotallocateseason": 24,
-            "lotbalancecomplimentary": 3,
-            "lotbalancehourly": 56,
-            "lotbalanceseason": 4,
-            "lotusecomplimentary": 30,
-            "lotusehourly": 34,
-            "lotuseseason": 20,
-            "requeststatus": 0,
-            "requesttype": 1000,
-            "totalFee": "18.00"
-        },
-        "image": "assets/images/scape.jpg",
-        "availableLots": 22,
-        "distance_km": "0.8 km",
-        "distance_km_value": "0.8 km",
-        "duration_mins": "3 mins"
-    },
-    {
-        "data": {
-            "carparkaddress": "435 Orchard Rd",
-            "carparkid": 8,
-            "carparklocation": "Wisma Atria",
-            "carparkoperatordescription": "",
-            "carparkoperatorid": 0,
-            "carparkpostalcode": "238877",
-            "lotallocatecomplimentary": 43,
-            "lotallocatehourly": 50,
-            "lotallocateseason": 40,
-            "lotbalancecomplimentary": 5,
-            "lotbalancehourly": 17,
-            "lotbalanceseason": 38,
-            "lotusecomplimentary": 38,
-            "lotusehourly": 33,
-            "lotuseseason": 2,
-            "requeststatus": 0,
-            "requesttype": 1000,
-            "totalFee": "14.00"
-        },
-        "availableLots": -16,
-        "image": "assets/images/wisma.jpeg",
-        "distance_km": "0.4 km",
-        "distance_km_value": "0.4 km",
-        "duration_mins": "1 min"
-    }
-] -->
