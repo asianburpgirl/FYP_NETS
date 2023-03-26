@@ -73,17 +73,17 @@
                                 <!-- normal price booking -->
                 <ion-button shape="round" @click="confirmationAlert(carpark,this.bookingDate,this.startTime,this.endTime,this.userData,this.userHasPlan2 )"  v-if="this.startTime != '' &&
                 this.endTime !='' && this.bookingDate != '' && ((userHasPlan1== false && userHasPlan2== false && carpark.data.totalFee <= userBalance) || (userHasPlan1== true && carpark.commonThreeCarpark==false && carpark.data.totalFeeDiscounted <= userBalance) || (userHasPlan2== true && carpark.subscriptionFourCarpark==false) )" >
-                                    Book1
+                                    Book
                                 </ion-button>
                                 <!--  plan 1 booking -->
                                 <ion-button shape="round" @click="confirmationAlert2(carpark,this.bookingDate,this.startTime,this.endTime,this.userData,this.userHasPlan2 )" v-if="this.startTime != '' &&
                 this.endTime !='' && this.bookingDate != '' && (userHasPlan1== true && carpark.commonThreeCarpark==true && carpark.data.totalFeeDiscounted <= userBalance) " >
-                                    Book2
+                                    Book
                                 </ion-button>
                                 <!--  plan 2 booking -->
                                 <ion-button shape="round" @click="confirmationAlert3(carpark,this.bookingDate,this.startTime,this.endTime,this.userData,this.userHasPlan2 )"  v-if="this.startTime != '' &&
                 this.endTime !='' && this.bookingDate != ''&& (userHasPlan2== true && carpark.subscriptionFourCarpark==true) " >
-                                    Book3
+                                    Book
                                 </ion-button>                               
 
                                 <ion-text color="danger" v-if="((carpark.data.totalFee > userBalance) && (userHasPlan2== false)  && (userHasPlan1== false)) || (carpark.data.totalFeeDiscounted > userBalance && (userHasPlan1== true))">
