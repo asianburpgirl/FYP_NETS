@@ -213,11 +213,20 @@ export default defineComponent({
                                         .then((response) => {
                                             const balance = response.data.data
                                             const carparkID = carpark.data.carparkid
-                                            const url = "http://127.0.0.1:5004/lotAdj/" + carparkID + "/2/1"
+                                            url = "http://127.0.0.1:5004/lotAdj/" + carparkID + "/2/1"
                                             axios
                                                 .get(url)
                                                 .then((response) => { 
-                                                    sucessMsg(bookingAmount,balance)
+                                                    url = "http://127.0.0.1:5006/deduct"
+                                                    axios
+                                                    .post(url, {
+                                                        "amount" :  bookingAmount,
+                                                        "userID": userID
+                                                    })
+                                                    .then((response) => {
+                                                        sucessMsg(bookingAmount,balance)
+                                                    })
+
                                                 })
                                                 .catch((error) => {
                                                     console.log(error.message);
@@ -572,11 +581,7 @@ export default defineComponent({
             if (this.errorMessage.length == 0) {
 
                 this.userData = JSON.parse(localStorage.getItem("userData"));
-                const userID = this.userData.userID;
-
-                
-
-
+                // const userID = this.userData.userID;
                 const userData = JSON.parse(localStorage.getItem("userData"));
                 this.confirmationAlert(this.clickedCarpark, totalPrice ,this.userBalance, this.currentTime,endTime, userData)
                 
