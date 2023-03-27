@@ -112,7 +112,7 @@ export default defineComponent({
         region: 'SG',
         displayMode: 'markers',
         datalessRegionColor: 'lightblue',
-        colorAxis: {colors: ['green', 'red']}
+        colorAxis: {colors: ['gray', 'red']}
       },
       settings: {
         packages: ['geochart'],
