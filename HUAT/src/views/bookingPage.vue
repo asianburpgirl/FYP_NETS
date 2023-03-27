@@ -329,14 +329,10 @@ export default defineComponent({
                           const carparks = response.data.data.carparks
                           for (const eachCarpark of carparks){
                             if (eachCarpark.carparkName == bookingLocation){
-                              console.log(bookingLocation)
-                               console.log(eachCarpark,"AAA")
                                 url = "http://127.0.0.1:5004/lotAdj/" + eachCarpark.carparkID+ "/2/-1" 
-                                console.log(eachCarpark.carparkID)
                                 axios
                                   .get(url)
                                   .then((response) => {
-                                      
                                       console.log(response)   
                                       const dotExists = balance.includes(".");
                                       if (dotExists) {
@@ -440,9 +436,6 @@ export default defineComponent({
   },
   methods: {
     changeStatus(){
-      console.log("AA")
-      console.log(this.upcomingBookings)
-      console.log(this.pastBookings)
       if (this.bookingStatusToShow== "upcoming"){
         this.bookingsToShow = this.upcomingBookings
       }
@@ -495,7 +488,6 @@ export default defineComponent({
     editBooking(bookingInfo) {
       this.setEditBookingOpen(true);
       this.bookingInfo = bookingInfo;
-      // console.log(this.bookingInfo)
     },
     saveEditBooking() {
       // const startDateTimeFormatted = this.bookingDate.substring(0, 10) + " " + this.startTime.substring(11, 19);
