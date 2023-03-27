@@ -36,42 +36,16 @@
                         <p>
                             <b>Time Taken:</b> {{ timeToLocation_mins }} mins
                         </p> -->
-                        <p><b>Booking Amount:</b> ${{ bookingAmount }} per hour</p>
+                        <p><b>${{ bookingAmount }} per hour now </b> </p>
+                        
+                        <p><b> {{ chosenCarpark.availableLots }} lots available! </b> </p>
+                        <br>
+                        <p>Weekday Peak: ${{ weekdaypeakhourly }} per hour </p>
+                        <p>Weekday Non-Peak: ${{ weekdaynonpeakhourly }} per hour </p>
+                        <p>Weekend Peak: ${{ weekendpeakhourly }} per hour </p>
+                        <p>Weekend Non-Peak: ${{ weekendnonpeakhourly }} per hour </p>
                     </div>
-    
-                    <ion-row>
-                        <ion-col md="6">
-                            <ion-button @click="
-                      setBookingOpen(true);
-                      setChoiceOpen(false);
-                    " expand="block">Book</ion-button>
-                        </ion-col>
-                        <ion-col md="6">
-                            <ion-button @click="
-                      setSubscriptionOpen(true);
-                      setChoiceOpen(false);
-                    " expand="block">Subscribe</ion-button>
-                        </ion-col>
-                    </ion-row>
-                </ion-content>
-            </ion-modal>
-    
-            <!-- when user select to book a carpark at the location.  -->
-            <ion-modal :is-open="bookingIsOpen" class="ion-padding">
-                <ion-header>
-                    <ion-toolbar>
-                        <ion-title> Booking Overview</ion-title>
-                        <ion-buttons slot="start">
-                            <ion-button @click="
-                      setBookingOpen(false);
-                      setChoiceOpen(true);
-                    ">
-                                <ion-icon :icon="arrowBackOutline"></ion-icon>
-                            </ion-button>
-                        </ion-buttons>
-                    </ion-toolbar>
-                </ion-header>
-                <ion-content class="ion-padding">
+                    
                     <ion-item>
                         <!-- Distance from your current location:
                             {{ distanceToLocation_km }} km
@@ -81,11 +55,11 @@
                             {{ timeToLocation_mins }} mins
                             <br /> -->
   
-                        <ion-label position="stacked"> Booking Date:</ion-label>
-                        <ion-datetime presentation="date" v-model="bookingDate" :min="minDate"></ion-datetime>
+                        <!-- <ion-label position="stacked"> Booking Date:</ion-label>
+                        <ion-datetime presentation="date" v-model="bookingDate" :min="minDate"></ion-datetime> -->
     
-                        <ion-label position="stacked"> Start Time:</ion-label>
-                        <ion-datetime presentation="time" v-model="startTime"></ion-datetime>
+                        <!-- <ion-label position="stacked"> Start Time:</ion-label>
+                        <ion-datetime presentation="time" v-model="currentTime"></ion-datetime> -->
     
                         <ion-label position="stacked"> End Time:</ion-label>
                         <ion-datetime presentation="time" v-model="endTime"></ion-datetime>
@@ -99,97 +73,14 @@
     
                     <ion-row class="ion-padding-top ion-justify-content-end ion-padding-bottom addPaddingBottom">
                       <ion-col>
-                        <ion-button expand="block" @click="makeBoooking()">Book</ion-button>
+                        <ion-button expand="block" @click="makeBooking()">Book</ion-button>
                       </ion-col>  
                     </ion-row>
-                </ion-content>
-            </ion-modal>
     
-            <!-- when booking is successful, to show success popup -->
-            <ion-modal :is-open="bookingSuccessIsOpen" class="ion-padding">
-                <ion-header>
-                    <ion-toolbar>
-                        <ion-title>Booking Details</ion-title>
-                    </ion-toolbar>
-                </ion-header>
-                <ion-content class="ion-padding">
-                    <ion-img :src="clickedMarkerImage"></ion-img>
-    
-    
-                    <ion-row>
-                        Your booking at {{ clickedMarkerName }} is successful!
-                        <br /> Your booking details are as followed:
-                        <ul>
-                            <!-- <li><b>Carpark Location:</b> {{ clickedMarkerAddress }}</li> -->
-                            <li><b>Booking Date:</b> {{ bookingDate }}</li>
-    
-                            <li><b>Start Time:</b> {{ startTime }}</li>
-                            <li><b>End Time:</b> {{ endTime }}</li>
-                        </ul>
-                    </ion-row>
-    
-                    <ion-row class="ion-padding-top ion-justify-content-center ion-padding-bottom addPaddingBottom">
-                        <ion-col md="6">
-                          <ion-button expand="block" @click="setBookingSuccessOpen(false)">Back to Map</ion-button>
-                            
-                            
-                        </ion-col>
-                        <ion-col md="6">
-                          <ion-button @click="routeToMyBookings()"
-                  >View My Bookings</ion-button>
-                        </ion-col>
-                    </ion-row>
-
                     
                 </ion-content>
             </ion-modal>
     
-            <!-- when user select to subscription plans at the carpark location.  -->
-            <ion-modal :is-open="subscriptionIsOpen" class="ion-padding">
-                <ion-header>
-                    <ion-toolbar>
-                        <ion-title>Subscription plan</ion-title>
-                        <ion-buttons slot="start">
-                            <ion-button @click="
-                      setSubscriptionOpen(false);
-                      setChoiceOpen(true);
-                    ">
-                                <ion-icon :icon="arrowBackOutline"></ion-icon>
-                            </ion-button>
-                        </ion-buttons>
-                    </ion-toolbar>
-                </ion-header>
-                <ion-content class="ion-padding">
-                    <h1>{{ clickedMarkerName }}</h1>
-    
-                    <h3>
-                        Address: <u> {{ clickedMarkerAddress }} test</u>
-                    </h3>
-    
-                    <ion-item>
-                        <ion-label>Subscription Type</ion-label>
-                        <ion-select placeholder="Type">
-                            <ion-select-option value="seasonal">Seasonal</ion-select-option>
-                            <ion-select-option value="complimentary">Complimentary</ion-select-option>
-                            <ion-select-option value="hourly">Hourly</ion-select-option>
-                        </ion-select>
-                    </ion-item>
-    
-                    <ion-list>
-                        <ion-item> Weekday Peak: $12/month </ion-item>
-                        <ion-item> Weekday Non-Peak: $10/month </ion-item>
-                        <ion-item> Weekend Peak: $20/month </ion-item>
-                        <ion-item> Weekend Non-Peak: $15/month </ion-item>
-                    </ion-list>
-                    <ion-row class="ion-padding-top ion-justify-content-center addPaddingBottom">
-                        <ion-col>
-                            <ion-button expand="block" @click="buySubscription()">Buy Subscription</ion-button>
-                        </ion-col>
-                    </ion-row>
-    
-                </ion-content>
-    
-            </ion-modal>
         </ion-content>
     </ion-page>
 </template>
@@ -206,7 +97,7 @@ import {
     IonContent,
     IonModal,
     IonRow,
-    IonList,
+    // IonList,
     IonButtons,
     IonBackButton,
     IonButton,
@@ -214,11 +105,12 @@ import {
     IonIcon,
     IonItem,
     IonLabel,
-    IonSelect,
-    IonSelectOption,
+    // IonSelect,
+    // IonSelectOption,
     IonCol,
     IonText,
-    IonImg
+    IonImg,
+    alertController
 
 } from "@ionic/vue";
 
@@ -240,10 +132,10 @@ export default defineComponent({
         IonIcon,
         IonItem,
         IonLabel,
-        IonSelect,
-        IonSelectOption,
+        // IonSelect,
+        // IonSelectOption,
         IonRow,
-        IonList,
+        // IonList,
         IonCol,
         IonText,
         IonImg
@@ -251,15 +143,127 @@ export default defineComponent({
     },
 
     setup() {
-        return { arrowBackOutline };
+        const handlerMessage = ref("");
+        const confirmationAlert = async (carpark, bookingAmount,userBalance,bookingStartTime,endTime,userData) => {
+            const alert = await alertController.create({
+                header: "Confirm your booking? ",
+                subHeader: "$" + bookingAmount + " will be deducted from your account",
+                buttons: [{
+                        text: "Cancel",
+                        cssClass: "alert-button-cancel",
+                        role: "cancel",
+                        handler: () => {
+                            handlerMessage.value = "Alert canceled";
+                        },
+                    },
+                    {
+                        text: "Yes",
+                        cssClass: "alert-button-confirm",
+                        role: "confirm",
+                        handler: () => {
+
+                            let currentTime = new Date()
+                            
+
+                            const year = currentTime.getFullYear()
+                            const month = currentTime.getMonth()
+                            const date = currentTime.getDate()
+                            
+                            currentTime = year+"-"+ month +"-"+ date +" "+ currentTime.getHours()+":"+currentTime.getMinutes()+ ":00"
+
+                            const userID = userData.userID;
+
+                            bookingStartTime = year+"-"+ month+"-"+ date +" "+ bookingStartTime
+
+                            endTime = year+"-"+ month +"-"+ date +" "+ endTime.getHours()+":"+endTime.getMinutes()+ ":00"
+                            
+                            let url = "http://127.0.0.1:5001/bookings";
+                            axios
+                                .post(url, {
+                                    bookingDateTime: currentTime, 
+                                    bookingLocation: carpark.data.carparklocation,
+                                    locationName: carpark.data.carparkaddress,
+                                    bookingStartDateTime: bookingStartTime,
+                                    bookingEndDateTime: endTime,
+                                    userID: userID,
+                                    status: "Booked",
+                                    bookingAmt: bookingAmount
+                                })
+                                .then((response) => {
+                                    url = "http://127.0.0.1:5001/updateBalance/" + response.data.data.bookingID;
+                                    let bookingAmount = response.data.data.bookingAmt
+                                    bookingAmount = bookingAmount.toString();
+                                    const dotExists = bookingAmount.includes(".");
+                                    let newFloat = bookingAmount;
+                                    if (dotExists) {
+                                        newFloat = bookingAmount.split(".");
+                                        if (newFloat[1].length == 1) {
+                                            newFloat[1] += "0";
+                                        } else if (newFloat[1].length == 0) {
+                                            newFloat[1] += "00";
+                                        }
+                                        newFloat = newFloat.join(".");
+                                    } else {
+                                        newFloat += ".00";
+                                    }
+                                    axios
+                                        .put(url, {
+                                            bookingID: response.data.data.bookingID,
+                                        })
+                                        .then((response) => {
+                                            const balance = response.data.data
+                                            const carparkID = carpark.data.carparkid
+                                            const url = "http://127.0.0.1:5004/lotAdj/" + carparkID + "/2/1"
+                                            axios
+                                                .get(url)
+                                                .then((response) => { 
+                                                    sucessMsg(bookingAmount,balance)
+                                                })
+                                                .catch((error) => {
+                                                    console.log(error.message);
+                                                });
+                                        })
+                                        .catch((error) => {
+                                            console.log(error.message);
+                                        });   
+                                 
+                                })
+                                .catch((error) => {
+                                    console.log(error);
+                                });
+
+        
+                        },
+                    },
+                ],
+            });
+            await alert.present();
+        };
+        const sucessMsg = async (amount, balance) => {
+            const alert = await alertController.create({
+                header: "Success!",
+                subHeader: "$" + parseFloat(amount).toFixed(2) + " deducted. Balance is " + "$" + balance.toFixed(2),
+                buttons: [{
+                    text: "Okay",
+                    handler: () => {
+                        location.reload();
+                    },
+                }, ],
+            });
+
+            await alert.present();
+        };
+
+        return { arrowBackOutline,confirmationAlert, sucessMsg };
     },
-    data() {
+    data() { //my data bookmark
         return {
             bookingIsOpen: false,
-            bookingSuccessIsOpen: false,
             subscriptionSuccessIsOpen: false,
             subscriptionIsOpen: false,
             choiceOpen: false,
+
+            userBalance: 0,
 
             //setting peak hours. can make it such that admin can change this value. value in 24 hours.
             startPeak: "09:00:00",
@@ -268,18 +272,25 @@ export default defineComponent({
             carparkPrices: [],
             clickedMarkerName: "",
             clickedMarkerAddress: "",
+            clickedCarpark: "",
             distanceToLocation_km: "",
             timeToLocation_mins: "",
-            startTime: "",
+            currentTime: "",
             endTime: "",
-            minDate: "",
+            // minDate: "",
             bookingDate: "",
             carparksArraySimu: [],
+            chosenCarpark: {},
             userOrigin: "1.2958419970838684,103.85841587741238",
             userDestinations: "1.3007033161990564,103.84528924122294",
             bookingAmount: "",
 
             errorMessage: [],
+
+            weekdaypeakhourly: 0,
+            weekdaynonpeakhourly:0,
+            weekendnonpeakhourly: 0,
+            weekendpeakhourly: 0,
 
             // bookingDetails: [],
             // userData: {},
@@ -300,28 +311,43 @@ export default defineComponent({
 
     mounted() {
         this.createMap();
+        this.loaduser()
         this.getCurrentDateTime();
     },
 
     methods: {
-        formatMoney(myFloat) {
-            // money in DB store in 1 dp (eg. 12.1), to change to 2 dp (12.10)
-            myFloat = myFloat.toString();
-            const dotExists = myFloat.includes(".");
-            let newFloat = myFloat;
+        loaduser(){
+            const userData = JSON.parse(localStorage.getItem("userData"));
+
+            const url = "http://127.0.0.1:5002/getBalance/" + parseInt(userData.userID)
+            axios.get(url)
+                .then((response) => {
+                    this.userBalance = response.data.data.balance
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+
+        },
+        formatMoney(myFloat) { // money in DB store in 1 dp (eg. 12.1), to change to 2 dp (12.10)
+            myFloat= parseFloat(myFloat)
+            myFloat = myFloat.toFixed(2)
+            myFloat = myFloat.toString()
+            const dotExists = myFloat.includes('.')
+            let newFloat = myFloat
             if (dotExists) {
-                newFloat = myFloat.split(".");
-                if (newFloat[1].length == 1) {
-                    newFloat[1] += "0";
-                } else if (newFloat[1].length == 0) {
-                    newFloat[1] += "00";
+                newFloat = myFloat.split(".")
+                if ((newFloat[1]).length == 1) {
+                    newFloat[1] += "0"
+                } else if ((newFloat[1]).length == 0) {
+                    newFloat[1] += "00"
                 }
-                newFloat = newFloat.join(".");
+                newFloat = newFloat.join(".")
             } else {
-                newFloat += ".00";
+                newFloat += ".00"
             }
 
-            return newFloat;
+            return newFloat
         },
         getCurrentDateTime() {
             const currentDateTime = new Date();
@@ -330,22 +356,13 @@ export default defineComponent({
                 "0" +
                 (parseInt(currentDateTime.getMonth()) + parseInt(1))
             ).slice(-2);
+            
+            this.bookingDate = currentDateTime.getFullYear() +"-" +month +"-" +date +"T" +"15:30:00"
 
-            this.minDate =
-                currentDateTime.getFullYear() +
-                "-" +
-                month +
-                "-" +
-                date +
-                "T" +
-                currentDateTime.getHours() +
-                ":" +
-                currentDateTime.getMinutes() +
-                ":" +
-                currentDateTime.getSeconds();
+            const currentTime = ("0"+currentDateTime.getHours()).slice(-2) + ":" + ("0"+(currentDateTime.getMinutes()+1)).slice(-2)+":00"
+            this.currentTime = currentTime
         },
         routeToMyBookings() {
-            this.setBookingSuccessOpen(false);
             this.$router
                 .push({
                     path: "/viewBooking",
@@ -355,49 +372,10 @@ export default defineComponent({
                 });
             location.reload();
         },
-        buySubscription() {
-            console.log("here");
-        },
         async getCurrentLocation() {
             const coordinates = await Geolocation.getCurrentPosition();
 
             return coordinates;
-        },
-        calculateDistance() {
-            this.getCurrentLocation().then((coordinates) => {
-                this.userOrigin =
-                    coordinates.coords.latitude.toString() +
-                    "," +
-                    coordinates.coords.longitude.toString();
-                // console.log("Your location:" + this.userOrigin);
-                const url =
-                    "https://maps.googleapis.com/maps/api/distancematrix/json?origins=" +
-                    this.userOrigin +
-                    "&destinations=" +
-                    this.userDestinations +
-                    "&departure_time=now&key=AIzaSyAJXGx7T2ypt5Ew5-9SbDTWF9gqloQUJwI";
-
-                axios
-                    .get(url)
-                    .then((response) => {
-                        const distance_km = (
-                            response.data.rows[0].elements[0].distance.value / 1000
-                        ).toPrecision(2);
-                        const duration_mins = (
-                            response.data.rows[0].elements[0].duration_in_traffic.value / 60
-                        ).toPrecision(2);
-                        // console.log(
-                        //   "distance: ",
-                        //   distance_km + "duration: ",
-                        //   duration_mins
-                        // );
-                        this.distanceToLocation_km = distance_km;
-                        this.timeToLocation_mins = duration_mins;
-                    })
-                    .catch((error) => {
-                        console.log(error.message);
-                    });
-            });
         },
         setChoiceOpen(isOpen) {
             this.choiceOpen = isOpen;
@@ -405,99 +383,219 @@ export default defineComponent({
         setBookingOpen(isOpen) {
             this.bookingIsOpen = isOpen;
         },
-        setBookingSuccessOpen(isOpen) {
-            this.bookingSuccessIsOpen = isOpen;
-        },
+        
         setSubscriptionOpen(isOpen) {
             this.subscriptionIsOpen = isOpen;
         },
-        makeBoooking() {
+        calculateTotalPrice(startTime,endTime,dateFormmated, rates){
+            // use startTime, EndTime,date, calculate price based on weekend/weekday + peak/nonpeak
+            // Tue Mar 28 2023 07:54:00 GMT+0800 (Singapore Standard Time) | Tue Mar 28 2023 15:54:00 GMT+0800 (Singapore Standard Time)| '2023-03-28' | object of rates
+            let fee = 0
+                    // weekend
+                    if (startTime.getDay() == 6 || startTime.getDay() == 0) {
+                        // if booking start and end in peak
+                        if (
+                            endTime <
+                            new Date(dateFormmated + " " + this.endPeak) &&
+                            startTime >
+                            new Date(dateFormmated + " " + this.startPeak)
+                        ) {
+                            const duration =
+                                Math.floor((endTime - startTime) / 3600000) + 1;
+                            fee = duration * rates.weekendpeakhourly;
+                        }
+
+                        // if booking start in non peak and end in peak
+                        else if (
+                            endTime <
+                            new Date(dateFormmated + " " + this.endPeak) &&
+                            startTime <
+                            new Date(dateFormmated + " " + this.startPeak)
+                        ) {
+                            const peakFee =
+                                (Math.floor(
+                                        (new Date(dateFormmated + " " + this.startPeak) -
+                                            startTime) /
+                                        3600000
+                                    ) +
+                                    1) *
+                                    rates.weekendpeakhourly;
+                            const nonPeakFee = (Math.floor((endTime - new Date(dateFormmated + " " + this.startPeak)) / 3600000) + 1) * rates.weekendnonpeakhourly;
+                            fee = peakFee + nonPeakFee;
+                        }
+
+                        // if booking start in peak and end in non peak
+                        else if (
+                            endTime >
+                            new Date(dateFormmated + " " + this.endPeak) &&
+                            startTime <
+                            new Date(dateFormmated + " " + this.endPeak)
+                        ) {
+                            const peakFee =
+                                (Math.floor(
+                                        (new Date(dateFormmated + " " + this.endPeak) -
+                                            startTime) /
+                                        3600000
+                                    ) +
+                                    1) *
+                                    rates.weekendpeakhourly;
+                            const nonPeakFee =
+                                (Math.floor(
+                                        (endTime -
+                                            new Date(dateFormmated + " " + this.endPeak)) /
+                                        3600000
+                                    ) +
+                                    1) *
+                                    rates.weekendpeaknonhourly;
+                            fee = peakFee + nonPeakFee;
+                        }
+
+                        // if booking start and end in non peak
+                        // else if ((endTime > (new Date(dateFormmated + " " + this.endPeak))) && (startTime > (new Date(dateFormmated + " " + this.startPeak)))) {
+                        else {
+                            const duration =
+                                Math.floor((endTime - startTime) / 3600000) + 1;
+                            fee = duration * rates.weekendnonpeakhourly;
+                        }
+                    }
+                    // weekday
+                    else {
+                        // if booking start and end in peak
+                        if (
+                            endTime <
+                            new Date(dateFormmated + " " + this.endPeak) &&
+                            startTime >
+                            new Date(dateFormmated + " " + this.startPeak)
+                        ) {
+                            const duration =
+                                Math.floor((endTime - startTime) / 3600000) + 1;
+                            fee = duration * rates.weekdaypeakhourly;
+                        }
+
+                        // if booking start in non peak and end in peak
+                        else if (
+                            new Date(dateFormmated + " " + this.startPeak) <
+                            endTime && endTime <
+                            new Date(dateFormmated + " " + this.endPeak) &&
+                            startTime <
+                            new Date(dateFormmated + " " + this.startPeak)
+                        ) {
+                            const peakFee =
+                                (Math.floor(
+                                        (new Date(dateFormmated + " " + this.startPeak) -
+                                            startTime) /
+                                        3600000
+                                    ) +
+                                    1) *
+                                    rates.weekdaypeakhourly;
+                            const nonPeakFee = (Math.floor((endTime - new Date(dateFormmated + " " + this.startPeak)) / 3600000) + 1) * rates.weekdaynonpeakhourly;
+                            fee = peakFee + nonPeakFee;
+                        }
+
+                        // if booking start in peak and end in non peak
+                        else if (
+                            endTime >
+                            new Date(dateFormmated + " " + this.endPeak) &&
+                            startTime <
+                            new Date(dateFormmated + " " + this.endPeak)
+                        ) {
+                            const peakFee =
+                                (Math.floor(
+                                        (new Date(dateFormmated + " " + this.endPeak) -
+                                            startTime) /
+                                        3600000
+                                    ) +
+                                    1) *
+                                    rates.weekdaypeakhourly
+                            const nonPeakFee =
+                                (Math.floor(
+                                        (endTime -
+                                            new Date(dateFormmated + " " + this.endPeak)) /
+                                        3600000
+                                    ) +
+                                    1) *
+                                    rates.weekdaynonpeakhourly;
+                            fee = peakFee + nonPeakFee;
+                        }
+
+                        // if booking start and end in non peak
+                        // else if ((endTime > (new Date(dateFormmated + " " + this.endPeak))) && (startTime > (new Date(dateFormmated + " " + this.startPeak)))) {
+                        else {
+                            const duration =
+                                Math.floor((endTime - startTime) / 3600000) + 1;
+                            fee = duration * rates.weekdaynonpeakhourly;
+                        }
+                    }
+            return fee
+        },
+        makeBooking() {
             this.errorMessage = [];
+            const hour = this.endTime.slice(11,13)
+            const mins = this.endTime.slice(14,16)
+            const currentTime = new Date("2023-03-25 " + this.currentTime)
+            const endTime = new Date("2023-03-25 " + hour +":" + mins +":00"  )
+
+            for (const eachCarpark of this.carparksArraySimu) {
+                    if (eachCarpark.data.carparklocation == this.clickedMarkerName){
+                        this.clickedCarpark = eachCarpark
+                        break
+                    }
+                }
+                const rates = { 
+                    "weekdaynonpeakhourly" : this.clickedCarpark.weekdaynonpeakhourly,
+                    "weekdaypeakhourly": this.clickedCarpark.weekdaypeakhourly,
+                    "weekendnonpeakhourly": this.clickedCarpark.weekendnonpeakhourly,
+                    "weekendpeakhourly": this.clickedCarpark.weekendpeakhourly,
+                }
+
+            const formattedBookingDate = this.bookingDate.slice(0,10)
+            const totalPrice = this.formatMoney((this.calculateTotalPrice(currentTime,endTime,formattedBookingDate, rates)))
+
+
+            if (this.chosenCarpark.availableLots == 0){
+                this.errorMessage.push("This carpark does not have anymore slots!");
+            }
             if (
-                this.startTime >= this.endTime &&
-                this.startTime != "" &&
+                endTime < currentTime &&
+                this.currentTime != "" &&
                 this.endTime != ""
             ) {
-                this.errorMessage.push("End Time must be later than Start Time!");
-            }
-            if (this.bookingDate == "") {
-                this.errorMessage.push("You need to indicate booking Date!");
-            }
-            if (this.startTime == "") {
-                this.errorMessage.push("You need to indicate start time !");
+                this.errorMessage.push("End Time must be later than current time!");
             }
             if (this.endTime == "") {
                 this.errorMessage.push("You need to indicate end time !");
             }
+            if(this.userBalance < totalPrice){
+                this.errorMessage.push("Insufficient credit. Top up your wallet !");
+            }
 
             if (this.errorMessage.length == 0) {
-                console.log("time");
-                const currentDateTime = new Date();
-                const date = currentDateTime.getDate();
-                const month = currentDateTime.getMonth() + 1;
-                const year = currentDateTime.getFullYear();
-
-                const hour = currentDateTime.getHours();
-                const min = currentDateTime.getMinutes();
-                const sec = currentDateTime.getSeconds();
-
-                const currentDateTimeFormatted =
-                    year + "-" + month + "-" + date + " " + hour + ":" + min + ":" + sec;
-
-                this.bookingDate = this.bookingDate.substring(0, 10);
-
-                const startDateTimeFormatted =
-                    this.bookingDate.substring(0, 10) +
-                    " " +
-                    this.startTime.substring(11, 19);
-                this.startTime = this.startTime.substring(11, 19);
-
-                const endDateTimeFormatted =
-                    this.bookingDate.substring(0, 10) +
-                    " " +
-                    this.endTime.substring(11, 19);
-                this.endTime = this.endTime.substring(11, 19);
 
                 this.userData = JSON.parse(localStorage.getItem("userData"));
                 const userID = this.userData.userID;
 
-                const url = "http://127.0.0.1:5001/bookings";
+                
 
-                axios
-                    .post(url, {
-                        bookingDateTime: currentDateTimeFormatted,
-                        bookingLocation: this.clickedMarkerName,
-                        locationName: this.clickedMarkerAddress,
-                        bookingStartDateTime: startDateTimeFormatted,
-                        bookingEndDateTime: endDateTimeFormatted,
-                        userID: userID,
-                        status: "Booked",
-                        bookingAmt: this.bookingAmount,
-                    })
-                    .then((response) => {
-                        this.deductFromUser(response.data.data.bookingID);
-                        this.setBookingOpen(false); // close booking window
-                        this.setBookingSuccessOpen(true); // open booking sucess window
-                    })
-                    .catch((error) => {
-                        console.log(error.message);
-                    });
+
+                const userData = JSON.parse(localStorage.getItem("userData"));
+                this.confirmationAlert(this.clickedCarpark, totalPrice ,this.userBalance, this.currentTime,endTime, userData)
+                
             }
         },
-        deductFromUser(bookingID) {
-            // updateBalance
-            const url = "http://127.0.0.1:5001/updateBalance/" + bookingID;
-            axios
-                .put(url, {
-                    bookingID: bookingID,
-                })
-                .then((response) => {
-                    // console.log(response)
-                })
-                .catch((error) => {
-                    console.log(error.message);
-                });
-        },
+        // deductFromUser(bookingID) {
+        //     // updateBalance
+        //     const url = "http://127.0.0.1:5001/updateBalance/" + bookingID;
+        //     axios
+        //         .put(url, {
+        //             bookingID: bookingID,
+        //         })
+        //         .then((response) => {
+        //             // console.log(response)
+        //         })
+        //         .catch((error) => {
+        //             console.log(error.message);
+        //         });
+        // },
 
         async createMap() {
             const mapRef = document.getElementById("map");
@@ -516,41 +614,257 @@ export default defineComponent({
             });
 
             //add markers
-            const url = "http://127.0.0.1:5003/carparks";
+            let url = "http://127.0.0.1:5004/getCarpark/1";
             axios
-                .get(url)
+                .post(url, {
+                    "requesttype": 1000,
+                    "carparkid": 1
+                })
                 .then((response) => {
-                    // console.log(response.data.data.carparks)
-                    for (const eachCarpark of response.data.data.carparks) {
-                        const markers = newMap.addMarkers([
-                            //location 1
-                            {
-                                title: eachCarpark.carparkName,
-                                snippet: eachCarpark.carparkLocation,
-                                coordinate: {
-                                    lat: eachCarpark.latitude,
-                                    lng: eachCarpark.longitude,
-                                },
-                            },
-                        ]);
-                        this.carparkPrices.push({
-                            carparkname: eachCarpark.carparkName,
-                            hourlyweekdaypeak: eachCarpark.hourlyweekdaypeak,
-                            hourlyweekendpeak: eachCarpark.hourlyweekendpeak,
-                            hourlyweekdaynonpeak: eachCarpark.hourlyweekdaynonpeak,
-                            hourlyweekendnonpeak: eachCarpark.hourlyweekendnonpeak,
-                        });
-                    }
+                    this.carparksArraySimu.push({
+                        data: response.data.data,
+                        image: "assets/images/paragon.jpg",
+                        availableLots: response.data.data.lotbalancehourly,
+                        lat: 1.3040258884,
+                        long: 103.8360824585
+                    })
+                    url = "http://127.0.0.1:5004/getCarpark/2";
+                    axios
+                        .post(url, {
+                            "requesttype": 1000,
+                            "carparkid": 2
+                        })
+                        .then((response) => {
+                        this.carparksArraySimu.push({
+                            data: response.data.data,
+                            image: "assets/images/ion.jpg",
+                            availableLots: response.data.data.lotbalancehourly,
+                            lat: 1.3041540384,
+                            long: 103.8319625854
+                        })
+                        url = "http://127.0.0.1:5004/getCarpark/3";
+                        axios
+                            .post(url, {
+                                "requesttype": 1000,
+                                "carparkid": 3
+                            })
+                            .then((response) => {
+                            this.carparksArraySimu.push({
+                                data: response.data.data,
+                                image: "assets/images/takashimaya.jpeg",
+                                availableLots: response.data.data.lotbalancehourly,
+                                lat: 1.3033454418,
+                                long: 103.8345565796
+                                })
+                                url = "http://127.0.0.1:5004/getCarpark/4";
+                                axios
+                                    .post(url, {
+                                        "requesttype": 1000,
+                                        "carparkid": 4
+                                    })
+                                    .then((response) => {
+                                    this.carparksArraySimu.push({
+                                        data: response.data.data,
+                                        image: "assets/images/tangs.jpg",
+                                        availableLots: response.data.data.lotbalancehourly,
+                                        lat: 1.3050314188,
+                                        long: 103.8329772949
+                                        })
+                                        url = "http://127.0.0.1:5004/getCarpark/5";
+                                        axios
+                                            .post(url, {
+                                                "requesttype": 1000,
+                                                "carparkid": 5
+                                            })
+                                            .then((response) => {
+                                            this.carparksArraySimu.push({
+                                                data: response.data.data,
+                                                image: "assets/images/Wheelock.png",
+                                                availableLots: response.data.data.lotbalancehourly,
+                                                lat: 1.3048859835,
+                                                long: 103.8304824829
+                                                })
+                                            
+                                                url = "http://127.0.0.1:5004/getCarpark/6";
+                                                axios
+                                                    .post(url, {
+                                                        "requesttype": 1000,
+                                                        "carparkid": 6
+                                                    })
+                                                    .then((response) => {
+                                                    this.carparksArraySimu.push({
+                                                        data: response.data.data,
+                                                        image: "assets/images/313.jpg",
+                                                        availableLots: response.data.data.lotbalancehourly,
+                                                        lat: 1.3011711836,
+                                                        long: 103.8386230469
+                                                        })
+                                                    
+                                                        url = "http://127.0.0.1:5004/getCarpark/7";
+                                                        axios
+                                                            .post(url, {
+                                                                "requesttype": 1000,
+                                                                "carparkid": 7
+                                                            })
+                                                            .then((response) => {
+                                                            this.carparksArraySimu.push({
+                                                                data: response.data.data,
+                                                                image: "assets/images/scape.jpg",
+                                                                availableLots: response.data.data.lotbalancehourly,
+                                                                lat: 1.3010677099,
+                                                                long: 103.8357620239
+                                                                })
+                                                                url = "http://127.0.0.1:5004/getCarpark/8";
+                                                                axios
+                                                                    .post(url, {
+                                                                        "requesttype": 1000,
+                                                                        "carparkid": 8
+                                                                    })
+                                                                    .then((response) => {
+    this.carparksArraySimu.push({
+        data: response.data.data,
+        image: "assets/images/tangs.jpg",
+        availableLots: response.data.data.lotbalancehourly,
+        lat: 1.3038430214,
+        long:103.8333206177
+        })
+        let url = "http://127.0.0.1:5004/getCarparkPrice/1"
+        axios
+            .get(url)
+            .then((response) => {
+                this.carparksArraySimu[0]["weekdaypeakhourly"] = this.formatMoney(response.data.data.weekdaypeakhourly/100)
+                this.carparksArraySimu[0]["weekdaynonpeakhourly"] =  this.formatMoney(response.data.data.weekdaynonpeakhourly/100)
+                this.carparksArraySimu[0]["weekendnonpeakhourly"] =  this.formatMoney(response.data.data.weekendnonpeakhourly/100)
+                this.carparksArraySimu[0]["weekendpeakhourly"] =  this.formatMoney(response.data.data.weekendpeakhourly/100)
+                
+                url = "http://127.0.0.1:5004/getCarparkPrice/2"
+        axios
+            .get(url)
+            .then((response) => {
+                this.carparksArraySimu[1]["weekdaypeakhourly"] =  this.formatMoney(response.data.data.weekdaypeakhourly/100)
+                this.carparksArraySimu[1]["weekdaynonpeakhourly"] =  this.formatMoney(response.data.data.weekdaynonpeakhourly/100)
+                this.carparksArraySimu[1]["weekendnonpeakhourly"] =  this.formatMoney(response.data.data.weekendnonpeakhourly/100)
+                this.carparksArraySimu[1]["weekendpeakhourly"] =  this.formatMoney(response.data.data.weekendpeakhourly/100)
+                
+                url = "http://127.0.0.1:5004/getCarparkPrice/3"
+        axios
+            .get(url)
+            .then((response) => {
+                this.carparksArraySimu[2]["weekdaypeakhourly"] =  this.formatMoney(response.data.data.weekdaypeakhourly/100)
+                this.carparksArraySimu[2]["weekdaynonpeakhourly"] =  this.formatMoney(response.data.data.weekdaynonpeakhourly/100)
+                this.carparksArraySimu[2]["weekendnonpeakhourly"] =  this.formatMoney(response.data.data.weekendnonpeakhourly/100)
+                this.carparksArraySimu[2]["weekendpeakhourly"] =  this.formatMoney(response.data.data.weekendpeakhourly/100)
+                
+                url = "http://127.0.0.1:5004/getCarparkPrice/4"
+        axios
+            .get(url)
+            .then((response) => {
+                this.carparksArraySimu[3]["weekdaypeakhourly"] =  this.formatMoney(response.data.data.weekdaypeakhourly/100)
+                this.carparksArraySimu[3]["weekdaynonpeakhourly"] =  this.formatMoney(response.data.data.weekdaynonpeakhourly/100)
+                this.carparksArraySimu[3]["weekendnonpeakhourly"] =  this.formatMoney(response.data.data.weekendnonpeakhourly/100)
+                this.carparksArraySimu[3]["weekendpeakhourly"] =  this.formatMoney(response.data.data.weekendpeakhourly/100)
+                
+                url = "http://127.0.0.1:5004/getCarparkPrice/5"
+        axios
+            .get(url)
+            .then((response) => {
+                this.carparksArraySimu[4]["weekdaypeakhourly"] =  this.formatMoney(response.data.data.weekdaypeakhourly/100)
+                this.carparksArraySimu[4]["weekdaynonpeakhourly"] =  this.formatMoney(response.data.data.weekdaynonpeakhourly/100)
+                this.carparksArraySimu[4]["weekendnonpeakhourly"] =  this.formatMoney(response.data.data.weekendnonpeakhourly/100)
+                this.carparksArraySimu[4]["weekendpeakhourly"] = this.formatMoney( response.data.data.weekendpeakhourly/100)
+                
+                url = "http://127.0.0.1:5004/getCarparkPrice/6"
+        axios
+            .get(url)
+            .then((response) => {
+                this.carparksArraySimu[5]["weekdaypeakhourly"] =  this.formatMoney(response.data.data.weekdaypeakhourly/100)
+                this.carparksArraySimu[5]["weekdaynonpeakhourly"] =  this.formatMoney(response.data.data.weekdaynonpeakhourly/100)
+                this.carparksArraySimu[5]["weekendnonpeakhourly"] = this.formatMoney(response.data.data.weekendnonpeakhourly/100)
+                this.carparksArraySimu[5]["weekendpeakhourly"] =  this.formatMoney(response.data.data.weekendpeakhourly/100)
+                url = "http://127.0.0.1:5004/getCarparkPrice/7"
+        axios
+            .get(url)
+            .then((response) => {
+                this.carparksArraySimu[6]["weekdaypeakhourly"] =  this.formatMoney(response.data.data.weekdaypeakhourly/100)
+                this.carparksArraySimu[6]["weekdaynonpeakhourly"] =  this.formatMoney(response.data.data.weekdaynonpeakhourly/100)
+                this.carparksArraySimu[6]["weekendnonpeakhourly"] =  this.formatMoney(response.data.data.weekendnonpeakhourly/100)
+                this.carparksArraySimu[6]["weekendpeakhourly"] =  this.formatMoney(response.data.data.weekendpeakhourly/100)
+                
+                url = "http://127.0.0.1:5004/getCarparkPrice/8"
+        axios
+            .get(url)
+            .then((response) => {
+                this.carparksArraySimu[7]["weekdaypeakhourly"] =  this.formatMoney(response.data.data.weekdaypeakhourly/100)
+                this.carparksArraySimu[7]["weekdaynonpeakhourly"] =  this.formatMoney(response.data.data.weekdaynonpeakhourly/100)
+                this.carparksArraySimu[7]["weekendnonpeakhourly"] =  this.formatMoney(response.data.data.weekendnonpeakhourly/100)
+                this.carparksArraySimu[7]["weekendpeakhourly"] =  this.formatMoney(response.data.data.weekendpeakhourly/100)
+                console.log(this.carparksArraySimu)
+            })
+            })
+            
+            
+            })
+
+            })
+
+
+            })
+
+            })
+
+            })
+
+            })
+                
+    // const currentDate = new Date()
+    // const currentDateFormatted = currentDate.toString().substring(0,10)
+    for (const eachCarpark of this.carparksArraySimu) {
+        const markers = newMap.addMarkers([
+            {
+                title: eachCarpark.data.carparklocation,
+                snippet: eachCarpark.data.carparkaddress,
+                coordinate: {
+                    lat: eachCarpark.lat,
+                    lng: eachCarpark.long,
+                },
+            },
+        ]);
+    }
+                                                                    
+                                                                    // const url = "http://127.0.0.1:5004/getCarparkPrice/1"
+                                                                    // axios
+                                                                    //     .get(url)
+                                                                    //     .then((response) => {
+
+                                                                    
+                                                                    })
+
+                                                            })
+                                                    })
+
+                                            
+                                            })
+
+
+                                    })
+                            })
+
+                    })
+              
                     // listener for user click
                     const markerListener = newMap.setOnMarkerClickListener((event) => {
                         this.getCurrentDateTime();
                         this.clickedMarkerName = event.title;
                         // this.clickedMarkerAddress = event.snippet;
-
-                        for (const eachcarpark of this.carparkPrices) {
-                            if (eachcarpark.carparkname == this.clickedMarkerName) {
+                        
+                        for (const eachcarpark of this.carparksArraySimu) {
+                            if (eachcarpark.data.carparklocation == this.clickedMarkerName) {
+                                this.chosenCarpark = eachcarpark
                                 const currentDayOfWeek = new Date();
-
+                                this.weekdaypeakhourly = eachcarpark.weekdaypeakhourly
+                                this.weekdaynonpeakhourly= eachcarpark.weekdaynonpeakhourly
+                                this.weekendnonpeakhourly= eachcarpark.weekendnonpeakhourly
+                                this.weekendpeakhourly= eachcarpark.weekendpeakhourly
                                 // weekend
                                 if (
                                     currentDayOfWeek.getDay() == 6 ||
@@ -563,13 +877,13 @@ export default defineComponent({
                                         this.endPeak.split(":")[0]
                                     ) {
                                         this.bookingAmount = this.formatMoney(
-                                            eachcarpark.hourlyweekendpeak
+                                            eachcarpark.weekendpeakhourly
                                         );
                                     }
                                     //non peak
                                     else {
                                         this.bookingAmount = this.formatMoney(
-                                            eachcarpark.hourlyweekendnonpeak
+                                            eachcarpark.weekendnonpeakhourly
                                         );
                                     }
                                 }
@@ -581,25 +895,26 @@ export default defineComponent({
                                         currentDayOfWeek.getHours() <
                                         this.endPeak.split(":")[0]
                                     ) {
+                                        
                                         this.bookingAmount = this.formatMoney(
-                                            eachcarpark.hourlyweekdaypeak
+                                            eachcarpark.weekdaypeakhourly
                                         );
+                                        
                                     }
                                     //non peak
                                     else {
                                         this.bookingAmount = this.formatMoney(
-                                            eachcarpark.hourlyweekdaynonpeak
+                                            eachcarpark.weekdaynonpeakhourly
                                         );
                                     }
                                 }
+                                
+                                break
                             }
                         }
-
-                        this.userDestinations =
-                            event.latitude.toString() + "," + event.longitude.toString();
-
+                    
                         this.setChoiceOpen(true);
-                        this.calculateDistance();
+                        
                     });
                     //add traffic data
                     const trafficDataEnable = newMap.enableTrafficLayer(true);
@@ -612,222 +927,7 @@ export default defineComponent({
                     console.log(error.message);
                 });
         },
-        getSimulator() {
-            this.carparksArraySimu = []
-            this.googleMapDistanceUrl = "https://maps.googleapis.com/maps/api/distancematrix/json?origins=";
-            this.combinedLatLang = "";
-
-            let url = "http://127.0.0.1:5004/getCarpark/1";
-            axios
-                .post(url, {
-                    "requesttype": 1000,
-                    "carparkid": 1
-                })
-                .then((response) => {
-                    this.carparksArraySimu.push({
-                        data: response.data.data,
-                        image: "assets/images/paragon.jpg",
-                        // lat: 1.3040258775031617,
-                        // long: 103.83608284915861
-                    })
-                    this.combinedLatLang += "1.3040258775031617" + "," + "103.83608284915861" + "|";
-                    url = "http://127.0.0.1:5004/getCarpark/2";
-                    axios
-                        .post(url, {
-                            "requesttype": 1000,
-                            "carparkid": 2
-                        })
-                        .then((response) => {
-                            this.carparksArraySimu.push({
-                                data: response.data.data,
-                                image: "assets/images/ion.jpg",
-                                // lat: 1.3040258775031617,
-                                // long: 103.83608284915861
-                            })
-                            this.combinedLatLang += "1.3040258775031617" + "," + "103.83608284915861" + "|";
-                            url = "http://127.0.0.1:5004/getCarpark/3";
-                            console.log(url)
-                            axios
-                                .post(url, {
-                                    "requesttype": 1000,
-                                    "carparkid": 3
-                                })
-                                .then((response) => {
-                                    this.carparksArraySimu.push({
-                                        data: response.data.data,
-                                        image: "assets/images/takashimaya.jpeg",
-                                        //         lat: 1.3033454254185042,
-                                        // long: 103.83455711763565
-                                    })
-                                    this.combinedLatLang += "1.3033454254185042" + "," + "103.83455711763565" + "|";
-                                    url = "http://127.0.0.1:5004/getCarpark/4";
-                                    axios
-                                        .post(url, {
-                                            "requesttype": 1000,
-                                            "carparkid": 4
-                                        })
-                                        .then((response) => {
-                                            this.carparksArraySimu.push({
-                                                data: response.data.data,
-                                                image: "assets/images/tangs.jpg",
-                                                //             lat: 1.3040258775031617,
-                                                // long: 103.83608284915861
-                                            })
-                                            this.combinedLatLang += "1.3040258775031617" + "," + "103.83608284915861" + "|";
-                                            url = "http://127.0.0.1:5004/getCarpark/5";
-                                            axios
-                                                .post(url, {
-                                                    "requesttype": 1000,
-                                                    "carparkid": 5
-                                                })
-                                                .then((response) => {
-                                                    this.carparksArraySimu.push({
-                                                        data: response.data.data,
-                                                        image: "assets/images/Wheelock.png",
-                                                        //               lat: 1.3050314731714412,
-                                                        // long: 103.83297614415605
-                                                    })
-                                                    this.combinedLatLang += "1.3050314731714412" + "," + "103.83297614415605" + "|";
-                                                    url = "http://127.0.0.1:5004/getCarpark/6";
-                                                    axios
-                                                        .post(url, {
-                                                            "requesttype": 1000,
-                                                            "carparkid": 6
-                                                        })
-                                                        .then((response) => {
-                                                            this.carparksArraySimu.push({
-                                                                data: response.data.data,
-                                                                image: "assets/images/313.jpg",
-                                                                //                   lat: 1.301171207812743,
-                                                                // long: 103.8386220085623
-                                                            })
-                                                            this.combinedLatLang += "1.301171207812743" + "," + "103.8386220085623" + "|";
-                                                            url = "http://127.0.0.1:5004/getCarpark/7";
-                                                            axios
-                                                                .post(url, {
-                                                                    "requesttype": 1000,
-                                                                    "carparkid": 7
-                                                                })
-                                                                .then((response) => {
-                                                                    this.carparksArraySimu.push({
-                                                                        data: response.data.data,
-                                                                        image: "assets/images/scape.jpg",
-                                                                        //                     lat: 1.3010677408660067,
-                                                                        // long: 103.83576204980196
-                                                                    })
-                                                                    this.combinedLatLang += "1.3010677408660067" + "," + "103.83576204980196" + "|";
-                                                                    url = "http://127.0.0.1:5004/getCarpark/8";
-                                                                    axios
-                                                                        .post(url, {
-                                                                            "requesttype": 1000,
-                                                                            "carparkid": 8
-                                                                        })
-                                                                        .then((response) => {
-                                                                            this.carparksArraySimu.push({
-                                                                                data: response.data.data,
-                                                                                image: "assets/images/wisma.jpeg",
-                                                                                // lat: 1.303842974291844,
-                                                                                // long: 103.8333226716273
-                                                                            })
-                                                                            this.combinedLatLang += "1.303842974291844" + "," + "103.8333226716273" + "|";
-
-                                                                            if (this.selectedLocation == "") {
-                                                                                console.log("no location selected");
-                                                                            } else {
-                                                                                if (this.selectedLocation == "orchard") {
-                                                                                    this.userOrigin = "1.3064433533620563,103.83276247871694";
-                                                                                } else if (this.selectedLocation == "yishun") {
-                                                                                    this.userOrigin = "1.4304060903894582, 103.83515323243753";
-                                                                                } else if (this.selectedLocation == "somerset") {
-                                                                                    this.userOrigin = "1.3016313961551784, 103.83849995957749";
-                                                                                }
-
-
-                                                                                this.googleMapDistanceUrl +=
-                                                                                    this.userOrigin +
-                                                                                    "&destinations=" +
-                                                                                    this.combinedLatLang.slice(0, -1) +
-                                                                                    "&departure_time=now&key=AIzaSyAJXGx7T2ypt5Ew5-9SbDTWF9gqloQUJwI";
-                                                                                // this.calculateDistance();
-
-                                                                                console.log(this.userOrigin, "HEREEEE")
-                                                                                // this.userOrigin = "1.3064433533620563,103.83276247871694"
-                                                                                // console.log("HERE2")
-                                                                                const url = "http://127.0.0.1:5009/getCoords";
-                                                                                axios
-                                                                                    .post(url, {
-                                                                                        "origin": this.userOrigin
-                                                                                    })
-                                                                                    .then((response) => {
-                                                                                        console.log(response.data.rows[0].elements)
-                                                                                        const destinations = response.data.rows[0].elements
-                                                                                        for (let i = 0; i < this.carparksArraySimu.length; i++) {
-                                                                                            this.carparksArraySimu[i]["distance_km"] = destinations[i].distance.text;
-                                                                                            this.carparksArraySimu[i]["distance_km_value"] = destinations[i].distance.text;
-                                                                                            this.carparksArraySimu[i]["duration_mins"] = destinations[i].duration_in_traffic.text;
-                                                                                        }
-                                                                                        if (this.userOrigin != "") {
-                                                                                            this.carparksArraySimu.sort(function(a, b) {
-                                                                                                const keyA = a.distance_km_value;
-                                                                                                const keyB = b.distance_km_value;
-                                                                                                if (keyA < keyB) return -1;
-                                                                                                if (keyA > keyB) return 1;
-                                                                                                return 0;
-                                                                                            });
-
-                                                                                            this.carparksArraySimu = this.carparksArraySimu.slice(0, 4);
-                                                                                        }
-
-                                                                                        // this.test = response 
-                                                                                    })
-                                                                                    .catch((error) => {
-                                                                                        console.log(error);
-                                                                                    });
-                                                                            }
-
-                                                                        })
-                                                                })
-                                                        })
-                                                })
-                                        })
-                                })
-                        })
-
-                })
-
-            // this.calculateDistance()
-
-            // this.googleMapDistanceUrl =
-            //   "https://maps.googleapis.com/maps/api/distancematrix/json?origins=";
-            // this.combinedLatLang = "";
-
-            // for (const eachCarpark in this.carparksArraySimu){
-            //     console.log(this.carparksArraySimu[eachCarpark])
-            //     this.combinedLatLang +=
-            //         eachCarpark.lat + "," + eachCarpark.long + "|";
-            // }
-
-            //   if (this.selectedLocation == "") {
-            //       console.log("no location selected");
-            //     } else {
-            //       if (this.selectedLocation == "orchard") {
-            //         this.userOrigin = "1.3064433533620563,103.83276247871694";
-            //       } else if (this.selectedLocation == "yishun") {
-            //         this.userOrigin = "1.4304060903894582, 103.83515323243753";
-            //       } else if (this.selectedLocation == "somerset") {
-            //         this.userOrigin = "1.3016313961551784, 103.83849995957749";
-            //       }
-
-            //       this.googleMapDistanceUrl +=
-            //         this.userOrigin +
-            //         "&destinations=" +
-            //         this.combinedLatLang.slice(0, -1) +
-            //         "&departure_time=now&key=AIzaSyAJXGx7T2ypt5Ew5-9SbDTWF9gqloQUJwI";
-            //       this.calculateDistance();
-            //       console.log(this.googleMapDistanceUrl)
-            //     }
-
-        },
+        
     },
 });
 </script>
