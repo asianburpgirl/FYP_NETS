@@ -78,6 +78,10 @@ const routes: Array<RouteRecordRaw> = [
         path: "bookings",
         component: () => import("@/views/bookingPage.vue"),
       },
+      {
+        path: "map",
+        component: mapPage,
+      },
     ],
   },
   

@@ -3,12 +3,12 @@
     <ion-row>
       <ion-col>
         <ion-button expand="block" size="large" @click="routeUser('nearbyMe')"
-          >View Carparks</ion-button
+          >Advanced Booking</ion-button
         >
       </ion-col>
       <ion-col>
         <ion-button expand="block" size="large" @click="routeUser('map')"
-          >Book by Map</ion-button
+          >Book Now</ion-button
         >
       </ion-col>
     </ion-row>

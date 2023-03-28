@@ -2,11 +2,11 @@
     <base-layout>
         <ion-grid scroll-y="false">
             <ion-row class="ion-justify-content-center">
-              <img src='assets/images/nets.png'/>
+              <img src='assets/images/carparkism.png'/>
             </ion-row>
-            <div class="ion-padding ion-text-center">
+            <!-- <div class="ion-text-center">
               <p class="pageHeader">Login</p>
-            </div>
+            </div> -->
 
             <ion-list>
                 <ion-item fill="solid" ref="item">
@@ -25,26 +25,14 @@
             <div class="myLine ion-justify-content-center">
               <a href="/forgotPassword" class=""><i>Forgot password?</i></a>
             </div>
-            <!-- <ion-row class="ion-padding-top">
-                <ion-col>
-                    <div class="myLine ion-justify-content-start">
-                        <ion-item lines="none">
-                            <ion-checkbox></ion-checkbox>
-                            <ion-label> Remember me</ion-label>
-                        </ion-item>
-                        <ion-button class="hyperlinkButton" >Forgot Password</ion-button>
-                        <a float-right class="myLine2" href="/forgotPassword">Forgot password?</a>
-                    </div>
-                </ion-col>
-            </ion-row> -->
     
             <div class="ion-text-center ion-padding-top">
                 <a href="/register"> Do not have an account? Sign up now! </a>
             </div>
 
             <!-- login -->
-            <div class="ion-padding-top">
-                <ion-button expand="block" @click="validateLogin()">Login</ion-button>
+            <div class="ion-padding">
+                <ion-button expand="block" @click="validateLogin()" color="danger">Login</ion-button>
             </div>
 
             <!-- login error message -->
@@ -182,16 +170,7 @@ ion-content {
     --overflow: hidden;
 }
 
-img {
-    /* --padding-top: 100px;  this is for ion content*/
-    padding-top: 100px;
-    width: 290px;
-    /* text-align: center; */
-}
-
 .pageHeader {
-    /* padding-top: 60px; */
-    /* padding-bottom: 60px; */
     font-size: 35px;
     color: #484747;
     font-weight: 700;

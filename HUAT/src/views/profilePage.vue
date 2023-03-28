@@ -1,10 +1,10 @@
 <template>
   <base-layout pageTitle="My Profile" needToolBar="y">
     <div class="profile-picture big-profile-picture">
-      <img src="https://ionicframework.com/docs/img/demos/avatar.svg" />
+      <img src="../../public/assets/images/woman.png" />
     </div>
     <ion-list class="ion-margin">
-      <ion-item button detail="true">
+      <ion-item button>
         <ion-label @click="routeUser('viewProfile')">Edit Profile</ion-label>
       </ion-item>
       <!-- <ion-item button detail="true">
@@ -23,7 +23,7 @@
             <ion-item button detail="true">
                 <ion-label>Help Centre</ion-label>
             </ion-item> -->
-      <ion-item button detail="true" href="/">
+      <ion-item button href="/">
         <ion-label>Log Out</ion-label>
       </ion-item>
     </ion-list>

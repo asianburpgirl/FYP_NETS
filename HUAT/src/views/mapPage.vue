@@ -2,9 +2,9 @@
     <ion-page>
         <ion-header>
             <ion-toolbar>
-                <ion-buttons slot="start">
+                <!-- <ion-buttons slot="start">
                     <ion-back-button defaultHref="/tabs/bookings"></ion-back-button>
-                </ion-buttons>
+                </ion-buttons> -->
                 <ion-title class="ion-text-center">Map</ion-title>
             </ion-toolbar>
         </ion-header>
@@ -98,8 +98,8 @@ import {
     IonModal,
     IonRow,
     // IonList,
-    IonButtons,
-    IonBackButton,
+    // IonButtons,
+    // IonBackButton,
     IonButton,
     IonDatetime,
     IonIcon,
@@ -109,7 +109,7 @@ import {
     // IonSelectOption,
     IonCol,
     IonText,
-    IonImg,
+    // IonImg,
     alertController
 
 } from "@ionic/vue";
@@ -125,8 +125,8 @@ export default defineComponent({
         IonTitle,
         IonContent,
         IonModal,
-        IonButtons,
-        IonBackButton,
+        // IonButtons,
+        // IonBackButton,
         IonButton,
         IonDatetime,
         IonIcon,
@@ -138,7 +138,7 @@ export default defineComponent({
         // IonList,
         IonCol,
         IonText,
-        IonImg
+        // IonImg
 
     },
 
