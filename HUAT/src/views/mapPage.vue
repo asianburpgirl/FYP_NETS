@@ -109,9 +109,8 @@ import {
     // IonSelectOption,
     IonCol,
     IonText,
-    IonImg,
+    // IonImg,
     alertController
-
 } from "@ionic/vue";
 
 import { arrowBackOutline } from "ionicons/icons";
@@ -138,7 +137,7 @@ export default defineComponent({
         // IonList,
         IonCol,
         IonText,
-        IonImg
+        // IonImg
 
     },
 
