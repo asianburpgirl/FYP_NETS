@@ -396,3 +396,20 @@ def updateBalance(bookingID):
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5001, debug=True)
+
+# from datetime import datetime, timedelta
+# import random
+# for i in range(100):
+#     # Generate random booking data
+#     booking_date_time = datetime.now() - timedelta(days=random.randint(30, 60))
+#     booking_location = random.choice(["ION Orchard", "Paragon Shopping Centre", "Takashimaya Shopping Centre", "Tangs Plaza", "Wheelock Place", "313@Somerset", "*SCAPE",  "Wisma Atria"])
+#     location_name = random.choice(["2 Orchard Turn", "290 Orchard Rd", "391 Orchard Rd","310 Orchard Road Tang Plaza, 238864", "501 Orchard Rd, Singapore 238880", "313 Orchard Rd, Singapore 238895", "2 Orchard Link, Singapore 237978",  "435 Orchard Rd, Singapore 238877"])
+#     booking_start_date = datetime.now() + timedelta(days=random.randint(1, 10)) - timedelta(days=random.randint(1, 30))
+#     booking_end_date = booking_start_date + timedelta(hours=random.randint(10, 20))
+#     status = random.choice(["Booked", "Cancelled"])
+#     booking_ref = "".join(random.choices("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890", k=10))
+#     booking_amt = round(random.uniform(1.0, 50.0), 2)
+#     user_id = random.randint(1, 10)
+
+#     # Execute the SQL query to insert the data
+#     print(f"(NULL, '{booking_date_time}', '{booking_location}', '{location_name}', '{booking_start_date}','{booking_end_date}', '{status}', '{booking_ref}','{booking_amt}', '{user_id}'),")
