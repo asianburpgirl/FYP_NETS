@@ -1,94 +1,111 @@
 <template>
-  <base-layout
-    pageTitle="Forgot Password"
-    needToolBar="y"
-    needBackButton="y"
-    pageToGoBack="/"
-  >
+  <base-layout needToolBar="y" needBackButton="y" pageToGoBack="/">
+    <!-- <ion-row class="ion-justify-content-center">
+      <ion-img src="assets/images/forget_password.png" />
+    </ion-row> -->
     <ion-grid class="ion-padding">
-      Enter the email associated with your account and we will send you a link
-      to reset your account:
-      <ion-item fill="solid" ref="item" class="ion-padding-top">
-        <ion-input
-          :clearInput="true"
-          placeholder="Email"
-          v-model="email"
-        ></ion-input>
-      </ion-item>
-      <ion-item lines="none" >
-        <ion-note color="danger" v-if="isEmailValid == 2">Invalid email!</ion-note>
-        <ion-note color="danger" v-if="emailNoExist == true">Your email does not exist in our database</ion-note>
-      </ion-item>
+      <h1>Reset Password</h1>
+      <p>
+        Enter the email associated with your account and we will send you a link
+        to reset your account:
+      </p>
+      <ion-input
+        lines="solid"
+        :clearInput="true"
+        placeholder="Email"
+        v-model="email"
+      ></ion-input>
+      <ion-item lines="none"> </ion-item>
 
-      <ion-row class="ion-padding-top ion-justify-content-center">
-        <ion-button shape="round" @click="forgotPassword(email)"
-          >Continue</ion-button
+      <div class="ion-justify-content-center">
+        <ion-button expand="block" @click="forgotPassword(email)"
+          >Send Link</ion-button
         >
-      </ion-row>
+      </div>
+      <div class="ion-padding-top">
+        <p v-if="isEmailValid == 2" class="error-message">Invalid email!</p>
+        <p v-if="emailNoExist == true" class="error-message">
+          Your email does not exist in our database.
+        </p>
+      </div>
     </ion-grid>
 
     <ion-modal :is-open="successOpen" class="ion-padding">
-      <ion-content class="ion-padding-top ion-padding">
-        An email to reset your password has been sent to the email. Do follow the instructions on the email. 
-        <br>
-        Bringing you back to Login page.....
- 
-        <ion-button
-          shape="round"
-          @click="
-            routeToLoginPage();
-          "
-          expand="block"
-          size="large"
-          >Login</ion-button
-        >
-        
+      <ion-content class="ion-padding">
+        <ion-grid>
+          <ion-img src="../../public/assets/images/mail.png"></ion-img>
+          <p>
+            An email to reset your password has been sent to the email. Do
+            follow the instructions on the email.
+          </p>
+          <p>Bringing you back to Login page...</p>
+          <ion-row class="ion-justify-content-center">
+            <ion-col>
+              <ion-button @click="routeToLoginPage()">Login</ion-button>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
       </ion-content>
     </ion-modal>
   </base-layout>
 </template>
 
 <script lang="ts">
-import { IonInput, IonItem,IonModal, IonContent } from "@ionic/vue"; // IonCol, IonList
+import {
+  IonInput,
+  IonModal,
+  IonContent,
+  IonGrid,
+  IonButton,
+  IonItem,
+  IonImg,
+  IonRow,
+  IonCol,
+} from "@ionic/vue"; // IonCol, IonList
 import { defineComponent } from "vue";
 import axios from "axios";
 
 export default defineComponent({
   components: {
     IonInput,
-        IonItem,
-        IonModal,
-    IonContent
+    IonModal,
+    IonContent,
+    IonGrid,
+    IonButton,
+    IonItem,
+    IonImg,
+    IonRow,
+    IonCol,
   },
   data() {
     return {
       email: "",
-        isEmailValid: 0,
-        successOpen: false,
-      emailNoExist : false,
+      isEmailValid: 0,
+      successOpen: false,
+      emailNoExist: false,
     };
   },
-    methods: {
-        routeToLoginPage() {
-            this.$router
-            .push({
-              path: "/",
-            })
-            .then(() => {
-              this.$router.go(0);
-            });
-          location.reload();
-        },
-     setSuccessOpen(open: boolean) {
-         this.successOpen = open;
-       this.$router
-            .push({
-              path: "/",
-            })
-            .then(() => {
-              this.$router.go(0);
-            });
-          location.reload();
+  methods: {
+    routeToLoginPage() {
+      this.$router
+        .push({
+          path: "/",
+        })
+        .then(() => {
+          this.$router.go(0);
+        });
+      location.reload();
+    },
+    setSuccessOpen(open: boolean) {
+      this.successOpen = open;
+      this.$router
+        .push({
+          path: "/",
+        })
+        .then(() => {
+          this.$router.go(0);
+        });
+      location.reload();
     },
     forgotPassword(email: string) {
       if (email.match("@")) {
@@ -101,27 +118,42 @@ export default defineComponent({
           emailNameOnly +
           "&account=" +
           emailAccountOnly;
-        
+
         axios.get(url).then((response) => {
           const responseMessage = response.data.message;
           if (responseMessage == "User exists") {
-              this.successOpen = true
-              const timer: ReturnType<typeof setTimeout> = setTimeout(() => this.setSuccessOpen(false), 2000);
+            this.successOpen = true;
+            const timer: ReturnType<typeof setTimeout> = setTimeout(
+              () => this.setSuccessOpen(false),
+              10000
+            );
           }
 
           if (responseMessage == "User not found") {
-              this.emailNoExist = true
+            this.emailNoExist = true;
           }
-        
         });
       } else {
         this.isEmailValid = 2;
       }
     },
-   
   },
-
 });
 </script>
 
-<style scoped></style>
+<style scoped>
+ion-img {
+  width: 70%;
+  height: 70%;
+  margin-bottom: 10px;
+}
+
+p {
+  font-size: 15px;
+  font-style: italic;
+}
+
+.error-message {
+  color: #eb445a;
+}
+</style>

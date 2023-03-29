@@ -6,19 +6,13 @@
           >Advanced Booking</ion-button
         >
       </ion-col>
-      <ion-col>
-        <ion-button expand="block" size="large" @click="routeUser('map')"
-          >Book Now</ion-button
-        >
-      </ion-col>
     </ion-row>
 
     <ion-modal :is-open="editBookingOpen">
       <ion-header>
         <ion-toolbar>
           <ion-title class="ion-text-center"> Edit Booking</ion-title>
-
-          <ion-buttons slot="start">
+          <ion-buttons>
             <ion-button @click="setEditBookingOpen(false)">
               <ion-icon :icon="arrowBackOutline"></ion-icon>
             </ion-button>

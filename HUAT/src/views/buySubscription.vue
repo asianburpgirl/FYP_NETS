@@ -2,7 +2,7 @@
   <ion-page>
     <ion-header>
       <ion-toolbar>
-        <ion-buttons slot="start">
+        <ion-buttons>
           <ion-back-button defaultHref="/tabs/plans"></ion-back-button>
         </ion-buttons>
         <ion-title class="ion-text-center">Subscription Plan</ion-title>
@@ -289,7 +289,9 @@ export default defineComponent({
         });
     },
     loadUserData() {
+      console.log("hi")
       this.userData = JSON.parse(localStorage.getItem("userData"));
+      console.log(this.userSubscribed);
     },
     getCommonBookings() {
       const url =

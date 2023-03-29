@@ -1,26 +1,28 @@
 <template>
-  <base-layout
-    pageTitle="Registration"
-    pageToGoBack="/"
-    needBackButton="y"
-    needToolBar="y"
-  >
+  <base-layout pageTitle="Registration" needToolBar="y">
     <ion-grid>
       <ion-row class="ion-justify-content-center">
         <!-- <img :src="require('../images/nets.png')" /> -->
-        <img src="assets/images/nets.png" />
+        <img src="assets/images/carparkism.png" />
       </ion-row>
 
-      <ion-row class="ion-justify-content-center">
-        <ion-col class="pageHeader"> Registration </ion-col>
+      <ion-row class="ion-justify-content-center ion-padding">
+        <ion-col size="12" class="pageHeader">Get Started Now</ion-col>
+        <ion-col size="12">
+          <p>
+            It's free to join and gain full access to our features to carpark
+            slot booking!
+          </p></ion-col
+        >
       </ion-row>
 
       <!-- username -->
-      <ion-list>
+      <ion-list class="ion-padding-bottom">
         <ion-item>
-          <ion-label position="stacked">Username:</ion-label>
+          <!-- <ion-label position="stacked">Username:</ion-label> -->
           <ion-input
             :clear-input="true"
+            placeholder="Username"
             v-model="userName"
             @change="validateUsername(userName)"
           ></ion-input>
@@ -32,9 +34,10 @@
 
         <!-- name -->
         <ion-item>
-          <ion-label position="stacked">Name:</ion-label>
+          <!-- <ion-label position="stacked">Name:</ion-label> -->
           <ion-input
             :clear-input="true"
+            placeholder="Name"
             v-model="name"
             @change="validateName(name)"
           >
@@ -47,9 +50,10 @@
 
         <!-- email -->
         <ion-item>
-          <ion-label position="stacked">Email:</ion-label>
+          <!-- <ion-label position="stacked">Email:</ion-label> -->
           <ion-input
             :clear-input="true"
+            placeholder="Email"
             type="email"
             v-model="email"
             @change="validateEmail(email)"
@@ -63,10 +67,11 @@
 
         <!-- password -->
         <ion-item>
-          <ion-label position="stacked">Password:</ion-label>
+          <!-- <ion-label position="stacked">Password:</ion-label> -->
           <ion-input
             :clear-input="true"
             type="password"
+            placeholder="Password"
             v-model="password"
             @change="validatePassword(password)"
           ></ion-input>
@@ -82,10 +87,11 @@
 
         <!-- reconfirm password -->
         <ion-item>
-          <ion-label position="stacked">Reconfirm password:</ion-label>
+          <!-- <ion-label position="stacked">Reconfirm password:</ion-label> -->
           <ion-input
             :clear-input="true"
             type="password"
+            placeholder="Confirm Password"
             v-model="reconfirmPassword"
             @change="validateReconfirmPassword(reconfirmPassword)"
           ></ion-input>
@@ -97,10 +103,11 @@
 
         <!-- phone num -->
         <ion-item>
-          <ion-label position="stacked">Phone number:</ion-label>
+          <!-- <ion-label position="stacked">Phone number:</ion-label> -->
           <ion-input
             :clear-input="true"
             type="tel"
+            placeholder="Phone Number"
             v-model="phoneNumber"
             @change="validatePhone(phoneNumber)"
           ></ion-input>
@@ -110,13 +117,17 @@
           <ion-note color="danger">Invalid phone number!</ion-note>
         </ion-item>
       </ion-list>
-      <div class="ion-padding-top ion-justify-content-center">
+      <div class="ion-padding ion-justify-content-center">
         <ion-button
+          color="danger"
           expand="block"
           :disabled="disabledRegisterButton == 1"
           @click="registerUser"
-          >Register</ion-button
+          >Sign Up</ion-button
         >
+        <div class="ion-text-center ion-padding-top">
+          <a href="/"><i>Already have an account? Sign in here!</i></a>
+        </div>
       </div>
     </ion-grid>
   </base-layout>
@@ -127,30 +138,30 @@ import { List } from "@ionic/core/dist/types/components/list/list";
 import { defineComponent } from "vue";
 
 import {
+  IonGrid,
   IonRow,
-    IonInput,
-    IonItem,
-    IonButton,
-    IonLabel,
-    IonNote,
-    IonGrid,
-    IonList,
-    IonCol
+  IonInput,
+  IonItem,
+  IonButton,
+  // IonLabel,
+  IonNote,
+  IonList,
+  IonCol,
 } from "@ionic/vue";
 import { construct } from "ionicons/icons";
 import axios from "axios";
 
 export default defineComponent({
   components: {
+    IonGrid,
     IonRow,
     IonInput,
     IonItem,
     IonButton,
-    IonLabel,
+    // IonLabel,
     IonNote,
-    IonGrid,
     IonList,
-    IonCol
+    IonCol,
   },
   data() {
     return {
@@ -285,10 +296,13 @@ img {
 }
 .pageHeader {
   text-align: center;
-  padding: 45px;
-  font-size: 35px;
+  font-size: 20px;
   color: #484747;
   font-weight: 700;
+}
+
+p {
+  font-size: 13px;
 }
 
 ion-checkbox {
@@ -297,5 +311,16 @@ ion-checkbox {
 
 ion-note {
   font-size: small;
+}
+
+.ion-padding {
+  padding-bottom: 0px;
+  padding-top: 0px;
+}
+
+a{
+   text-decoration: none;
+   font-size: 12px;
+   color: #EB445A;
 }
 </style>

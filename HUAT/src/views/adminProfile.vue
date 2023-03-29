@@ -1,7 +1,7 @@
 <template>
     <base-layout pageTitle="My Profile" needToolBar="y">
       <div class="profile-picture big-profile-picture">
-        <img src="https://ionicframework.com/docs/img/demos/avatar.svg" />
+        <img src="../../public/assets/images/woman.png" />
       </div>
       <ion-list class="ion-margin">
         <ion-item button>

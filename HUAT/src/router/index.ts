@@ -18,10 +18,15 @@ import AdminPage from "../views/AdminPage.vue";
 import AdminUserPage from "../views/adminUsers.vue";
 import AdminBookingPage from "../views/adminBookings.vue";
 import AdminProfile from "../views/adminProfile.vue";
+import introSlides from "../views/introSlides.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
     path: "/",
+    component: introSlides,
+  },
+  {
+    path: "/login",
     component: LoginPage,
   },
   {
