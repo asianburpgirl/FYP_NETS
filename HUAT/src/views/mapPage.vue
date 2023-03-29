@@ -111,7 +111,6 @@ import {
     IonText,
     // IonImg,
     alertController
-
 } from "@ionic/vue";
 
 import { arrowBackOutline } from "ionicons/icons";

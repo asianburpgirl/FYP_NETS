@@ -166,8 +166,16 @@ def topupTrans():
 # Create a transaction for deduction of booking
 @app.route("/deduct", methods=['POST'])
 def deductTrans():
+    transIDList = []
+    trans = Transaction.query.all()
 
-    transID = ''.join(random.SystemRandom().choice(string.digits) for _ in range(6))
+    transID = 1
+    if len(trans):
+        for eachTrans in trans:
+            transIDList.append(eachTrans.transID)
+        transIDList.sort( reverse=True)
+        transID = transIDList[0] +1
+
     transDate = datetime.datetime.now()
     transType = "deduct"
     amount = request.json.get('amount', None)
