@@ -112,7 +112,13 @@ export default defineComponent({
         region: 'SG',
         displayMode: 'markers',
         datalessRegionColor: 'lightblue',
-        colorAxis: {colors: ['gray', 'red']}
+        colorAxis: {colors: ['green','gray', 'red']},
+        enableRegionInteractivity: true,
+        mapType: 'styledMap',
+        // zoomLevel: 15,
+        // showTooltip: true,
+        // showInfoWindow: true,
+        // useMapTypeControl: true,
       },
       settings: {
         packages: ['geochart'],
@@ -274,6 +280,11 @@ export default defineComponent({
           // console.log(count)
           // Add it in to the chart
           for (const cnnt in count){
+            // if (cnnt == "*SCAPE") {
+            //   this.GeoChartData.push([cnnt + " shopping mall", "No. of bookings: " + count[cnnt]])
+            // } else {
+            //   this.GeoChartData.push([cnnt, "No. of bookings: " + count[cnnt]])
+            // }
             this.GeoChartData.push([cnnt, count[cnnt]])
           }
           return this.GeoChartData;
