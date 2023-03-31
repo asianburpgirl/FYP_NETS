@@ -1,6 +1,5 @@
 <template>
     <base-layout pageTitle="My Wallet" needToolBar="y">
-        <!-- <h2>Amount</h2> -->
         <ion-card color="primary">
             <ion-card-header>
                 <ion-card-title >${{ formatMoney(balance) }}</ion-card-title>
@@ -24,17 +23,17 @@
             <ion-item>
                 <ion-label>ID</ion-label>
                 <ion-label>Date</ion-label>
-                <ion-label class="ion-text-right">Amount</ion-label>
+                <ion-label >Amount</ion-label>
+                <ion-label>Type</ion-label>
             </ion-item>
     
             <ion-item v-for="eachTrans in trans" :key="eachTrans">
-                <!-- <ion-label color="{{ eachBooking.color }}">Booking</ion-label> -->
                 <ion-label>{{eachTrans.transID}}</ion-label>
-                <ion-label>{{ eachTrans.transDateClean }}
-                </ion-label>
+                <ion-label>{{ eachTrans.transDateClean }}</ion-label>
                 
-                <ion-label v-if="eachTrans.type == 'topup'" :color="eachTrans.colortopup" class="ion-text-right"> ${{ eachTrans.amount }}</ion-label>
-                <ion-label v-if="eachTrans.type == 'deduct'" :color="eachTrans.colordeduct" class="ion-text-right">- ${{ eachTrans.amount }}</ion-label>
+                <ion-label v-if="eachTrans.type == 'Topup'" :color="eachTrans.colortopup"> ${{ eachTrans.amount }}</ion-label>
+                <ion-label v-if="eachTrans.type == 'Deduct'" :color="eachTrans.colordeduct" >- ${{ eachTrans.amount }}</ion-label>
+                <ion-label> {{eachTrans.type}}</ion-label>
                 
             </ion-item>
         </ion-list>
@@ -153,10 +152,11 @@ export default defineComponent({
                 .get(url)
                 .then((response) => {
                     for (const eachTrans in response.data.data.bookings) {
+                        const formattedDate = 
                         this.trans.push({
                             amount: this.formatMoney(response.data.data.bookings[eachTrans]['amount']),
                             transID: response.data.data.bookings[eachTrans]['transID'],
-                            transDateClean: response.data.data.bookings[eachTrans]['transDate'].slice(4, 17),
+                            transDateClean: response.data.data.bookings[eachTrans]['transDate'].slice(4, 11),
                             transDate: response.data.data.bookings[eachTrans]['transDate'],
                             type: response.data.data.bookings[eachTrans]['transType'],
                             colordeduct: "danger",

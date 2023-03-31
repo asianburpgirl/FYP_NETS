@@ -135,7 +135,7 @@ def topupTrans():
         transID = transactionsIDList[0] +1 
         
     transDate = datetime.datetime.now()
-    transType = "topup"
+    transType = "Topup"
     amount = request.json.get('amount', None)
     userID = request.json.get('userID', None)
 
@@ -177,7 +177,7 @@ def deductTrans():
         transID = transIDList[0] +1
 
     transDate = datetime.datetime.now()
-    transType = "deduct"
+    transType = "Deduct"
     amount = request.json.get('amount', None)
     userID = request.json.get('userID', None)
 
