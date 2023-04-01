@@ -59,7 +59,7 @@
           >
           <ion-button
             shape="round"
-            @click="editDate = true"
+            @click="editDate = false"
             v-if="editDate == true"
             color="danger"
             >Cancel</ion-button
@@ -81,7 +81,7 @@
           >
           <ion-button
             shape="round"
-            @click="editDate = true"
+            @click="editStartTime = false"
             v-if="editStartTime == true"
             color="danger"
             >Cancel</ion-button
@@ -103,7 +103,7 @@
           >
           <ion-button
             shape="round"
-            @click="editDate = true"
+            @click="editEndTime = false"
             v-if="editEndTime == true"
             color="danger"
             >Cancel</ion-button
