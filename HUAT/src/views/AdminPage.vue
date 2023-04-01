@@ -1,6 +1,9 @@
 <template>
   <base-layout needToolBar="y" pageTitle="Carpark Analytics">
     <ion-grid>
+      <div class="chart-container">
+        <canvas id="myChart"></canvas>
+      </div>
       <ion-row class="ion-align-items-center">
         <ion-col>
           <GChart
@@ -62,6 +65,7 @@
 
 <script>
 import { IonGrid, IonRow, IonCol, IonButton } from "@ionic/vue";
+import Chart from 'chart.js/auto';
 import { GChart } from "vue-google-charts";
 import { defineComponent } from "vue";
 import axios from "axios";
@@ -419,6 +423,69 @@ export default defineComponent({
             });
         });
     },
+    async getRevenueData() {
+      try {
+        const response = await axios.get('http://127.0.0.1:5001/forecastbooking');
+        const revenueData = response.data;
+
+        const today = new Date();
+        const pastData = revenueData.past.filter(d => new Date(d.month) < today).slice(-3);
+        const futureData = revenueData.future.filter(d => new Date(d.month) >= today).slice(0, 3);
+
+        const data = {
+          labels: pastData.concat(futureData).map(d => d.month),
+          datasets: [{
+            label: 'Revenue',
+            data: pastData.concat(futureData).map(d => d.revenue),
+            borderColor: 'rgb(54, 162, 235)',
+            fill: false,
+          }]
+        };
+
+        const config = {
+          type: 'line',
+          data: data,
+          options: {
+            responsive: true,
+            plugins: {
+              legend: {
+                display: false
+              }
+            },
+            scales: {
+              x: {
+                title: {
+                  display: true,
+                  text: 'Month'
+                }
+              },
+              y: {
+                title: {
+                  display: true,
+                  text: 'Revenue ($)'
+                }
+              }
+            },
+            elements: {
+              line: {
+                borderDash: pastData.map(() => [5, 5]).concat(futureData.map(() => [])),
+              },
+            },
+          },
+        };
+
+
+        const myChart = new Chart(
+          document.getElementById('myChart'),
+          config
+        );
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
+    
+    
   },
   // Calls function on page load
   mounted() {
@@ -428,6 +495,7 @@ export default defineComponent({
     this.getLineChart();
     this.getBarChart();
     this.getGeoChart();
+    this.getRevenueData();
   },
 });
 </script>
