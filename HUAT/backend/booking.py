@@ -2,12 +2,18 @@ from flask import Flask, jsonify, request
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 from os import environ
-from datetime import datetime
+from datetime import datetime, timedelta
 import random
 import string
 import user
 import json
 from datetime import date
+import pandas as pd
+from sklearn.linear_model import LinearRegression
+from sklearn.model_selection import train_test_split
+from dateutil.relativedelta import relativedelta
+import calendar
+
 
 app = Flask(__name__)
 # app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL') or 'mysql+mysqlconnector://root@localhost:3306/localconnect'
@@ -394,13 +400,58 @@ def updateBalance(bookingID):
             "message": "Booking ID not found"
         }), 500
 
+@app.route('/forecastbooking')
+def forecast_booking_revenue():
+    current_date = datetime.utcnow().date()
+    revenue_data = []
+
+    for i in range(3):
+        start_date = (current_date - relativedelta(months=i)).replace(day=1)
+        end_date = (start_date + relativedelta(months=1)).replace(day=1)
+        bookings = Booking.query.filter(Booking.bookingStartDateTime >= start_date, Booking.bookingStartDateTime < end_date).all()
+        revenue = sum([booking.bookingAmt for booking in bookings])
+        revenue_data.append([start_date.strftime('%Y-%m'), revenue])
+    
+    revenue_data = sorted(revenue_data, key=lambda x: x[0])
+    # Train a linear regression model on the revenue data
+    X = [[i] for i in range(len(revenue_data))]
+    y = [data[1] for data in revenue_data]
+    model = LinearRegression()
+    model.fit(X, y)
+
+    # Forecast revenue for the next 3 months
+    forecast_data = {}
+    for i in range(4):
+        month_index = len(revenue_data) + i
+        forecast_month = current_date.replace(day=1) + timedelta(days=30*i)
+        forecast_month_str = forecast_month.strftime('%Y-%m')
+        forecast_revenue = model.predict([[month_index]])[0]
+        if forecast_month_str in forecast_data:
+            forecast_data[forecast_month_str] += forecast_revenue
+        else:
+            forecast_data[forecast_month_str] = forecast_revenue
+    forecast_data = sorted(forecast_data.items())
+
+    # Combine the historical revenue data and the forecast data
+    # revenue_data.extend(forecast_data)
+
+    # Convert the revenue data to a JSON format
+    return_json = {
+        "past": [{'month': data[0], 'revenue': data[1]} for data in revenue_data],
+        "future": [{'month': data[0], 'revenue': data[1]} for data in forecast_data],
+    }
+
+    return jsonify(return_json)
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5001, debug=True)
+
+
+### To generate random booking data
 
 # from datetime import datetime, timedelta
 # import random
 # for i in range(100):
-#     # Generate random booking data
 #     booking_date_time = datetime.now() - timedelta(days=random.randint(30, 60))
 #     booking_location = random.choice(["ION Orchard", "Paragon Shopping Centre", "Takashimaya Shopping Centre", "Tangs Plaza", "Wheelock Place", "313@Somerset", "*SCAPE",  "Wisma Atria"])
 #     location_name = random.choice(["2 Orchard Turn", "290 Orchard Rd", "391 Orchard Rd","310 Orchard Road Tang Plaza, 238864", "501 Orchard Rd, Singapore 238880", "313 Orchard Rd, Singapore 238895", "2 Orchard Link, Singapore 237978",  "435 Orchard Rd, Singapore 238877"])
