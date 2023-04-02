@@ -8,7 +8,7 @@
         <ion-title class="ion-text-center">Edit Profile</ion-title>
       </ion-toolbar>
     </ion-header>
-    <ion-content>
+    <ion-content class="ion-padding">
       <ion-list lines="none">
         <ion-item>
           <ion-label position="stacked">Email</ion-label>
@@ -35,7 +35,7 @@
         </ion-item>
       </ion-list>
       <div class="ion-text-center ion-padding-top">
-        <ion-button expand="block"> Save </ion-button>
+        <ion-button shape="round" expand="block"> Save </ion-button>
       </div>
     </ion-content>
   </ion-page>

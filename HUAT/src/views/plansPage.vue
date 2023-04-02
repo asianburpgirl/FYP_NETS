@@ -4,34 +4,36 @@
     pageToGoBack="/tabs/"
     needToolBar="y"
   >
-    <ion-card v-if="userHasPlan2 == false">
+    <h3><b>Subscription Plans</b></h3>
+    <ion-card color="primary" v-if="userHasPlan2 == false">
       <!-- <ion-grid> -->
       <ion-card-header>
         <ion-card-title>Just For You</ion-card-title>
         <ion-card-subtitle>
-          10% discount on your favourite carparks🚘</ion-card-subtitle
+          10% discount on your favorite carparks🚘</ion-card-subtitle
         >
-        <ul v-for="eachCarpark in commonThreeCarpark" :key="eachCarpark">
+        <!-- <ul v-for="eachCarpark in commonThreeCarpark" :key="eachCarpark">
           <li>{{ eachCarpark }}</li>
-        </ul>
-        You are paying: ${{ userSpending }} a month
+        </ul> -->
+        <!-- You are paying: ${{ userSpending }} a month
         <br />
-        You save: ${{ userSave }} per month
-        <br />
+        You save: ${{ userSave }} per month -->
         Price: ${{ subsAmtPlan1 }} per month
         <ion-row class="ion-padding-top">
           <ion-col>
             <ion-button
               v-if="userHasPlan1 == false && userHasPlan2 == false"
-              color="success"
+              fill="outline"
+              color="dark"
               expand="block"
               @click="routeUser('buySubscription/mostVisited')"
             >
-              Subscribe</ion-button
+              Click for more Info</ion-button
             >
             <ion-button
               v-if="userHasPlan1 == true || userHasPlan2 == true"
-              color="success"
+              fill="outline"
+              color="dark"
               expand="block"
               disabled="true"
             >
@@ -41,7 +43,8 @@
           <ion-col>
             <ion-button
               v-if="userHasPlan1 == true || userHasPlan2 == true"
-              color="danger"
+              fill="outline"
+              color="light"
               expand="block"
               @click="confirmationAlert(this.userData)"
             >
@@ -52,32 +55,33 @@
       </ion-card-header>
     </ion-card>
 
-    <ion-card v-if="userHasPlan1 == false">
+    <ion-card color="primary" v-if="userHasPlan1 == false">
       <ion-grid>
         <ion-card-header>
           <ion-card-title>Monthly Plan</ion-card-title>
           <ion-card-subtitle>
-            Monthly subscription for these carparks at a fixed
-            cost💵</ion-card-subtitle
+            Monthly subscription for 4 carparks💵</ion-card-subtitle
           >
-          <ul v-for="eachCarpark in subscriptionFourCarpark" :key="eachCarpark">
+          <!-- <ul v-for="eachCarpark in subscriptionFourCarpark" :key="eachCarpark">
             <li>{{ eachCarpark.carparkName }}</li>
-          </ul>
+          </ul> -->
           Price: ${{ subsAmtPlan2 }} per month
           <ion-row class="ion-padding-top">
             <ion-col>
               <ion-button
                 v-if="userHasPlan2 == false && userHasPlan1 == false"
-                color="success"
+                fill="outline"
+                color="dark"
                 expand="block"
                 @click="routeUser('buySubscription/monthlyPlan')"
                 :disabled="userHasPlan2"
               >
-                Subscribe</ion-button
+                Click for more Info</ion-button
               >
               <ion-button
                 v-if="userHasPlan2 == true || userHasPlan1 == true"
-                color="success"
+                fill="outline"
+                color="dark"
                 expand="block"
                 disabled="true"
               >
@@ -87,7 +91,8 @@
             <ion-col>
               <ion-button
                 v-if="userHasPlan1 == true || userHasPlan2 == true"
-                color="danger"
+                fill="outline"
+                color="light"
                 expand="block"
                 @click="confirmationAlert(this.userData)"
               >
@@ -208,25 +213,26 @@ export default defineComponent({
     return { confirmationAlert, sucessMsg };
   },
   methods: {
-    formatMoney(myFloat) { // money in DB store in 1 dp (eg. 12.1), to change to 2 dp (12.10)
-            myFloat = myFloat.toFixed(2)
-            myFloat = myFloat.toString()
-            const dotExists = myFloat.includes('.')
-            let newFloat = myFloat
-            if (dotExists) {
-                newFloat = myFloat.split(".")
-                if ((newFloat[1]).length == 1) {
-                    newFloat[1] += "0"
-                } else if ((newFloat[1]).length == 0) {
-                    newFloat[1] += "00"
-                }
-                newFloat = newFloat.join(".")
-            } else {
-                newFloat += ".00"
-            }
+    formatMoney(myFloat) {
+      // money in DB store in 1 dp (eg. 12.1), to change to 2 dp (12.10)
+      myFloat = myFloat.toFixed(2);
+      myFloat = myFloat.toString();
+      const dotExists = myFloat.includes(".");
+      let newFloat = myFloat;
+      if (dotExists) {
+        newFloat = myFloat.split(".");
+        if (newFloat[1].length == 1) {
+          newFloat[1] += "0";
+        } else if (newFloat[1].length == 0) {
+          newFloat[1] += "00";
+        }
+        newFloat = newFloat.join(".");
+      } else {
+        newFloat += ".00";
+      }
 
-            return newFloat
-        },
+      return newFloat;
+    },
     getCarparksMonthlySubs() {
       const url = "http://127.0.0.1:5003/chosenCarparks";
       axios
@@ -292,9 +298,11 @@ export default defineComponent({
       axios
         .post(url2, { discount: 0.1 })
         .then((response) => {
-          this.userSave = response.data.data.discount
-          this.userSpending =  this.formatMoney(response.data.data.totalPrice)
-          this.subsAmtPlan1 = this.formatMoney(Math.max((this.userSpending * 3 * 0.95).toFixed(2),10))
+          this.userSave = response.data.data.discount;
+          this.userSpending = this.formatMoney(response.data.data.totalPrice);
+          this.subsAmtPlan1 = this.formatMoney(
+            Math.max((this.userSpending * 3 * 0.95).toFixed(2), 10)
+          );
         })
         .catch((error) => {
           console.log(error);

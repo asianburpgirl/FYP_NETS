@@ -10,33 +10,62 @@
     </ion-header>
     <ion-content>
       <ion-grid>
+        <ion-card
+          v-if="userSufficientBalance == false && userSubscribed == false"
+        >
+          <ion-card-content>
+            <p class="insufficient">
+              Note: Insufficient credit. Please proceed to top up first.
+            </p>
+            <div class="ion-padding-top">
+              <ion-button
+                color="dark"
+                size="small"
+                @click="routeUser('payment')"
+              >
+                Top up
+              </ion-button>
+            </div>
+          </ion-card-content>
+        </ion-card>
         <ion-card v-if="subscriptionPlan == 'mostVisited'" color="primary">
           <ion-card-header>
-            <ion-card-title> Your Favourite Carparks </ion-card-title>
+            <ion-card-title> Your Favorite Carparks</ion-card-title>
           </ion-card-header>
+
           <ion-card-content>
-            <ul v-for="eachCarpark in commonThreeCarpark" :key="eachCarpark">
+            <div
+              v-for="eachCarpark in commonThreeCarpark"
+              :key="eachCarpark"
+              class="ion-padding-bottom"
+            >
               <li>{{ eachCarpark }}</li>
-            </ul>
-            <ion-card-subtitle>
-              <p>
-                You are paying: <b>${{ userSpending }} </b> a month for last 3
-                months
-              </p>
-              <p>
-                You save: <b> ${{ userSave }}</b> per month
-              </p>
-            </ion-card-subtitle>
+            </div>
+
             <p>
+              You have been paying
+              <b
+                ><u>${{ userSpending }}</u></b
+              >
+              a month for the past 3 months
+            </p>
+            <p>
+              You will be saving
+              <b
+                ><u>${{ userSave }}</u></b
+              >
+              per month
+            </p>
+            <!-- <p>
               Total :
               <b
                 ><u>${{ subsAmt }}</u></b
               >
               per month
-            </p>
+            </p> -->
           </ion-card-content>
         </ion-card>
-        <ion-card v-if="subscriptionPlan == 'monthlyPlan'"  color="primary">
+        <ion-card v-if="subscriptionPlan == 'monthlyPlan'" color="primary">
           <ion-card-header>
             <ion-card-title> Monthly Plan </ion-card-title>
           </ion-card-header>
@@ -61,6 +90,7 @@
           </ion-col>
           <ion-col v-if="userSubscribed == false">
             <ion-button
+              fill="outline"
               expand="block"
               color="dark"
               :disabled="!userSufficientBalance"
@@ -68,27 +98,9 @@
             >
               Subscribe
             </ion-button>
-          </ion-col>
-        </ion-row>
-        <div
-          class="ion-padding"
-          v-if="userSufficientBalance == false && userSubscribed == false"
+          </ion-col> </ion-row
         >
-          <ion-card>
-            <ion-card-content>
-              <p class="insufficient">Note: Insufficient credit. Please proceed to top up first.</p>
-              <div class="ion-padding-top">
-                <ion-button
-                  color="dark"
-                  size="small"
-                  @click="routeUser('payment')"
-                >
-                  Top up
-                </ion-button>
-              </div>
-            </ion-card-content>
-          </ion-card>
-        </div>
+        
       </ion-grid>
     </ion-content>
   </ion-page>
@@ -289,7 +301,7 @@ export default defineComponent({
         });
     },
     loadUserData() {
-      console.log("hi")
+      console.log("hi");
       this.userData = JSON.parse(localStorage.getItem("userData"));
       console.log(this.userSubscribed);
     },
