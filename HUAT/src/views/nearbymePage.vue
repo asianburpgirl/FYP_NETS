@@ -86,7 +86,7 @@
                 Original:
                 <b>${{ carpark.data.totalFee }}</b>
               </p>
-              <p
+              <p class="discount"
                 v-if="
                   this.startTime != '' &&
                   this.endTime != '' &&
@@ -95,8 +95,8 @@
                   userHasPlan1 == true &&
                   carpark.commonThreeCarpark == true
                 "
-              >
-                <b> Discounted : ${{ carpark.data.totalFeeDiscounted }}</b>
+              >Discounted :
+                <b> ${{ carpark.data.totalFeeDiscounted }}</b>
               </p>
               <p>
                 <b>{{ carpark.distance_km }}, </b>
@@ -4162,4 +4162,8 @@ ion-img::part(image) {
 /* you can set the height value too */
 
 /* } */
+
+.discount{
+  color: rgb(103, 196, 50);
+}
 </style>
