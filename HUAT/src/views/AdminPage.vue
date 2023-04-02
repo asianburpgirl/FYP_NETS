@@ -2,9 +2,11 @@
   <base-layout needToolBar="y" pageTitle="Carpark Analytics">
     <ion-grid>
       <div class="chart-container">
+        <h6>Price Forecasting Analysis</h6>
         <canvas id="myChart"></canvas>
       </div>
       <ion-row class="ion-align-items-center">
+        <h6>Top 8 Popular Carparks</h6>
         <ion-col>
           <GChart
             type="PieChart"
@@ -15,6 +17,7 @@
       </ion-row>
 
       <ion-row class="ion-align-items-center">
+        <h6>Most Popular Subscription Plans</h6>
         <ion-col>
           <GChart
             type="ColumnChart"
@@ -46,7 +49,7 @@
 
       <ion-row class="ion-align-items-center">
         <ion-col>
-          <h3>No. of bookings per location</h3>
+          <h6>No. of bookings per location</h6>
           <GChart
             type="GeoChart"
             :data="GeoChartData"
@@ -56,16 +59,16 @@
         </ion-col>
       </ion-row>
 
-      <div class="ion-padding-top">
+      <!-- <div class="ion-padding-top">
         <ion-button expand="block" href="/"> Logout </ion-button>
-      </div>
+      </div> -->
     </ion-grid>
   </base-layout>
 </template>
 
 <script>
-import { IonGrid, IonRow, IonCol, IonButton } from "@ionic/vue";
-import Chart from 'chart.js/auto';
+import { IonGrid, IonRow, IonCol } from "@ionic/vue";
+import Chart from 'chart.js';
 import { GChart } from "vue-google-charts";
 import { defineComponent } from "vue";
 import axios from "axios";
@@ -75,7 +78,6 @@ export default defineComponent({
     IonGrid,
     IonRow,
     IonCol,
-    IonButton,
   },
   data() {
     return {
