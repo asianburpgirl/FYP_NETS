@@ -376,3 +376,6 @@ HUAT/android/app/src/main/assets/public/js/990.7c8b4718.js
 HUAT/ios/App/Podfile 4.lock
 HUAT/backend/__pycache__/user.cpython-38.pyc
 *.pyc
+
+# Local Netlify folder
+.netlify

@@ -119,14 +119,14 @@
       </ion-list>
       <div class="ion-padding ion-justify-content-center">
         <ion-button
-          color="danger"
           expand="block"
+          shape="round"
           :disabled="disabledRegisterButton == 1"
           @click="registerUser"
           >Sign Up</ion-button
         >
         <div class="ion-text-center ion-padding-top">
-          <a href="/"><i>Already have an account? Sign in here!</i></a>
+          <a href="/login"><i>Already have an account? Sign in here!</i></a>
         </div>
       </div>
     </ion-grid>
@@ -321,6 +321,5 @@ ion-note {
 a{
    text-decoration: none;
    font-size: 12px;
-   color: #EB445A;
 }
 </style>

@@ -1,16 +1,25 @@
 <template>
   <base-layout needToolBar="y" pageTitle="Home">
     <ion-grid>
-      <h1>Hello,{{ this.name }}</h1>
-      <ion-searchbar></ion-searchbar>
-      <h4 class="ion-text-start">List of Bookings</h4>
+      <h1>Hello, {{ this.name }}</h1>
+      <ion-row class="ion-justify-content-center">
+        <ion-col size="9">
+          <h3><b>Bookings</b></h3>
+        </ion-col>
+        <ion-col>
+          <ion-button fill="outline" @click="routeUser('nearbyMe')"
+            >+</ion-button
+          >
+        </ion-col>
+      </ion-row>
       <ion-row>
         <ion-col>
-          <ion-list>
+          <ion-searchbar color="light"></ion-searchbar>
+        </ion-col>
+        <ion-col>
+          <ion-list lines="none">
             <ion-item>
               <ion-select
-                placeholder="Status"
-                interface="popover"
                 class="ion-padding-top ion-padding-bottom"
                 v-model="bookingStatusToShow"
                 @ionChange="changeStatus()"
@@ -22,99 +31,149 @@
             </ion-item>
           </ion-list>
         </ion-col>
-
-        <ion-col>
-          <ion-button fill="outline" expand="block" @click="routeUser('nearbyMe')"
-            >Advanced Booking</ion-button
-          >
-        </ion-col>
       </ion-row>
 
       <ion-modal :is-open="editBookingOpen">
         <ion-header>
           <ion-toolbar>
-            <ion-title class="ion-text-center"> Edit Booking</ion-title>
-            <ion-buttons>
-              <ion-button @click="setEditBookingOpen(false)">
-                <ion-icon :icon="arrowBackOutline"></ion-icon>
-              </ion-button>
+            <ion-buttons slot="start">
+              <ion-back-button
+                defaultHref="/tabs/home"
+                @click="setEditBookingOpen(false)"
+                ><ion-icon :icon="arrowBackOutline"></ion-icon
+              ></ion-back-button>
             </ion-buttons>
+            <ion-title class="ion-text-center">Edit Booking</ion-title>
           </ion-toolbar>
         </ion-header>
-
-        <ion-item>
-          <ion-label position="stacked">
-            Booking Date: {{ bookingInfo.startDate }}</ion-label
-          >
-          <ion-datetime
-            presentation="date"
-            v-model="newDate"
-            v-if="editDate == true"
-          ></ion-datetime>
-          <ion-button
-            shape="round"
-            @click="editDate = true"
-            v-if="editDate == false"
-            >Edit Booking Date</ion-button
-          >
-          <ion-button
-            shape="round"
-            @click="editDate = true"
-            v-if="editDate == true"
-            color="danger"
-            >Cancel</ion-button
-          >
-
-          <ion-label position="stacked">
-            Start Time: {{ bookingInfo.startTime }}</ion-label
-          >
-          <ion-datetime
-            presentation="time"
-            v-model="newStartTime"
-            v-if="editStartTime == true"
-          ></ion-datetime>
-          <ion-button
-            shape="round"
-            @click="editStartTime = true"
-            v-if="editStartTime == false"
-            >Edit Start Time</ion-button
-          >
-          <ion-button
-            shape="round"
-            @click="editDate = true"
-            v-if="editStartTime == true"
-            color="danger"
-            >Cancel</ion-button
-          >
-
-          <ion-label position="stacked">
-            End Time: {{ bookingInfo.endTime }}</ion-label
-          >
-          <ion-datetime
-            presentation="time"
-            v-model="newEndTime"
-            v-if="editEndTime == true"
-          ></ion-datetime>
-          <ion-button
-            shape="round"
-            @click="editEndTime = true"
-            v-if="editEndTime == false"
-            >Edit End Time</ion-button
-          >
-          <ion-button
-            shape="round"
-            @click="editDate = true"
-            v-if="editEndTime == true"
-            color="danger"
-            >Cancel</ion-button
-          >
-        </ion-item>
-
-        <ion-row
-          class="ion-padding-top ion-justify-content-center addPaddingBottom"
-        >
-          <ion-button @click="saveEditBooking()"> Save </ion-button>
-        </ion-row>
+        <ion-content>
+          <ion-img :src="bookingInfo.imagePath"></ion-img>
+          <ion-card color="dark" class="ion-padding">
+            <ion-card-header>
+              <ion-card-title>Booking Details</ion-card-title>
+            </ion-card-header>
+            <ion-card-content>
+              <p>
+                Booking Reference: <b>{{ bookingInfo.bookingRef }}</b>
+              </p>
+              <p v-if="bookingInfo.status == 'Booked'"
+                >Booking Amount: <b>${{ bookingInfo.amount }}</b></p
+              >
+              <p v-if="bookingInfo.status == 'Cancelled'"
+                >Refunded Amount: <b>${{ bookingInfo.amount }}</b></p
+              >
+            </ion-card-content>
+          </ion-card>
+          <ion-card>
+            <ion-card-header>
+              <ion-list lines="none">
+                <ion-item>
+                  <ion-card-title>{{ bookingInfo.startDate }}</ion-card-title>
+                  <ion-button
+                    fill="clear"
+                    @click="editDate = true"
+                    v-if="editDate == false"
+                    slot="end"
+                    >Edit</ion-button
+                  ><ion-button
+                    fill="clear"
+                    @click="editDate = true"
+                    v-if="editDate == true"
+                    color="danger"
+                    slot="end"
+                    >Cancel</ion-button
+                  >
+                </ion-item>
+              </ion-list>
+            </ion-card-header>
+            <ion-card-content>
+              <ion-datetime
+                presentation="date"
+                v-model="newDate"
+                v-if="editDate == true"
+              ></ion-datetime>
+            </ion-card-content>
+          </ion-card>
+          <ion-card>
+            <ion-card-header>
+              <ion-list>
+                <ion-item lines="none">
+                  <ion-card-title
+                    >Start: {{ bookingInfo.startTime }}</ion-card-title
+                  >
+                  <ion-button
+                    fill="clear"
+                    @click="editStartTime = true"
+                    v-if="editStartTime == false"
+                    slot="end"
+                    >Edit</ion-button
+                  >
+                  <ion-button
+                    fill="clear"
+                    @click="editDate = true"
+                    v-if="editStartTime == true"
+                    color="danger"
+                    slot="end"
+                    >Cancel</ion-button
+                  >
+                </ion-item>
+              </ion-list>
+            </ion-card-header>
+            <ion-card-content>
+              <ion-datetime
+                presentation="time"
+                v-model="newStartTime"
+                v-if="editStartTime == true"
+              ></ion-datetime>
+            </ion-card-content>
+          </ion-card>
+          <ion-card>
+            <ion-card-header>
+              <ion-list lines="none">
+                <ion-item>
+                  <ion-card-title
+                    >End: {{ bookingInfo.endTime }}</ion-card-title
+                  >
+                  <ion-button
+                    fill="clear"
+                    @click="editEndTime = true"
+                    v-if="editEndTime == false"
+                    slot="end"
+                    >Edit</ion-button
+                  >
+                  <ion-button
+                    fill="clear"
+                    @click="editDate = true"
+                    v-if="editEndTime == true"
+                    color="danger"
+                    slot="end"
+                    >Cancel</ion-button
+                  >
+                </ion-item>
+              </ion-list>
+            </ion-card-header>
+            <ion-card-content>
+              <ion-datetime
+                presentation="time"
+                v-model="newEndTime"
+                v-if="editEndTime == true"
+              ></ion-datetime>
+            </ion-card-content>
+          </ion-card>
+          <ion-grid>
+            <ion-row class="add-bottom">
+              <ion-col>
+                <ion-button
+                  @click="saveEditBooking()"
+                  fill="outline"
+                  expand="block"
+                >
+                  Save
+                </ion-button>
+              </ion-col>
+            </ion-row>
+          </ion-grid>
+        </ion-content>
       </ion-modal>
 
       <ion-card v-for="eachBooking in bookingsToShow" :key="eachBooking">
@@ -142,13 +201,6 @@
         <ion-card-content>
           <div class="ion-padding">
             <div class="ion-padding-top">
-              <ion-card-subtitle
-                >Booking Ref:
-                <u>{{ eachBooking.bookingRef }}</u></ion-card-subtitle
-              >
-              <ion-card-subtitle v-if="eachBooking.status == 'Booked'"
-                >Booking Amount: ${{ eachBooking.amount }}</ion-card-subtitle
-              >
               <ion-card-subtitle v-if="eachBooking.status == 'Cancelled'"
                 >Refunded Amount: $ {{ eachBooking.amount }}</ion-card-subtitle
               >
@@ -204,7 +256,7 @@
       </ion-card>
     </ion-grid>
 
-    <ion-grid>
+    <!-- <ion-grid>
       <h4 class="ion-text-start">Carpark Details</h4>
       <ion-card v-for="carpark in carparksArraySimu" :key="carpark">
         <ion-img :src="carpark.image"></ion-img>
@@ -215,14 +267,14 @@
           }}</ion-card-subtitle>
         </ion-card-header>
       </ion-card>
-    </ion-grid>
+    </ion-grid> -->
   </base-layout>
 </template>
 
 <script>
 import { arrowBackOutline } from "ionicons/icons";
 import {
-    IonGrid,
+  IonGrid,
   IonSelectOption,
   IonSelect,
   IonHeader,
@@ -240,13 +292,14 @@ import {
   IonTitle,
   IonIcon,
   IonButtons,
-  IonLabel,
   IonDatetime,
   IonItem,
   IonRow,
   IonCol,
   IonImg,
   IonSearchbar,
+  IonContent,
+  IonBackButton,
 } from "@ionic/vue";
 import { GChart } from "vue-google-charts";
 import { defineComponent, ref } from "vue";
@@ -270,13 +323,14 @@ export default defineComponent({
     IonTitle,
     IonIcon,
     IonButtons,
-    IonLabel,
     IonDatetime,
     IonItem,
     IonRow,
     IonCol,
     IonImg,
     IonSearchbar,
+    IonContent,
+    IonBackButton,
   },
   setup() {
     const handlerMessage = ref("");
@@ -903,5 +957,9 @@ h1 {
 
 ion-searchbar {
   padding-left: 0;
+}
+
+.add-bottom {
+  padding-bottom: 50px;
 }
 </style>
