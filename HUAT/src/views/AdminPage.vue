@@ -5,27 +5,23 @@
         <h6>Price Forecasting Analysis</h6>
         <canvas id="myChart"></canvas>
       </div>
-      <ion-row class="ion-align-items-center">
+      <div class="ion-align-items-center">
         <h6>Top 8 Popular Carparks</h6>
-        <ion-col>
           <GChart
             type="PieChart"
             :data="PieChartData"
             :options="PieChartoptions"
           />
-        </ion-col>
-      </ion-row>
+      </div>
 
-      <ion-row class="ion-align-items-center">
+      <div class="ion-align-items-center">
         <h6>Most Popular Subscription Plans</h6>
-        <ion-col>
           <GChart
             type="ColumnChart"
             :data="ColumnChartData"
             :options="ColumnChartOptions"
           />
-        </ion-col>
-      </ion-row>
+      </div>
 
       <!-- <ion-row class="ion-align-items-center">
         <ion-col>
@@ -47,8 +43,7 @@
         </ion-col>
       </ion-row> -->
 
-      <ion-row class="ion-align-items-center">
-        <ion-col>
+      <div class="ion-align-items-center">
           <h6>No. of bookings per location</h6>
           <GChart
             type="GeoChart"
@@ -56,8 +51,7 @@
             :options="GeoChartOptions"
             :settings="settings"
           />
-        </ion-col>
-      </ion-row>
+      </div>
 
       <!-- <div class="ion-padding-top">
         <ion-button expand="block" href="/"> Logout </ion-button>
@@ -67,7 +61,7 @@
 </template>
 
 <script>
-import { IonGrid, IonRow, IonCol } from "@ionic/vue";
+import { IonGrid } from "@ionic/vue";
 import Chart from 'chart.js';
 import { GChart } from "vue-google-charts";
 import { defineComponent } from "vue";
@@ -76,8 +70,6 @@ export default defineComponent({
   components: {
     GChart,
     IonGrid,
-    IonRow,
-    IonCol,
   },
   data() {
     return {
