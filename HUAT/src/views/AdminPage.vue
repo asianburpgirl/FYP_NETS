@@ -1,9 +1,6 @@
 <template>
   <base-layout needToolBar="y" pageTitle="Carpark Analytics">
     <ion-grid>
-      <div class="chart-container">
-        <canvas id="myChart"></canvas>
-      </div>
       <ion-row class="ion-align-items-center">
         <ion-col>
           <GChart
@@ -44,11 +41,17 @@
         </ion-col>
       </ion-row> -->
 
+
+      <div class="chart-container">
+        <canvas id="myChart"></canvas>
+      </div>
+
+
       <ion-row class="ion-align-items-center">
         <ion-col>
           <h3>No. of bookings per location</h3>
           <GChart
-            type="GeoChart"
+            type="Map"
             :data="GeoChartData"
             :options="GeoChartOptions"
             :settings="settings"
@@ -81,7 +84,7 @@ export default defineComponent({
     return {
       carparksArraySimu: [],
       PieChartData: [["Bookings", "Percentage of bookings"]],
-      ColumnChartData: [["Carpark Name", "Subscription Plan", "No. of Subscribers"]],
+      ColumnChartData: [["Subscription Plan", "No. of Subscribers"]],
       LineChartData: [["Time", "Number of bookings"]],
       BarChartData: [['Month','Revenue']],
       GeoChartData: [['Places', 'No. of Bookings']],
@@ -94,7 +97,7 @@ export default defineComponent({
       ColumnChartOptions: {
         title: "No. of bookings per subscription",
         legend: { position: "bottom" },
-        colors: ['#ADD8E6', 'orange']
+        colors: ['green']
         // width: 400,
         // height: 400
       },
@@ -113,19 +116,28 @@ export default defineComponent({
         // height: 400
       },
       GeoChartOptions: {
-        region: 'SG',
-        displayMode: 'markers',
-        datalessRegionColor: 'lightblue',
-        colorAxis: {colors: ['green','gray', 'red']},
-        enableRegionInteractivity: true,
-        mapType: 'styledMap',
-        // zoomLevel: 15,
-        // showTooltip: true,
-        // showInfoWindow: true,
-        // useMapTypeControl: true,
+        // region: 'SG',
+        // displayMode: 'markers',
+        // datalessRegionColor: 'lightblue',
+        // colorAxis: {colors: ['green','gray', 'red']},
+        // enableRegionInteractivity: true,
+        mapType: 'terrain',
+        zoomLevel: 15,
+        showTooltip: true,
+        showInfoWindow: true,
+        useMapTypeControl: true,
+        markerOptions: {
+          shape: 'circle',
+          color: [
+            { color: 'blue' },
+            { color: 'green' },
+            { color: 'yellow' },
+        ]
+        }
       },
       settings: {
-        packages: ['geochart'],
+        // packages: ['geochart']
+        packages: ['map'],
         mapsApiKey: 'AIzaSyAJXGx7T2ypt5Ew5-9SbDTWF9gqloQUJwI'
       }
     };
@@ -174,21 +186,31 @@ export default defineComponent({
         });
     },
     getColumnChart() {
+      const plans = {'1': 0, '2': 0}
       let columnData = [];
-      const url = "http://localhost:5003/carparks";
+      const url = "http://localhost:5005/subs";
 
       axios
         .get(url)
         .then((response) => {
-          columnData = response.data.data.carparks;
-          // console.log(columnData)
+          columnData = response.data.data.subscriptions;
+          console.log(columnData)
           for (let i = 0; i < columnData.length; i++) {
-            this.ColumnChartData.push([
-              columnData[i]["carparkName"],
-              columnData[i]["hourlyweekdaypeak"],
-              columnData[i]["hourlyweekdaynonpeak"],
-            ]);
+            for (const plan in plans) {
+              if (plan == columnData[i]['subsTypeID']) {
+                plans[plan] += 1;
+              }
+            }
           }
+
+          for (const plan in plans){
+            if (plan == '1'){
+              this.ColumnChartData.push(["Just for you", plans[plan]])
+            } else {
+              this.ColumnChartData.push(["Monthly Plan", plans[plan]])
+            }
+          }
+
           return columnData;
         })
         .catch((error) => {
@@ -284,12 +306,12 @@ export default defineComponent({
           // console.log(count)
           // Add it in to the chart
           for (const cnnt in count){
-            // if (cnnt == "*SCAPE") {
-            //   this.GeoChartData.push([cnnt + " shopping mall", "No. of bookings: " + count[cnnt]])
-            // } else {
-            //   this.GeoChartData.push([cnnt, "No. of bookings: " + count[cnnt]])
-            // }
-            this.GeoChartData.push([cnnt, count[cnnt]])
+            if (cnnt == "*SCAPE") {
+              this.GeoChartData.push([cnnt + " shopping mall", "No. of bookings: " + count[cnnt]])
+            } else {
+              this.GeoChartData.push([cnnt, "No. of bookings: " + count[cnnt]])
+            }
+            // this.GeoChartData.push([cnnt, count[cnnt]])
           }
           return this.GeoChartData;
         })
@@ -297,149 +319,47 @@ export default defineComponent({
           console.log(error.message);
         });
     },
-    getSimulator() {
-      this.carparksArraySimu = [];
-
-      let url = "http://127.0.0.1:5004/getCarpark/1";
-      axios
-        .post(url, {
-          requesttype: 1000,
-          carparkid: 1,
-        })
-        .then((response) => {
-          this.carparksArraySimu.push({
-            data: response.data.data,
-            image: "assets/images/paragon.jpg",
-            availableLots:
-              response.data.data.lotbalancehourly -
-              response.data.data.lotusehourly,
-          });
-
-          url = "http://127.0.0.1:5004/getCarpark/2";
-          axios
-            .post(url, {
-              requesttype: 1000,
-              carparkid: 2,
-            })
-            .then((response) => {
-              this.carparksArraySimu.push({
-                data: response.data.data,
-                image: "assets/images/ion.jpg",
-                availableLots:
-                  response.data.data.lotbalancehourly -
-                  response.data.data.lotusehourly,
-              });
-              url = "http://127.0.0.1:5004/getCarpark/3";
-              axios
-                .post(url, {
-                  requesttype: 1000,
-                  carparkid: 3,
-                })
-                .then((response) => {
-                  this.carparksArraySimu.push({
-                    data: response.data.data,
-                    image: "assets/images/takashimaya.jpeg",
-                    availableLots:
-                      response.data.data.lotbalancehourly -
-                      response.data.data.lotusehourly,
-                  });
-                  url = "http://127.0.0.1:5004/getCarpark/4";
-                  axios
-                    .post(url, {
-                      requesttype: 1000,
-                      carparkid: 4,
-                    })
-                    .then((response) => {
-                      this.carparksArraySimu.push({
-                        data: response.data.data,
-                        image: "assets/images/tangs.jpg",
-                        availableLots:
-                          response.data.data.lotbalancehourly -
-                          response.data.data.lotusehourly,
-                      });
-                      url = "http://127.0.0.1:5004/getCarpark/5";
-                      axios
-                        .post(url, {
-                          requesttype: 1000,
-                          carparkid: 5,
-                        })
-                        .then((response) => {
-                          this.carparksArraySimu.push({
-                            data: response.data.data,
-                            image: "assets/images/Wheelock.png",
-                            availableLots:
-                              response.data.data.lotbalancehourly -
-                              response.data.data.lotusehourly,
-                          });
-                          url = "http://127.0.0.1:5004/getCarpark/6";
-                          axios
-                            .post(url, {
-                              requesttype: 1000,
-                              carparkid: 6,
-                            })
-                            .then((response) => {
-                              this.carparksArraySimu.push({
-                                data: response.data.data,
-                                image: "assets/images/313.jpg",
-                                availableLots:
-                                  response.data.data.lotbalancehourly -
-                                  response.data.data.lotusehourly,
-                              });
-
-                              url = "http://127.0.0.1:5004/getCarpark/7";
-                              axios
-                                .post(url, {
-                                  requesttype: 1000,
-                                  carparkid: 7,
-                                })
-                                .then((response) => {
-                                  this.carparksArraySimu.push({
-                                    data: response.data.data,
-                                    image: "assets/images/scape.jpg",
-                                    availableLots:
-                                      response.data.data.lotbalancehourly -
-                                      response.data.data.lotusehourly,
-                                  });
-                                  url = "http://127.0.0.1:5004/getCarpark/8";
-                                  axios
-                                    .post(url, {
-                                      requesttype: 1000,
-                                      carparkid: 8,
-                                    })
-                                    .then((response) => {
-                                      this.carparksArraySimu.push({
-                                        data: response.data.data,
-                                        availableLots:
-                                          response.data.data.lotbalancehourly -
-                                          response.data.data.lotusehourly,
-                                        image: "assets/images/wisma.jpeg",
-                                      });
-                                    });
-                                });
-                            });
-                        });
-                    });
-                });
-            });
-        });
-    },
     async getRevenueData() {
       try {
         const response = await axios.get('http://127.0.0.1:5001/forecastbooking');
         const revenueData = response.data;
+        // console.log(revenueData)
 
         const today = new Date();
         const pastData = revenueData.past.filter(d => new Date(d.month) < today).slice(-3);
         const futureData = revenueData.future.filter(d => new Date(d.month) >= today).slice(0, 3);
+        // console.log(pastData)
+        // console.log(futureData)
 
+        // const data = {
+        //   labels: pastData.concat(futureData).map(d => d.month),
+        //   datasets: [{
+        //     label: 'Revenue',
+        //     data: pastData.concat(futureData).map(d => d.revenue),
+        //     borderColor: 'rgb(54, 162, 235)',
+        //     fill: false,
+        //     borderDash: pastData.concat(futureData).map((d, i) => i >= pastData.length ? [5, 5] : []),
+        //   }]
+        // };
         const data = {
           labels: pastData.concat(futureData).map(d => d.month),
-          datasets: [{
-            label: 'Revenue',
-            data: pastData.concat(futureData).map(d => d.revenue),
-            borderColor: 'rgb(54, 162, 235)',
-            fill: false,
-          }]
+          datasets: [
+            {
+              label: 'Actual',
+              data: pastData.map(d => d.revenue),
+              borderColor: 'rgb(54, 162, 235)',
+              fill: false,
+              // borderDash: pastData.map((d, i) => i >= pastData.length ? [5, 5] : []),
+            },
+            {
+              label: 'Predicted',
+              // lineDashType: "dash",
+              data: pastData.concat(futureData).map(d => d.revenue),
+              borderColor: 'red',
+              fill: false,
+              borderDash: [5, 5],
+            }
+          ]
         };
 
         const config = {
@@ -449,7 +369,12 @@ export default defineComponent({
             responsive: true,
             plugins: {
               legend: {
-                display: false
+                display: true,
+                position: 'bottom'
+              },
+              title: {
+                display: true,
+                text: "Forecasted Revenue"
               }
             },
             scales: {
@@ -466,30 +391,145 @@ export default defineComponent({
                 }
               }
             },
-            elements: {
-              line: {
-                borderDash: pastData.map(() => [5, 5]).concat(futureData.map(() => [])),
-              },
-            },
           },
         };
 
+        new Chart(document.getElementById('myChart'),config);
 
-        const myChart = new Chart(
-          document.getElementById('myChart'),
-          config
-        );
       } catch (error) {
         console.error(error);
       }
-    }
+    },
+    // getSimulator() {
+    //   this.carparksArraySimu = [];
 
-    
-    
+    //   let url = "http://127.0.0.1:5004/getCarpark/1";
+    //   axios
+    //     .post(url, {
+    //       requesttype: 1000,
+    //       carparkid: 1,
+    //     })
+    //     .then((response) => {
+    //       this.carparksArraySimu.push({
+    //         data: response.data.data,
+    //         image: "assets/images/paragon.jpg",
+    //         availableLots:
+    //           response.data.data.lotbalancehourly -
+    //           response.data.data.lotusehourly,
+    //       });
+
+    //       url = "http://127.0.0.1:5004/getCarpark/2";
+    //       axios
+    //         .post(url, {
+    //           requesttype: 1000,
+    //           carparkid: 2,
+    //         })
+    //         .then((response) => {
+    //           this.carparksArraySimu.push({
+    //             data: response.data.data,
+    //             image: "assets/images/ion.jpg",
+    //             availableLots:
+    //               response.data.data.lotbalancehourly -
+    //               response.data.data.lotusehourly,
+    //           });
+    //           url = "http://127.0.0.1:5004/getCarpark/3";
+    //           axios
+    //             .post(url, {
+    //               requesttype: 1000,
+    //               carparkid: 3,
+    //             })
+    //             .then((response) => {
+    //               this.carparksArraySimu.push({
+    //                 data: response.data.data,
+    //                 image: "assets/images/takashimaya.jpeg",
+    //                 availableLots:
+    //                   response.data.data.lotbalancehourly -
+    //                   response.data.data.lotusehourly,
+    //               });
+    //               url = "http://127.0.0.1:5004/getCarpark/4";
+    //               axios
+    //                 .post(url, {
+    //                   requesttype: 1000,
+    //                   carparkid: 4,
+    //                 })
+    //                 .then((response) => {
+    //                   this.carparksArraySimu.push({
+    //                     data: response.data.data,
+    //                     image: "assets/images/tangs.jpg",
+    //                     availableLots:
+    //                       response.data.data.lotbalancehourly -
+    //                       response.data.data.lotusehourly,
+    //                   });
+    //                   url = "http://127.0.0.1:5004/getCarpark/5";
+    //                   axios
+    //                     .post(url, {
+    //                       requesttype: 1000,
+    //                       carparkid: 5,
+    //                     })
+    //                     .then((response) => {
+    //                       this.carparksArraySimu.push({
+    //                         data: response.data.data,
+    //                         image: "assets/images/Wheelock.png",
+    //                         availableLots:
+    //                           response.data.data.lotbalancehourly -
+    //                           response.data.data.lotusehourly,
+    //                       });
+    //                       url = "http://127.0.0.1:5004/getCarpark/6";
+    //                       axios
+    //                         .post(url, {
+    //                           requesttype: 1000,
+    //                           carparkid: 6,
+    //                         })
+    //                         .then((response) => {
+    //                           this.carparksArraySimu.push({
+    //                             data: response.data.data,
+    //                             image: "assets/images/313.jpg",
+    //                             availableLots:
+    //                               response.data.data.lotbalancehourly -
+    //                               response.data.data.lotusehourly,
+    //                           });
+
+    //                           url = "http://127.0.0.1:5004/getCarpark/7";
+    //                           axios
+    //                             .post(url, {
+    //                               requesttype: 1000,
+    //                               carparkid: 7,
+    //                             })
+    //                             .then((response) => {
+    //                               this.carparksArraySimu.push({
+    //                                 data: response.data.data,
+    //                                 image: "assets/images/scape.jpg",
+    //                                 availableLots:
+    //                                   response.data.data.lotbalancehourly -
+    //                                   response.data.data.lotusehourly,
+    //                               });
+    //                               url = "http://127.0.0.1:5004/getCarpark/8";
+    //                               axios
+    //                                 .post(url, {
+    //                                   requesttype: 1000,
+    //                                   carparkid: 8,
+    //                                 })
+    //                                 .then((response) => {
+    //                                   this.carparksArraySimu.push({
+    //                                     data: response.data.data,
+    //                                     availableLots:
+    //                                       response.data.data.lotbalancehourly -
+    //                                       response.data.data.lotusehourly,
+    //                                     image: "assets/images/wisma.jpeg",
+    //                                   });
+    //                                 });
+    //                             });
+    //                         });
+    //                     });
+    //                 });
+    //             });
+    //         });
+    //     });
+    // },
   },
   // Calls function on page load
   mounted() {
-    this.getSimulator();
+    // this.getSimulator();
     this.getPieChart();
     this.getColumnChart();
     this.getLineChart();
@@ -500,4 +540,12 @@ export default defineComponent({
 });
 </script>
 
-<style scoped></style>
+<style scoped>
+.chart-container {
+  display: flex;
+  justify-content: center;
+  margin: auto;
+  height: 80vh;
+  width: 80vw;
+}
+</style>
