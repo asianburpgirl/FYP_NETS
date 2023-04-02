@@ -56,12 +56,14 @@
               <p>
                 Booking Reference: <b>{{ bookingInfo.bookingRef }}</b>
               </p>
-              <p v-if="bookingInfo.status == 'Booked'"
-                >Booking Amount: <b>${{ bookingInfo.amount }}</b></p
-              >
-              <p v-if="bookingInfo.status == 'Cancelled'"
-                >Refunded Amount: <b>${{ bookingInfo.amount }}</b></p
-              >
+              <p v-if="bookingInfo.status == 'Booked'">
+                Booking Amount: <b>${{ bookingInfo.amount }}</b>
+              </p>
+              <p v-if="bookingInfo.status == 'Cancelled'">
+                Refunded Amount: <b>${{ bookingInfo.amount }}</b>
+              </p>
+              <p>Lot Number: <b>123</b></p>
+              <p>Level: <b>B2</b></p>
             </ion-card-content>
           </ion-card>
           <ion-card>
@@ -204,6 +206,8 @@
               <ion-card-subtitle v-if="eachBooking.status == 'Cancelled'"
                 >Refunded Amount: $ {{ eachBooking.amount }}</ion-card-subtitle
               >
+              <ion-card-subtitle><b>Level: B2</b></ion-card-subtitle>
+              <ion-card-subtitle><b>Lot Number: 123</b></ion-card-subtitle>
               <ion-card-subtitle
                 ><b
                   >Start Date: {{ eachBooking.startDate }}</b
@@ -218,20 +222,24 @@
                 ></ion-card-subtitle
               >
               <ion-card-subtitle
-                ><b>End Time:{{ eachBooking.endTime }}</b></ion-card-subtitle
+                ><b>End Time: {{ eachBooking.endTime }}</b></ion-card-subtitle
               >
             </div>
           </div>
           <div class="ion-padding">
             <ion-row>
               <ion-col md="6" v-if="eachBooking.status == 'Booked'">
-                <ion-button expand="block" @click="editBooking(eachBooking)"
+                <ion-button
+                  fill="outline"
+                  expand="block"
+                  @click="editBooking(eachBooking)"
                   >Edit</ion-button
                 >
               </ion-col>
               <ion-col md="6" v-if="eachBooking.status == 'Booked'">
                 <ion-button
                   expand="block"
+                  fill="outline"
                   @click="
                     confirmationAlert(
                       eachBooking.bookingID,
@@ -243,10 +251,12 @@
                   >Cancel</ion-button
                 >
               </ion-col>
-              <ion-col md="6" v-if="eachBooking.status == 'Cancelled'">
+              <ion-col md="12" v-if="eachBooking.status == 'Cancelled'">
                 <ion-button
                   @click="deleteBooking(eachBooking.bookingID)"
-                  color="light"
+                  color="dark"
+                  fill="outline"
+                  expand="block"
                   >Delete</ion-button
                 >
               </ion-col>
