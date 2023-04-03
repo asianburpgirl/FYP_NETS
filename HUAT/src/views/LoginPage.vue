@@ -133,7 +133,7 @@ export default defineComponent({
         config = {
           method: "post",
           mode: "cors",
-          url: "https://3.95.164.54/userlogin",
+          url: "https://localhost/userlogin",
           headers: {
             "Content-Type": "application/json",
           },

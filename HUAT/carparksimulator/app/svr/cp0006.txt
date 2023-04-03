@@ -1,0 +1,1 @@
+{"carparkid":6,"carparkaddress":"313 Orchard Rd","carparkpostalcode":"238895","carparklocation":"313@somerset","carparkoperatorid":0,"carparkoperatordescription":"","lotallocatecomplimentary":100,"lotusecomplimentary":0,"lotbalancecomplimentary":100,"lotallocatehourly":6000,"lotusehourly":0,"lotbalancehourly":6000,"lotallocateseason":200,"lotuseseason":0,"lotbalanceseason":200}

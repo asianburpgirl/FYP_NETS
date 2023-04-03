@@ -1,0 +1,1 @@
+{"carparkid":5,"carparkaddress":"501 Orchard Rd","carparkpostalcode":"238880","carparklocation":"Wheelock Place","carparkoperatorid":0,"carparkoperatordescription":"","lotallocatecomplimentary":160,"lotusecomplimentary":0,"lotbalancecomplimentary":160,"lotallocatehourly":2000,"lotusehourly":0,"lotbalancehourly":2000,"lotallocateseason":120,"lotuseseason":0,"lotbalanceseason":120}
