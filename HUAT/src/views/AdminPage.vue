@@ -65,7 +65,7 @@
 
 <script>
 import { IonGrid } from "@ionic/vue";
-import Chart from 'chart.js/auto';
+import Chart from 'chart.js';
 import { GChart } from "vue-google-charts";
 import { defineComponent } from "vue";
 import axios from "axios";
