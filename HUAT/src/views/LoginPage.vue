@@ -129,6 +129,7 @@ export default defineComponent({
         });
 
         // contains the configuration that was sent along with the request
+      
         config = {
           method: "post",
           mode: "cors",
