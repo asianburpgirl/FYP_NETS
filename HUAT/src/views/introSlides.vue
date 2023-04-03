@@ -5,7 +5,7 @@
         <ion-row class="ion-justify-content-center">
           <ion-img src="assets/images/parking.png"></ion-img>
         </ion-row>
-        <h1>Where do you want to drive to?</h1>
+        <h1><b><i>Where do you want to drive to?</i></b></h1>
         <p><i>Let's make this your least expensive journey ever.</i></p>
         <ion-button expand="block" shape="round" @click="routeUser('login')">Get Started</ion-button>
       </ion-grid>
