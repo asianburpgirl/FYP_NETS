@@ -1,10 +1,11 @@
 <template>
   <base-layout needToolBar="y" pageTitle="Carpark Analytics">
     <ion-grid>
+      <h6>Price Forecasting Analysis</h6>
       <div class="chart-container">
-        <h6>Price Forecasting Analysis</h6>
         <canvas id="myChart"></canvas>
       </div>
+      
       <div class="ion-align-items-center">
         <h6>Top 8 Popular Carparks</h6>
           <GChart
@@ -43,12 +44,6 @@
         </ion-col>
       </ion-row> -->
 
-
-      <div class="chart-container">
-        <canvas id="myChart"></canvas>
-      </div>
-
-
       <ion-row class="ion-align-items-center">
         <ion-col>
           <h3>No. of bookings per location</h3>
@@ -58,7 +53,8 @@
             :options="GeoChartOptions"
             :settings="settings"
           />
-      </div>
+        </ion-col>
+      </ion-row>
 
       <!-- <div class="ion-padding-top">
         <ion-button expand="block" href="/"> Logout </ion-button>
@@ -69,7 +65,7 @@
 
 <script>
 import { IonGrid } from "@ionic/vue";
-import Chart from 'chart.js';
+import Chart from 'chart.js/auto';
 import { GChart } from "vue-google-charts";
 import { defineComponent } from "vue";
 import axios from "axios";
@@ -82,18 +78,18 @@ export default defineComponent({
     return {
       carparksArraySimu: [],
       PieChartData: [["Bookings", "Percentage of bookings"]],
-      ColumnChartData: [["Subscription Plan", "No. of Subscribers"]],
+      ColumnChartData: [["Subscription Plan", "No. of Subscribers", { role: 'style' }]],
       LineChartData: [["Time", "Number of bookings"]],
       BarChartData: [['Month','Revenue']],
       GeoChartData: [['Places', 'No. of Bookings']],
       PieChartoptions: {
-        title: "% of bookings per location",
+        // title: "% of bookings per location",
         pieHole: 0.1,
         // width: 400,
         // height: 400
       },
       ColumnChartOptions: {
-        title: "No. of bookings per subscription",
+        // title: "No. of bookings per subscription",
         legend: { position: "bottom" },
         colors: ['green']
         // width: 400,
@@ -124,14 +120,6 @@ export default defineComponent({
         showTooltip: true,
         showInfoWindow: true,
         useMapTypeControl: true,
-        markerOptions: {
-          shape: 'circle',
-          color: [
-            { color: 'blue' },
-            { color: 'green' },
-            { color: 'yellow' },
-        ]
-        }
       },
       settings: {
         // packages: ['geochart']
@@ -203,9 +191,9 @@ export default defineComponent({
 
           for (const plan in plans){
             if (plan == '1'){
-              this.ColumnChartData.push(["Just for you", plans[plan]])
+              this.ColumnChartData.push(["Just for you", plans[plan], 'color: lightgreen'])
             } else {
-              this.ColumnChartData.push(["Monthly Plan", plans[plan]])
+              this.ColumnChartData.push(["Monthly Plan", plans[plan], 'color: orange'])
             }
           }
 
@@ -319,7 +307,7 @@ export default defineComponent({
     },
     async getRevenueData() {
       try {
-        const response = await axios.get('http://127.0.0.1:5001/forecastbooking');
+        const response = await axios.get('http://localhost:5001/forecastbooking');
         const revenueData = response.data;
         // console.log(revenueData)
 
@@ -370,10 +358,6 @@ export default defineComponent({
                 display: true,
                 position: 'bottom'
               },
-              title: {
-                display: true,
-                text: "Forecasted Revenue"
-              }
             },
             scales: {
               x: {
@@ -543,7 +527,7 @@ export default defineComponent({
   display: flex;
   justify-content: center;
   margin: auto;
-  height: 80vh;
-  width: 80vw;
+  /* height: 50vh;
+  width: 80vw; */
 }
 </style>
