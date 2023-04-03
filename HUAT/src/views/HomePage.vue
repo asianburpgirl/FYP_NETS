@@ -190,10 +190,10 @@
                 >Booked</ion-badge
               >
               <ion-badge
-                v-if="eachBooking.status == 'Cancelled'"
+                v-if="eachBooking.status == 'Cancelled' || eachBooking.status == 'Completed'"
                 color="medium"
                 slot="end"
-                >Cancelled</ion-badge
+                >{{eachBooking.status}}</ion-badge
               >
               <ion-card-title>{{ eachBooking.bookingLocation }}</ion-card-title>
             </ion-item>
@@ -251,7 +251,7 @@
                   >Cancel</ion-button
                 >
               </ion-col>
-              <ion-col md="12" v-if="eachBooking.status == 'Cancelled'">
+              <ion-col md="12" v-if="eachBooking.status == 'Cancelled'|| eachBooking.status == 'Completed' ">
                 <ion-button
                   @click="deleteBooking(eachBooking.bookingID)"
                   color="dark"
@@ -850,6 +850,18 @@ export default defineComponent({
     //         console.log(response)
     //       })
     // },
+    editBookings(){
+      const url = "http://127.0.0.1:5001/editStatus"
+      axios
+        .delete(url)
+        .then((response) => {
+          console.log(response)
+        })
+        .catch((error) => {
+          console.log(error.message);
+        });
+      // editStatus
+    },
 
     getUserBooking() {
       this.userData = JSON.parse(localStorage.getItem("userData"));
@@ -975,6 +987,7 @@ export default defineComponent({
     this.getPieChart();
     this.getColumnChart();
     this.getUserBooking();
+    this.editBookings()
   },
 });
 </script>

@@ -443,6 +443,20 @@ def forecast_booking_revenue():
 
     return jsonify(return_json)
 
+#update bookings --> if current date > bookign date, status will be changed to "Completed"
+@app.route('/editStatus')
+def check_booking_status():
+    bookingList = Booking.query.all()
+    for eachBooking in bookingList:
+        now = datetime.now()        
+        print(eachBooking.bookingStartDateTime < now and eachBooking.status != 'Cancelled')
+        if eachBooking.bookingStartDateTime < now and eachBooking.status != 'Cancelled':
+            eachBooking.status = 'Completed'
+    
+    message = 'Booking status updated.'    
+    db.session.commit()
+    return message
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5001, debug=True)
 
