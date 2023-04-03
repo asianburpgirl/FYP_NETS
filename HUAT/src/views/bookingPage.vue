@@ -565,7 +565,7 @@ export default defineComponent({
 
     getUserBooking() {
       this.userData = JSON.parse(localStorage.getItem("userData"));
-      const url = "http://127.0.0.1:5001/bookings/" + this.userData.userID;
+      const url = "http://ec2-13-239-5-115.ap-southeast-2.compute.amazonaws.com:5001/bookings/" + this.userData.userID;
       axios
         .get(url)
         .then((response) => {
