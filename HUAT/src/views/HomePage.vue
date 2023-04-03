@@ -857,8 +857,8 @@ export default defineComponent({
       axios
         .get(url)
         .then((response) => {
-          const pastBookings = [];
-          const upcomingBookings = [];
+          let pastBookings = [];
+          let upcomingBookings = [];
           const data = response.data.data.bookings;
           for (const eachBooking of data) {
             let startDateTime = new Date(eachBooking.bookingStartDateTime);
@@ -896,6 +896,13 @@ export default defineComponent({
                   userID: eachBooking.userID,
                   imagePath: imagePath,
                 });
+                this.bookingDetails = this.bookingDetails.sort(function (a, b) {
+                  const keyA = a.startDate;
+                  const keyB = b.startDate;
+                  if (keyA > keyB) return -1;
+                  if (keyA < keyB) return 1;
+                  return 0;
+                });
                 if (
                   new Date() - new Date(eachBooking.bookingStartDateTime) >
                   0
@@ -915,6 +922,13 @@ export default defineComponent({
                     userID: eachBooking.userID,
                     imagePath: imagePath,
                   });
+                  pastBookings = pastBookings.sort(function (a, b) {
+                  const keyA = a.startDate;
+                  const keyB = b.startDate;
+                  if (keyA > keyB) return -1;
+                  if (keyA < keyB) return 1;
+                  return 0;
+                });
                 } else {
                   upcomingBookings.push({
                     bookingDate: eachBooking.bookingDateTime,
@@ -931,6 +945,13 @@ export default defineComponent({
                     userID: eachBooking.userID,
                     imagePath: imagePath,
                   });
+                  upcomingBookings = upcomingBookings.sort(function (a, b) {
+                  const keyA = a.startDate;
+                  const keyB = b.startDate;
+                  if (keyA > keyB) return -1;
+                  if (keyA < keyB) return 1;
+                  return 0;
+                });
                 }
                 this.changeStatus();
               })
