@@ -47,7 +47,7 @@ export default defineComponent({
     getBookings() {
       let bookingData = [];
 
-      const url = "http://localhost:5001/bookings";
+      const url = "http://ec2-13-239-5-115.ap-southeast-2.compute.amazonaws.com:5001/bookings";
       axios.get(url)
       .then(response => {
         bookingData = response.data.data.bookings;

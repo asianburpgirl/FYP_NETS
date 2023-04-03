@@ -129,7 +129,7 @@ export default defineComponent({
             this.userData = JSON.parse(localStorage.getItem("userData"));
         },
         getBalance() {
-            const url = "http://localhost:5002/getBalance/" + this.userData.userID;
+            const url = "http://ec2-13-239-5-115.ap-southeast-2.compute.amazonaws.com:5002/getBalance/" + this.userData.userID;
             axios
                 .get(url)
                 .then((response) => {
@@ -147,7 +147,7 @@ export default defineComponent({
         },
         getTrans() {
             this.userData = JSON.parse(localStorage.getItem("userData"));
-            const url = "http://localhost:5006/transaction/" + this.userData.userID;
+            const url = "http://ec2-13-239-5-115.ap-southeast-2.compute.amazonaws.com:5006/transaction/" + this.userData.userID;
             axios
                 .get(url)
                 .then((response) => {

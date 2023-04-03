@@ -85,7 +85,7 @@ export default defineComponent({
     },
     routeTen() {
       const url =
-        "http://localhost:5002/addTen/" +
+        "http://ec2-13-239-5-115.ap-southeast-2.compute.amazonaws.com:5002/addTen/" +
         parseInt(this.userData.userID) +
         "/" +
         parseInt(this.userData.balance);
@@ -107,7 +107,7 @@ export default defineComponent({
     },
     routeTwenty() {
       const url =
-        "http://localhost:5002/addTwenty/" +
+        "http://ec2-13-239-5-115.ap-southeast-2.compute.amazonaws.com:5002/addTwenty/" +
         parseInt(this.userData.userID) +
         "/" +
         parseInt(this.userData.balance);
@@ -129,7 +129,7 @@ export default defineComponent({
     },
     routeThirty() {
       const url =
-        "http://localhost:5002/addThirty/" +
+        "http://ec2-13-239-5-115.ap-southeast-2.compute.amazonaws.com:5002/addThirty/" +
         parseInt(this.userData.userID) +
         "/" +
         parseInt(this.userData.balance);

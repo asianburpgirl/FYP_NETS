@@ -532,7 +532,7 @@ export default defineComponent({
     getPieChart() {
       let pieData = [];
 
-      const url = "http://localhost:5001/bookings";
+      const url = "http://ec2-13-239-5-115.ap-southeast-2.compute.amazonaws.com:5001/bookings";
       axios
         .get(url)
         .then((response) => {
@@ -553,7 +553,7 @@ export default defineComponent({
     },
     getBarChart() {
       let barData = [];
-      const url = "http://localhost:5003/carparks";
+      const url = "http://ec2-13-239-5-115.ap-southeast-2.compute.amazonaws.com:5003/carparks";
 
       axios
         .get(url)
@@ -573,7 +573,7 @@ export default defineComponent({
     },
     getColumnChart() {
       let columnData = [];
-      const url = "http://localhost:5003/carparks";
+      const url = "http://ec2-13-239-5-115.ap-southeast-2.compute.amazonaws.com:5003/carparks";
 
       axios
         .get(url)
