@@ -381,14 +381,14 @@ export default defineComponent({
 
               // update booking status to "cancel"
               refund(amount);
-              let url = "http://127.0.0.1:5001/bookings/" + bookingID;
+              let url = "http://ec2-13-239-5-115.ap-southeast-2.compute.amazonaws.com:5001/bookings/" + bookingID;
               axios
                 .put(url, {
                   status: "Cancelled",
                 })
                 .then((response) => {
                   //refund money
-                  url = "http://127.0.0.1:5001/updateBalance/" + bookingID;
+                  url = "http://ec2-13-239-5-115.ap-southeast-2.compute.amazonaws.com:5001/updateBalance/" + bookingID;
                   axios
                     .put(url, {
                       bookingID: bookingID,
@@ -397,14 +397,14 @@ export default defineComponent({
                     .then((response) => {
                       // update lot to plus one
                       const balance = response.data.data.toString();
-                      url = "http://127.0.0.1:5003/carparks";
+                      url = "http://ec2-13-239-5-115.ap-southeast-2.compute.amazonaws.com:5003/carparks";
                       axios.get(url).then((response) => {
                         let newFloat = balance;
                         const carparks = response.data.data.carparks;
                         for (const eachCarpark of carparks) {
                           if (eachCarpark.carparkName == bookingLocation) {
                             url =
-                              "http://127.0.0.1:5004/lotAdj/" +
+                              "http://ec2-13-239-5-115.ap-southeast-2.compute.amazonaws.com:5004/lotAdj/" +
                               eachCarpark.carparkID +
                               "/2/-1";
                             axios.get(url).then((response) => {
@@ -460,7 +460,7 @@ export default defineComponent({
 
     const refund = async (amount) => {
       const userData = JSON.parse(localStorage.getItem("userData"));
-      const url = "http://127.0.0.1:5006/deduct";
+      const url = "http://ec2-13-239-5-115.ap-southeast-2.compute.amazonaws.com:5006/deduct";
       axios
         .post(url, {
           amount: amount,
@@ -596,7 +596,7 @@ export default defineComponent({
     getSimulator() {
       this.carparksArraySimu = [];
 
-      let url = "http://127.0.0.1:5004/getCarpark/1";
+      let url = "http://ec2-13-239-5-115.ap-southeast-2.compute.amazonaws.com:5004/getCarpark/1";
       axios
         .post(url, {
           requesttype: 1000,
@@ -611,7 +611,7 @@ export default defineComponent({
               response.data.data.lotusehourly,
           });
 
-          url = "http://127.0.0.1:5004/getCarpark/2";
+          url = "http://ec2-13-239-5-115.ap-southeast-2.compute.amazonaws.com:5004/getCarpark/2";
           axios
             .post(url, {
               requesttype: 1000,
@@ -625,7 +625,7 @@ export default defineComponent({
                   response.data.data.lotbalancehourly -
                   response.data.data.lotusehourly,
               });
-              url = "http://127.0.0.1:5004/getCarpark/3";
+              url = "http://ec2-13-239-5-115.ap-southeast-2.compute.amazonaws.com:5004/getCarpark/3";
               axios
                 .post(url, {
                   requesttype: 1000,
@@ -639,7 +639,7 @@ export default defineComponent({
                       response.data.data.lotbalancehourly -
                       response.data.data.lotusehourly,
                   });
-                  url = "http://127.0.0.1:5004/getCarpark/4";
+                  url = "http://ec2-13-239-5-115.ap-southeast-2.compute.amazonaws.com:5004/getCarpark/4";
                   axios
                     .post(url, {
                       requesttype: 1000,
@@ -653,7 +653,7 @@ export default defineComponent({
                           response.data.data.lotbalancehourly -
                           response.data.data.lotusehourly,
                       });
-                      url = "http://127.0.0.1:5004/getCarpark/5";
+                      url = "http://ec2-13-239-5-115.ap-southeast-2.compute.amazonaws.com:5004/getCarpark/5";
                       axios
                         .post(url, {
                           requesttype: 1000,
@@ -667,7 +667,7 @@ export default defineComponent({
                               response.data.data.lotbalancehourly -
                               response.data.data.lotusehourly,
                           });
-                          url = "http://127.0.0.1:5004/getCarpark/6";
+                          url = "http://ec2-13-239-5-115.ap-southeast-2.compute.amazonaws.com:5004/getCarpark/6";
                           axios
                             .post(url, {
                               requesttype: 1000,
@@ -682,7 +682,7 @@ export default defineComponent({
                                   response.data.data.lotusehourly,
                               });
 
-                              url = "http://127.0.0.1:5004/getCarpark/7";
+                              url = "http://ec2-13-239-5-115.ap-southeast-2.compute.amazonaws.com:5004/getCarpark/7";
                               axios
                                 .post(url, {
                                   requesttype: 1000,
@@ -696,7 +696,7 @@ export default defineComponent({
                                       response.data.data.lotbalancehourly -
                                       response.data.data.lotusehourly,
                                   });
-                                  url = "http://127.0.0.1:5004/getCarpark/8";
+                                  url = "http://ec2-13-239-5-115.ap-southeast-2.compute.amazonaws.com:5004/getCarpark/8";
                                   axios
                                     .post(url, {
                                       requesttype: 1000,
@@ -737,7 +737,7 @@ export default defineComponent({
     // getBalance() {
     //   this.userData = JSON.parse(localStorage.getItem("userData"));
 
-    //   const url = "http://127.0.0.1:5002/getBalance/" + this.userData.userID;
+    //   const url = "http://ec2-13-239-5-115.ap-southeast-2.compute.amazonaws.com:5002/getBalance/" + this.userData.userID;
     //   axios
     //     .get(url)
     //     .then((response) => {
@@ -809,7 +809,7 @@ export default defineComponent({
       const newEndDateTime = newStartDateFormatted + " " + newEndTimeFormatted;
 
       const url =
-        "http://127.0.0.1:5001/bookings/" + this.bookingInfo.bookingID;
+        "http://ec2-13-239-5-115.ap-southeast-2.compute.amazonaws.com:5001/bookings/" + this.bookingInfo.bookingID;
       axios
         .put(url, {
           bookingDateTime: currentDateTimeFormatted,
@@ -828,7 +828,7 @@ export default defineComponent({
       this.editBookingOpen = isOpen;
     },
     deleteBooking(bookingID) {
-      const url = "http://127.0.0.1:5001/bookings/" + bookingID;
+      const url = "http://ec2-13-239-5-115.ap-southeast-2.compute.amazonaws.com:5001/bookings/" + bookingID;
       axios
         .delete(url)
         .then((response) => {
@@ -840,7 +840,7 @@ export default defineComponent({
     },
     // cancelRefund(amount) {
     //   this.userData = JSON.parse(localStorage.getItem("userData"));
-    //   const url = "http://127.0.0.1:5006/deduct"
+    //   const url = "http://ec2-13-239-5-115.ap-southeast-2.compute.amazonaws.com:5006/deduct"
     //     axios
     //       .post(url, {
     //         "amount": amount,
@@ -851,7 +851,7 @@ export default defineComponent({
     //       })
     // },
     editBookings(){
-      const url = "http://127.0.0.1:5001/editStatus"
+      const url = "http://ec2-13-239-5-115.ap-southeast-2.compute.amazonaws.com:5001/editStatus"
       axios
         .delete(url)
         .then((response) => {
@@ -865,7 +865,7 @@ export default defineComponent({
 
     getUserBooking() {
       this.userData = JSON.parse(localStorage.getItem("userData"));
-      const url = "http://127.0.0.1:5001/bookings/" + this.userData.userID;
+      const url = "http://ec2-13-239-5-115.ap-southeast-2.compute.amazonaws.com:5001/bookings/" + this.userData.userID;
       axios
         .get(url)
         .then((response) => {
@@ -885,7 +885,7 @@ export default defineComponent({
 
             let imagePath = "";
 
-            const url = "http://127.0.0.1:5003/carparkImage";
+            const url = "http://ec2-13-239-5-115.ap-southeast-2.compute.amazonaws.com:5003/carparkImage";
             axios
               .post(url, {
                 carparkName: eachBooking.bookingLocation,

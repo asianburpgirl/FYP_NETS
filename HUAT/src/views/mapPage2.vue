@@ -375,7 +375,7 @@ export default defineComponent({
                 this.userData = JSON.parse(localStorage.getItem("userData"));
                 const userID = this.userData.userID;
 
-                const url = "http://127.0.0.1:5001/bookings";
+                const url = "http://ec2-13-239-5-115.ap-southeast-2.compute.amazonaws.com:5001/bookings";
 
                 axios
                     .post(url, {
@@ -401,7 +401,7 @@ export default defineComponent({
         },
         deductFromUser(bookingID) {
             // updateBalance
-            const url = "http://127.0.0.1:5001/updateBalance/" + bookingID;
+            const url = "http://ec2-13-239-5-115.ap-southeast-2.compute.amazonaws.com:5001/updateBalance/" + bookingID;
             axios
                 .put(url, {
                     bookingID: bookingID,
@@ -431,7 +431,7 @@ export default defineComponent({
             });
 
             //add markers
-            const url = "http://127.0.0.1:5003/carparks";
+            const url = "http://ec2-13-239-5-115.ap-southeast-2.compute.amazonaws.com:5003/carparks";
             axios
                 .get(url)
                 .then((response) => {
@@ -532,7 +532,7 @@ export default defineComponent({
             this.googleMapDistanceUrl = "https://maps.googleapis.com/maps/api/distancematrix/json?origins=";
             this.combinedLatLang = "";
 
-            let url = "http://127.0.0.1:5004/getCarpark/1";
+            let url = "http://ec2-13-239-5-115.ap-southeast-2.compute.amazonaws.com:5004/getCarpark/1";
             axios
                 .post(url, {
                     "requesttype": 1000,
@@ -546,7 +546,7 @@ export default defineComponent({
                         // long: 103.83608284915861
                     })
                     this.combinedLatLang += "1.3040258775031617" + "," + "103.83608284915861" + "|";
-                    url = "http://127.0.0.1:5004/getCarpark/2";
+                    url = "http://ec2-13-239-5-115.ap-southeast-2.compute.amazonaws.com:5004/getCarpark/2";
                     axios
                         .post(url, {
                             "requesttype": 1000,
@@ -560,7 +560,7 @@ export default defineComponent({
                                 // long: 103.83608284915861
                             })
                             this.combinedLatLang += "1.3040258775031617" + "," + "103.83608284915861" + "|";
-                            url = "http://127.0.0.1:5004/getCarpark/3";
+                            url = "http://ec2-13-239-5-115.ap-southeast-2.compute.amazonaws.com:5004/getCarpark/3";
                             console.log(url)
                             axios
                                 .post(url, {
@@ -575,7 +575,7 @@ export default defineComponent({
                                         // long: 103.83455711763565
                                     })
                                     this.combinedLatLang += "1.3033454254185042" + "," + "103.83455711763565" + "|";
-                                    url = "http://127.0.0.1:5004/getCarpark/4";
+                                    url = "http://ec2-13-239-5-115.ap-southeast-2.compute.amazonaws.com:5004/getCarpark/4";
                                     axios
                                         .post(url, {
                                             "requesttype": 1000,
@@ -589,7 +589,7 @@ export default defineComponent({
                                                 // long: 103.83608284915861
                                             })
                                             this.combinedLatLang += "1.3040258775031617" + "," + "103.83608284915861" + "|";
-                                            url = "http://127.0.0.1:5004/getCarpark/5";
+                                            url = "http://ec2-13-239-5-115.ap-southeast-2.compute.amazonaws.com:5004/getCarpark/5";
                                             axios
                                                 .post(url, {
                                                     "requesttype": 1000,
@@ -603,7 +603,7 @@ export default defineComponent({
                                                         // long: 103.83297614415605
                                                     })
                                                     this.combinedLatLang += "1.3050314731714412" + "," + "103.83297614415605" + "|";
-                                                    url = "http://127.0.0.1:5004/getCarpark/6";
+                                                    url = "http://ec2-13-239-5-115.ap-southeast-2.compute.amazonaws.com:5004/getCarpark/6";
                                                     axios
                                                         .post(url, {
                                                             "requesttype": 1000,
@@ -617,7 +617,7 @@ export default defineComponent({
                                                                 // long: 103.8386220085623
                                                             })
                                                             this.combinedLatLang += "1.301171207812743" + "," + "103.8386220085623" + "|";
-                                                            url = "http://127.0.0.1:5004/getCarpark/7";
+                                                            url = "http://ec2-13-239-5-115.ap-southeast-2.compute.amazonaws.com:5004/getCarpark/7";
                                                             axios
                                                                 .post(url, {
                                                                     "requesttype": 1000,
@@ -631,7 +631,7 @@ export default defineComponent({
                                                                         // long: 103.83576204980196
                                                                     })
                                                                     this.combinedLatLang += "1.3010677408660067" + "," + "103.83576204980196" + "|";
-                                                                    url = "http://127.0.0.1:5004/getCarpark/8";
+                                                                    url = "http://ec2-13-239-5-115.ap-southeast-2.compute.amazonaws.com:5004/getCarpark/8";
                                                                     axios
                                                                         .post(url, {
                                                                             "requesttype": 1000,
@@ -668,7 +668,7 @@ export default defineComponent({
                                                                                 console.log(this.userOrigin, "HEREEEE")
                                                                                 // this.userOrigin = "1.3064433533620563,103.83276247871694"
                                                                                 // console.log("HERE2")
-                                                                                const url = "http://127.0.0.1:5009/getCoords";
+                                                                                const url = "http://ec2-13-239-5-115.ap-southeast-2.compute.amazonaws.com:5009/getCoords";
                                                                                 axios
                                                                                     .post(url, {
                                                                                         "origin": this.userOrigin

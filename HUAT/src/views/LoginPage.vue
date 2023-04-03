@@ -133,7 +133,7 @@ export default defineComponent({
         config = {
           method: "post",
           mode: "cors",
-          url: "http://127.0.0.1:5002/userlogin",
+          url: "http://ec2-13-239-5-115.ap-southeast-2.compute.amazonaws.com:5002/userlogin",
           headers: {
             "Content-Type": "application/json",
           },

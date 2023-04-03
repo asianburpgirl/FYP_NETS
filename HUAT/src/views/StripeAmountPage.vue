@@ -129,7 +129,7 @@ export default defineComponent({
                 });
         },
         addTopup(amount) {
-            const url = "http://127.0.0.1:5006/topup"
+            const url = "http://ec2-13-239-5-115.ap-southeast-2.compute.amazonaws.com:5006/topup"
                 axios
                 .post(url, {
                     "amount": amount,

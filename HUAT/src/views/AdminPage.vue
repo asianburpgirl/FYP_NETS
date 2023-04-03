@@ -385,7 +385,7 @@ export default defineComponent({
     // getSimulator() {
     //   this.carparksArraySimu = [];
 
-    //   let url = "http://127.0.0.1:5004/getCarpark/1";
+    //   let url = "http://ec2-13-239-5-115.ap-southeast-2.compute.amazonaws.com:5004/getCarpark/1";
     //   axios
     //     .post(url, {
     //       requesttype: 1000,
@@ -400,7 +400,7 @@ export default defineComponent({
     //           response.data.data.lotusehourly,
     //       });
 
-    //       url = "http://127.0.0.1:5004/getCarpark/2";
+    //       url = "http://ec2-13-239-5-115.ap-southeast-2.compute.amazonaws.com:5004/getCarpark/2";
     //       axios
     //         .post(url, {
     //           requesttype: 1000,
@@ -414,7 +414,7 @@ export default defineComponent({
     //               response.data.data.lotbalancehourly -
     //               response.data.data.lotusehourly,
     //           });
-    //           url = "http://127.0.0.1:5004/getCarpark/3";
+    //           url = "http://ec2-13-239-5-115.ap-southeast-2.compute.amazonaws.com:5004/getCarpark/3";
     //           axios
     //             .post(url, {
     //               requesttype: 1000,
@@ -428,7 +428,7 @@ export default defineComponent({
     //                   response.data.data.lotbalancehourly -
     //                   response.data.data.lotusehourly,
     //               });
-    //               url = "http://127.0.0.1:5004/getCarpark/4";
+    //               url = "http://ec2-13-239-5-115.ap-southeast-2.compute.amazonaws.com:5004/getCarpark/4";
     //               axios
     //                 .post(url, {
     //                   requesttype: 1000,
@@ -442,7 +442,7 @@ export default defineComponent({
     //                       response.data.data.lotbalancehourly -
     //                       response.data.data.lotusehourly,
     //                   });
-    //                   url = "http://127.0.0.1:5004/getCarpark/5";
+    //                   url = "http://ec2-13-239-5-115.ap-southeast-2.compute.amazonaws.com:5004/getCarpark/5";
     //                   axios
     //                     .post(url, {
     //                       requesttype: 1000,
@@ -456,7 +456,7 @@ export default defineComponent({
     //                           response.data.data.lotbalancehourly -
     //                           response.data.data.lotusehourly,
     //                       });
-    //                       url = "http://127.0.0.1:5004/getCarpark/6";
+    //                       url = "http://ec2-13-239-5-115.ap-southeast-2.compute.amazonaws.com:5004/getCarpark/6";
     //                       axios
     //                         .post(url, {
     //                           requesttype: 1000,
@@ -471,7 +471,7 @@ export default defineComponent({
     //                               response.data.data.lotusehourly,
     //                           });
 
-    //                           url = "http://127.0.0.1:5004/getCarpark/7";
+    //                           url = "http://ec2-13-239-5-115.ap-southeast-2.compute.amazonaws.com:5004/getCarpark/7";
     //                           axios
     //                             .post(url, {
     //                               requesttype: 1000,
@@ -485,7 +485,7 @@ export default defineComponent({
     //                                   response.data.data.lotbalancehourly -
     //                                   response.data.data.lotusehourly,
     //                               });
-    //                               url = "http://127.0.0.1:5004/getCarpark/8";
+    //                               url = "http://ec2-13-239-5-115.ap-southeast-2.compute.amazonaws.com:5004/getCarpark/8";
     //                               axios
     //                                 .post(url, {
     //                                   requesttype: 1000,

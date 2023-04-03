@@ -102,7 +102,7 @@ def get_all():
         }
     ), 404
 
-# http://127.0.0.1:5009/getCoords
+# http://ec2-13-239-5-115.ap-southeast-2.compute.amazonaws.com:5009/getCoords
 @app.route('/getCoords',  methods = ['POST'])
 def getLatLong():
     latitude = ''

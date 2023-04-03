@@ -164,7 +164,7 @@ export default defineComponent({
             cssClass: "alert-button-confirm",
             role: "confirm",
             handler: () => {
-              const url = "http://127.0.0.1:5005/subs";
+              const url = "http://ec2-13-239-5-115.ap-southeast-2.compute.amazonaws.com:5005/subs";
               axios
                 .post(url, {
                   subsTypeID: subsType,
@@ -180,7 +180,7 @@ export default defineComponent({
 
                   // deduct money
                   const url =
-                    "http://127.0.0.1:5005/updateBalanceSub/" +
+                    "http://ec2-13-239-5-115.ap-southeast-2.compute.amazonaws.com:5005/updateBalanceSub/" +
                     response.data.data.subsID;
                   axios
                     .put(url, {
@@ -242,7 +242,7 @@ export default defineComponent({
   },
   methods: {
     getCarparksMonthlySubs() {
-      const url = "http://127.0.0.1:5003/chosenCarparks";
+      const url = "http://ec2-13-239-5-115.ap-southeast-2.compute.amazonaws.com:5003/chosenCarparks";
       axios
         .get(url)
         .then((response) => {
@@ -267,7 +267,7 @@ export default defineComponent({
         this.getCarparksMonthlySubs();
       }
       const url =
-        "http://127.0.0.1:5005/subs/" +
+        "http://ec2-13-239-5-115.ap-southeast-2.compute.amazonaws.com:5005/subs/" +
         parseInt(this.userData.userID) +
         "&" +
         planType;
@@ -287,7 +287,7 @@ export default defineComponent({
     },
     checkIfSufficientBalance(amountToCheck) {
       const url =
-        "http://127.0.0.1:5002/getBalance/" + parseInt(this.userData.userID);
+        "http://ec2-13-239-5-115.ap-southeast-2.compute.amazonaws.com:5002/getBalance/" + parseInt(this.userData.userID);
       axios
         .get(url)
         .then((response) => {
@@ -307,14 +307,14 @@ export default defineComponent({
     },
     getCommonBookings() {
       const url =
-        "http://127.0.0.1:5001/commonCarparks/" +
+        "http://ec2-13-239-5-115.ap-southeast-2.compute.amazonaws.com:5001/commonCarparks/" +
         parseInt(this.userData.userID);
       axios
         .get(url)
         .then((response) => {
           this.commonThreeCarpark = response.data.data.carparks;
           const url2 =
-            "http://127.0.0.1:5001/commonBookingsAll/" +
+            "http://ec2-13-239-5-115.ap-southeast-2.compute.amazonaws.com:5001/commonBookingsAll/" +
             parseInt(this.userData.userID);
           axios
             .post(url2, { discount: 0.1 })
