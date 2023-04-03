@@ -619,7 +619,7 @@ export default defineComponent({
       if (this.endTime == "") {
         this.errorMessage.push("You need to indicate end time !");
       }
-      if (this.userBalance < totalPrice) {
+      if (this.userBalance > totalPrice) {
         this.errorMessage.push("Insufficient credit. Top up your wallet !");
       }
 
