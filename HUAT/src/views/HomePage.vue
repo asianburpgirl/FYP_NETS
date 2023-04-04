@@ -853,7 +853,7 @@ export default defineComponent({
     editBookings(){
       const url = "http://13.55.33.68:5001/editStatus"
       axios
-        .delete(url)
+        .get(url)
         .then((response) => {
           console.log(response)
         })
