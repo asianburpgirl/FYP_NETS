@@ -32,7 +32,7 @@
                 <ion-label>{{ eachTrans.transDateClean }}</ion-label>
                 
                 <ion-label v-if="eachTrans.type == 'Topup'" :color="eachTrans.colortopup"> ${{ eachTrans.amount }}</ion-label>
-                <ion-label v-if="eachTrans.type == 'Deduct'" :color="eachTrans.colordeduct" >- ${{ eachTrans.amount }}</ion-label>
+                <ion-label v-if="eachTrans.type == 'Booking' || eachTrans.type == 'Plan'" :color="eachTrans.colordeduct" >- ${{ eachTrans.amount }}</ion-label>
                 <ion-label> {{eachTrans.type}}</ion-label>
                 
             </ion-item>
