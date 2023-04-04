@@ -646,20 +646,7 @@ export default defineComponent({
         );
       }
     },
-    // deductFromUser(bookingID) {
-    //     // updateBalance
-    //     const url = "http://127.0.0.1:5001/updateBalance/" + bookingID;
-    //     axios
-    //         .put(url, {
-    //             bookingID: bookingID,
-    //         })
-    //         .then((response) => {
-    //             // console.log(response)
-    //         })
-    //         .catch((error) => {
-    //             console.log(error.message);
-    //         });
-    // },
+
 
     async createMap() {
       const mapRef = document.getElementById("map");
