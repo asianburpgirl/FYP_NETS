@@ -164,7 +164,7 @@ export default defineComponent({
             cssClass: "alert-button-confirm",
             role: "confirm",
             handler: () => {
-              const url = "http://127.0.0.1:5005/subs";
+              const url = "http://13.55.33.68:5005/subs";
               axios
                 .post(url, {
                   subsTypeID: subsType,
@@ -179,8 +179,8 @@ export default defineComponent({
                   // this.subsAmt = (this.userSpending * 3 * 0.95).toFixed(2)
 
                   // deduct money
-                  let url =
-                    "http://127.0.0.1:5005/updateBalanceSub/" +
+                  const url =
+                    "http://13.55.33.68:5005/updateBalanceSub/" +
                     response.data.data.subsID;
                   axios
                     .put(url, {
@@ -188,16 +188,15 @@ export default defineComponent({
                     })
                     .then((response) => {
                       const balance = response.data.data
-                      url = "http://127.0.0.1:5006/deduct";
-                          axios
-                            .post(url, {
-                              transType: "Plan",
-                              amount: subsAmt,
-                              userID: userData.userID,
-                            })
-                            .then((response) => {
-                              sucessMsg(subsAmt, balance);
-                            });
+                      const url = "http://13.55.33.68:5006/deduct"
+                      axios.post(url,{
+                        transType: "Plan",
+                        amount: subsAmt,
+                        userID: userData.userID
+                      })
+                      .then((response)=>{
+                        sucessMsg(subsAmt,balance);
+                      })
                       
                     })
                     .catch((error) => {
@@ -253,7 +252,7 @@ export default defineComponent({
   },
   methods: {
     getCarparksMonthlySubs() {
-      const url = "http://127.0.0.1:5003/chosenCarparks";
+      const url = "http://13.55.33.68:5003/chosenCarparks";
       axios
         .get(url)
         .then((response) => {
@@ -278,7 +277,7 @@ export default defineComponent({
         this.getCarparksMonthlySubs();
       }
       const url =
-        "http://127.0.0.1:5005/subs/" +
+        "http://13.55.33.68:5005/subs/" +
         parseInt(this.userData.userID) +
         "&" +
         planType;
@@ -298,7 +297,7 @@ export default defineComponent({
     },
     checkIfSufficientBalance(amountToCheck) {
       const url =
-        "http://127.0.0.1:5002/getBalance/" + parseInt(this.userData.userID);
+        "http://13.55.33.68:5002/getBalance/" + parseInt(this.userData.userID);
       axios
         .get(url)
         .then((response) => {
@@ -318,14 +317,14 @@ export default defineComponent({
     },
     getCommonBookings() {
       const url =
-        "http://127.0.0.1:5001/commonCarparks/" +
+        "http://13.55.33.68:5001/commonCarparks/" +
         parseInt(this.userData.userID);
       axios
         .get(url)
         .then((response) => {
           this.commonThreeCarpark = response.data.data.carparks;
           const url2 =
-            "http://127.0.0.1:5001/commonBookingsAll/" +
+            "http://13.55.33.68:5001/commonBookingsAll/" +
             parseInt(this.userData.userID);
           axios
             .post(url2, { discount: 0.1 })

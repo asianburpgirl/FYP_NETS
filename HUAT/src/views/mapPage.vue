@@ -208,7 +208,7 @@ export default defineComponent({
                 endTime.getMinutes() +
                 ":00";
 
-              let url = "http://127.0.0.1:5001/bookings";
+              let url = "http://13.55.33.68:5001/bookings";
               axios
                 .post(url, {
                   bookingDateTime: currentTime,
@@ -222,7 +222,7 @@ export default defineComponent({
                 })
                 .then((response) => {
                   url =
-                    "http://127.0.0.1:5001/updateBalance/" +
+                    "http://13.55.33.68:5001/updateBalance/" +
                     response.data.data.bookingID;
                   let bookingAmount = response.data.data.bookingAmt;
                   bookingAmount = bookingAmount.toString();
@@ -251,7 +251,7 @@ export default defineComponent({
                       axios
                         .get(url)
                         .then((response) => {
-                          url = "http://127.0.0.1:5006/deduct";
+                          url = "http://13.55.33.68:5006/deduct";
                           axios
                             .post(url, {
                                 transType: "Booking",
@@ -368,7 +368,7 @@ export default defineComponent({
       const userData = JSON.parse(localStorage.getItem("userData"));
 
       const url =
-        "http://127.0.0.1:5002/getBalance/" + parseInt(userData.userID);
+        "http://13.55.33.68:5002/getBalance/" + parseInt(userData.userID);
       axios
         .get(url)
         .then((response) => {
@@ -378,6 +378,7 @@ export default defineComponent({
           console.log(error);
         });
     },
+    //127.0.0.1
     formatMoney(myFloat) {
       // money in DB store in 1 dp (eg. 12.1), to change to 2 dp (12.10)
       myFloat = parseFloat(myFloat);
@@ -453,6 +454,7 @@ export default defineComponent({
         startTime = new Date(dateFormmated +" " +startTime.toString().slice(15,25))
         endTime = new Date(dateFormmated +" " +endTime.toString().slice(15,25))
 
+        console.log(startTime, endTime, dateFormmated, rates)
       // use startTime, EndTime,date, calculate price based on weekend/weekday + peak/nonpeak
       // Tue Mar 28 2023 07:54:00 GMT+0800 (Singapore Standard Time) | Tue Mar 28 2023 15:54:00 GMT+0800 (Singapore Standard Time)| '2023-03-28' | object of rates
       let fee = 0;
@@ -610,7 +612,7 @@ export default defineComponent({
           rates
         )
       );
-
+      console.log(this.userBalance,totalPrice)
       if (this.chosenCarpark.availableLots == 0) {
         this.errorMessage.push("This carpark does not have anymore slots!");
       }
@@ -641,20 +643,7 @@ export default defineComponent({
         );
       }
     },
-    // deductFromUser(bookingID) {
-    //     // updateBalance
-    //     const url = "http://127.0.0.1:5001/updateBalance/" + bookingID;
-    //     axios
-    //         .put(url, {
-    //             bookingID: bookingID,
-    //         })
-    //         .then((response) => {
-    //             // console.log(response)
-    //         })
-    //         .catch((error) => {
-    //             console.log(error.message);
-    //         });
-    // },
+
 
     async createMap() {
       const mapRef = document.getElementById("map");

@@ -448,7 +448,7 @@ export default defineComponent({
                 bookingAmt = carpark.data.totalFee;
               }
 
-              let url = "http://127.0.0.1:5001/bookings";
+              let url = "http://13.55.33.68:5001/bookings";
               axios
                 .post(url, {
                   bookingDateTime: currentDateTimeFormatted,
@@ -463,7 +463,7 @@ export default defineComponent({
                 .then((response) => {
                   // deduct money
                   url =
-                    "http://127.0.0.1:5001/updateBalance/" +
+                    "http://13.55.33.68:5001/updateBalance/" +
                     response.data.data.bookingID;
                   let bookingAmount = response.data.data.bookingAmt;
                   bookingAmount = bookingAmount.toString();
@@ -492,7 +492,7 @@ export default defineComponent({
                       axios
                         .get(url)
                         .then((response) => {
-                          url = "http://127.0.0.1:5006/deduct";
+                          url = "http://13.55.33.68:5006/deduct";
                           axios
                             .post(url, {
                                 transType: "Booking",
@@ -591,7 +591,7 @@ export default defineComponent({
                 bookingAmt = carpark.data.totalFeeDiscounted;
               }
 
-              let url = "http://127.0.0.1:5001/bookings";
+              let url = "http://13.55.33.68:5001/bookings";
               axios
                 .post(url, {
                   bookingDateTime: currentDateTimeFormatted,
@@ -606,7 +606,7 @@ export default defineComponent({
                 .then((response) => {
                   // deduct money
                   url =
-                    "http://127.0.0.1:5001/updateBalance/" +
+                    "http://13.55.33.68:5001/updateBalance/" +
                     response.data.data.bookingID;
                   let bookingAmount = response.data.data.bookingAmt;
                   bookingAmount = bookingAmount.toString();
@@ -716,7 +716,7 @@ export default defineComponent({
 
               const userID = userData.userID;
 
-              let url = "http://127.0.0.1:5001/bookings";
+              let url = "http://13.55.33.68:5001/bookings";
               axios
                 .post(url, {
                   bookingDateTime: currentDateTimeFormatted,
@@ -731,7 +731,7 @@ export default defineComponent({
                 .then((response) => {
                   // deduct money
                   url =
-                    "http://127.0.0.1:5001/updateBalance/" +
+                    "http://13.55.33.68:5001/updateBalance/" +
                     response.data.data.bookingID;
                   let bookingAmount = response.data.data.bookingAmt;
                   bookingAmount = bookingAmount.toString();
@@ -825,7 +825,7 @@ export default defineComponent({
   },
   methods: {
     getCarparksMonthlySubs() {
-      const url = "http://127.0.0.1:5003/chosenCarparks";
+      const url = "http://13.55.33.68:5003/chosenCarparks";
       axios
         .get(url)
         .then((response) => {
@@ -840,7 +840,7 @@ export default defineComponent({
     },
     getUserCommonCarparks() {
       const url =
-        "http://127.0.0.1:5001/commonCarparks/" +
+        "http://13.55.33.68:5001/commonCarparks/" +
         parseInt(this.userData.userID);
       axios
         .get(url)
@@ -881,7 +881,7 @@ export default defineComponent({
       this.userData = JSON.parse(localStorage.getItem("userData"));
 
       const url =
-        "http://127.0.0.1:5002/getBalance/" + parseInt(this.userData.userID);
+        "http://13.55.33.68:5002/getBalance/" + parseInt(this.userData.userID);
       axios
         .get(url)
         .then((response) => {
@@ -945,7 +945,7 @@ export default defineComponent({
     },
     checkUserHasPlan() {
       let url =
-        "http://127.0.0.1:5005/subs/" +
+        "http://13.55.33.68:5005/subs/" +
         parseInt(this.userData.userID) +
         "&" +
         1;
@@ -958,7 +958,7 @@ export default defineComponent({
           console.log(error);
         });
       url =
-        "http://127.0.0.1:5005/subs/" +
+        "http://13.55.33.68:5005/subs/" +
         parseInt(this.userData.userID) +
         "&" +
         2;
@@ -1386,7 +1386,7 @@ export default defineComponent({
                                       this.userOrigin =
                                         "1.3064433533620563,103.83276247871694";
                                       const url =
-                                        "http://127.0.0.1:5009/getCoords";
+                                        "http://13.55.33.68:5009/getCoords";
                                       axios
                                         .post(url, {
                                           origin: this.userOrigin,

@@ -299,14 +299,14 @@ export default defineComponent({
 
               // update booking status to "cancel"
               refund(amount)
-              let url = "http://127.0.0.1:5001/bookings/" + bookingID;
+              let url = "http://13.55.33.68:5001/bookings/" + bookingID;
               axios
                 .put(url, {
                   status: "Cancelled",
                 })
                 .then((response) => {
                   //refund money
-                  url = "http://127.0.0.1:5001/updateBalance/" + bookingID;
+                  url = "http://13.55.33.68:5001/updateBalance/" + bookingID;
                   axios
                     .put(url, {
                       bookingID: bookingID,
@@ -315,7 +315,7 @@ export default defineComponent({
                     .then((response) => {
                       // update lot to plus one
                       const balance = response.data.data.toString();
-                      url = "http://127.0.0.1:5003/carparks"
+                      url = "http://13.55.33.68:5003/carparks"
                       axios
                         .get(url)
                         .then((response) => {
@@ -323,7 +323,7 @@ export default defineComponent({
                           const carparks = response.data.data.carparks
                           for (const eachCarpark of carparks){
                             if (eachCarpark.carparkName == bookingLocation){
-                                url = "http://127.0.0.1:5004/lotAdj/" + eachCarpark.carparkID+ "/2/-1" 
+                                url = "http://13.55.33.68:5004/lotAdj/" + eachCarpark.carparkID+ "/2/-1" 
                                 axios
                                   .get(url)
                                   .then((response) => {
@@ -386,7 +386,7 @@ export default defineComponent({
     const refund = async (amount) => {
       
       const userData = JSON.parse(localStorage.getItem("userData"));
-      const url = "http://127.0.0.1:5006/deduct"
+      const url = "http://13.55.33.68:5006/deduct"
         axios
           .post(url, {
             "amount": amount,
@@ -449,7 +449,7 @@ export default defineComponent({
     // getBalance() {
     //   this.userData = JSON.parse(localStorage.getItem("userData"));
 
-    //   const url = "http://127.0.0.1:5002/getBalance/" + this.userData.userID;
+    //   const url = "http://13.55.33.68:5002/getBalance/" + this.userData.userID;
     //   axios
     //     .get(url)
     //     .then((response) => {
@@ -521,7 +521,7 @@ export default defineComponent({
       const newEndDateTime = newStartDateFormatted + " " + newEndTimeFormatted;
 
       const url =
-        "http://127.0.0.1:5001/bookings/" + this.bookingInfo.bookingID;
+        "http://13.55.33.68:5001/bookings/" + this.bookingInfo.bookingID;
       axios
         .put(url, {
           bookingDateTime: currentDateTimeFormatted,
@@ -540,7 +540,7 @@ export default defineComponent({
       this.editBookingOpen = isOpen;
     },
     deleteBooking(bookingID) {
-      const url = "http://127.0.0.1:5001/bookings/" + bookingID;
+      const url = "http://13.55.33.68:5001/bookings/" + bookingID;
       axios
         .delete(url)
         .then((response) => {
@@ -552,7 +552,7 @@ export default defineComponent({
     },
     // cancelRefund(amount) {
     //   this.userData = JSON.parse(localStorage.getItem("userData"));
-    //   const url = "http://127.0.0.1:5006/deduct"
+    //   const url = "http://13.55.33.68:5006/deduct"
     //     axios
     //       .post(url, {
     //         "amount": amount,
@@ -565,7 +565,7 @@ export default defineComponent({
 
     getUserBooking() {
       this.userData = JSON.parse(localStorage.getItem("userData"));
-      const url = "http://127.0.0.1:5001/bookings/" + this.userData.userID;
+      const url = "http://13.55.33.68:5001/bookings/" + this.userData.userID;
       axios
         .get(url)
         .then((response) => {
@@ -585,7 +585,7 @@ export default defineComponent({
 
             let imagePath = "";
 
-            const url = "http://127.0.0.1:5003/carparkImage";
+            const url = "http://13.55.33.68:5003/carparkImage";
             axios
               .post(url, {
                 carparkName: eachBooking.bookingLocation,

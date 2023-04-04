@@ -36,7 +36,7 @@ export default defineComponent({
   },
   methods: {
     getUsers() {
-      const url = "http://127.0.0.1:5001/bookings";
+      const url = "http://13.55.33.68:5001/bookings";
       axios
         .get(url)
         .then((response) => {

@@ -375,7 +375,7 @@ export default defineComponent({
                 this.userData = JSON.parse(localStorage.getItem("userData"));
                 const userID = this.userData.userID;
 
-                const url = "http://127.0.0.1:5001/bookings";
+                const url = "http://13.55.33.68:5001/bookings";
 
                 axios
                     .post(url, {
@@ -401,7 +401,7 @@ export default defineComponent({
         },
         deductFromUser(bookingID) {
             // updateBalance
-            const url = "http://127.0.0.1:5001/updateBalance/" + bookingID;
+            const url = "http://13.55.33.68:5001/updateBalance/" + bookingID;
             axios
                 .put(url, {
                     bookingID: bookingID,
@@ -431,7 +431,7 @@ export default defineComponent({
             });
 
             //add markers
-            const url = "http://127.0.0.1:5003/carparks";
+            const url = "http://13.55.33.68:5003/carparks";
             axios
                 .get(url)
                 .then((response) => {
@@ -668,7 +668,7 @@ export default defineComponent({
                                                                                 console.log(this.userOrigin, "HEREEEE")
                                                                                 // this.userOrigin = "1.3064433533620563,103.83276247871694"
                                                                                 // console.log("HERE2")
-                                                                                const url = "http://127.0.0.1:5009/getCoords";
+                                                                                const url = "http://13.55.33.68:5009/getCoords";
                                                                                 axios
                                                                                     .post(url, {
                                                                                         "origin": this.userOrigin

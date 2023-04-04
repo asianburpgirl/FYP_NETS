@@ -268,7 +268,7 @@ export default defineComponent({
       }
     },
     registerUser() {
-      const url = "http://127.0.0.1:5002/users"; // hardcoded
+      const url = "http://13.55.33.68:5002/users"; // hardcoded
       axios
         .post(url, {
           email: this.email,

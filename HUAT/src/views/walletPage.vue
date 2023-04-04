@@ -32,7 +32,7 @@
                 <ion-label>{{ eachTrans.transDateClean }}</ion-label>
                 
                 <ion-label v-if="eachTrans.type == 'Topup'" :color="eachTrans.colortopup"> ${{ eachTrans.amount }}</ion-label>
-                <ion-label v-if="eachTrans.type == 'Booking' || eachTrans.type == 'Subscription'" :color="eachTrans.colordeduct" >- ${{ eachTrans.amount }}</ion-label>
+                <ion-label v-if="eachTrans.type == 'Booking' || eachTrans.type == 'Plan'" :color="eachTrans.colordeduct" >- ${{ eachTrans.amount }}</ion-label>
                 <ion-label> {{eachTrans.type}}</ion-label>
                 
             </ion-item>
@@ -106,7 +106,7 @@ export default defineComponent({
         },
         getUserBooking() {
             this.userData = JSON.parse(localStorage.getItem("userData"));
-            const url = "http://127.0.0.1:5001/bookings/" + this.userData.userID;
+            const url = "http://13.55.33.68:5001/bookings/" + this.userData.userID;
             axios
                 .get(url)
                 .then((response) => {
@@ -129,7 +129,7 @@ export default defineComponent({
             this.userData = JSON.parse(localStorage.getItem("userData"));
         },
         getBalance() {
-            const url = "http://localhost:5002/getBalance/" + this.userData.userID;
+            const url = "http://13.55.33.68:5002/getBalance/" + this.userData.userID;
             axios
                 .get(url)
                 .then((response) => {
@@ -147,7 +147,7 @@ export default defineComponent({
         },
         getTrans() {
             this.userData = JSON.parse(localStorage.getItem("userData"));
-            const url = "http://localhost:5006/transaction/" + this.userData.userID;
+            const url = "http://13.55.33.68:5006/transaction/" + this.userData.userID;
             axios
                 .get(url)
                 .then((response) => {

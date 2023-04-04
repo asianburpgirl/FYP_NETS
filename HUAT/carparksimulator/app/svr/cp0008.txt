@@ -1,0 +1,1 @@
+{"carparkid":8,"carparkaddress":"435 Orchard Rd","carparkpostalcode":"238877","carparklocation":"Wisma Atria","carparkoperatorid":0,"carparkoperatordescription":"","lotallocatecomplimentary":50,"lotusecomplimentary":0,"lotbalancecomplimentary":50,"lotallocatehourly":5000,"lotusehourly":0,"lotbalancehourly":5000,"lotallocateseason":150,"lotuseseason":0,"lotbalanceseason":150}

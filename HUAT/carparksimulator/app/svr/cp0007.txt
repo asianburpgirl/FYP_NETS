@@ -1,0 +1,2 @@
+{"carparkid":7,"carparkaddress":"2 Orchard Link","carparkpostalcode":"237978","carparklocation":"*SCAPE","carparkoperatorid":0,"carparkoperatordescription":"","lotallocatecomplimentary":50,"lotusecomplimentary":0,"lotbalancecomplimentary":50,"lotallocatehourly":600,"lotusehourly":0,"lotbalancehourly":600,"lotallocateseason":0,"lotuseseason":0,"lotbalanceseason":0}
+

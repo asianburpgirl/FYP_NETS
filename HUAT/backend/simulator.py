@@ -17,8 +17,8 @@ import os
 import ssl
 
 app = Flask(__name__)
-# app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL') or 'mysql+mysqlconnector://root@localhost:3306/localconnect'
-app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL') or 'mysql+mysqlconnector://root:root@localhost:8889/localconnect'
+app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL') or 'mysql+mysqlconnector://root@localhost:3306/localconnect'
+# app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL') or 'mysql+mysqlconnector://root:root@localhost:8889/localconnect'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {'pool_recycle': 299}
 
@@ -39,7 +39,7 @@ def getCarparkDetails(carparkid):
     r = requests.post('https://127.0.0.1:9000', json.dumps(payload), headers=headers, verify=False)
     print("hi")
     print (r.json())
-    # p = Popen(['java', '-jar', 'HUAT/backend/smuxserver.jar','127.0.0.1','8989'],stdout=subprocess.PIPE, stderr=STDOUT)
+    # p = Popen(['java', '-jar', 'HUAT/backend/smuxserver.jar','ec2-3-26-37-251.ap-southeast-2.compute.amazonaws.com ','8989'],stdout=subprocess.PIPE, stderr=STDOUT)
     # for line in p.stdout.read():
     #     print(line)
     return jsonify (
@@ -67,7 +67,7 @@ def lotAdj(carparkid,parkingtype,lotadjustment):
     headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
     r = requests.post('https://127.0.0.1:9000', json.dumps(payload), headers=headers, verify=False)
     print (r.json())
-    # p = Popen(['java', '-jar', 'HUAT/backend/smuxserver.jar','127.0.0.1','8989'],stdout=subprocess.PIPE, stderr=STDOUT)
+    # p = Popen(['java', '-jar', 'HUAT/backend/smuxserver.jar','ec2-3-26-37-251.ap-southeast-2.compute.amazonaws.com ','8989'],stdout=subprocess.PIPE, stderr=STDOUT)
     # for line in p.stdout.read():
     #     print(line)
     return jsonify (
@@ -90,7 +90,7 @@ def getCarparkPrice(carparkid):
     headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
     r = requests.post('https://127.0.0.1:9000', json.dumps(payload), headers=headers, verify=False)
     print (r.json())
-    # p = Popen(['java', '-jar', 'HUAT/backend/smuxserver.jar','127.0.0.1','8989'],stdout=subprocess.PIPE, stderr=STDOUT)
+    # p = Popen(['java', '-jar', 'HUAT/backend/smuxserver.jar','ec2-3-26-37-251.ap-southeast-2.compute.amazonaws.com ','8989'],stdout=subprocess.PIPE, stderr=STDOUT)
     # for line in p.stdout.read():
     #     print(line)
     return jsonify (

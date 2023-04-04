@@ -114,7 +114,7 @@ export default defineComponent({
         const emailAccountOnly = this.email.split("@")[1];
 
         const url =
-          "http://127.0.0.1:5002/checkUserExist?email=" +
+          "http://13.55.33.68:5002/checkUserExist?email=" +
           emailNameOnly +
           "&account=" +
           emailAccountOnly;

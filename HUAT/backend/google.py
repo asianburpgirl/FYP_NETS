@@ -11,7 +11,8 @@ api_key = "AIzaSyAJXGx7T2ypt5Ew5-9SbDTWF9gqloQUJwI"
 url ='https://maps.googleapis.com/maps/api/distancematrix/json?'
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL') or 'mysql+mysqlconnector://root:root@localhost:8889/localconnect'
+# app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL') or 'mysql+mysqlconnector://root:root@localhost:8889/localconnect'
+app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL') or 'mysql+mysqlconnector://root@localhost:3306/localconnect'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {'pool_recycle': 299}
 
@@ -102,7 +103,7 @@ def get_all():
         }
     ), 404
 
-# http://127.0.0.1:5009/getCoords
+# http://13.55.33.68:5009/getCoords
 @app.route('/getCoords',  methods = ['POST'])
 def getLatLong():
     latitude = ''

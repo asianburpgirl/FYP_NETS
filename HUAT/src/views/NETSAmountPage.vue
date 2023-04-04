@@ -85,7 +85,7 @@ export default defineComponent({
     },
     routeTen() {
       const url =
-        "http://localhost:5002/addTen/" +
+        "http://13.55.33.68:5002/addTen/" +
         parseInt(this.userData.userID) +
         "/" +
         parseInt(this.userData.balance);
@@ -107,7 +107,7 @@ export default defineComponent({
     },
     routeTwenty() {
       const url =
-        "http://localhost:5002/addTwenty/" +
+        "http://13.55.33.68:5002/addTwenty/" +
         parseInt(this.userData.userID) +
         "/" +
         parseInt(this.userData.balance);
@@ -129,7 +129,7 @@ export default defineComponent({
     },
     routeThirty() {
       const url =
-        "http://localhost:5002/addThirty/" +
+        "http://13.55.33.68:5002/addThirty/" +
         parseInt(this.userData.userID) +
         "/" +
         parseInt(this.userData.balance);
@@ -150,7 +150,7 @@ export default defineComponent({
         });
     },
     addTopup(amount) {
-      const url = "http://127.0.0.1:5006/topup";
+      const url = "http://13.55.33.68:5006/topup";
       axios
         .post(url, {
           amount: amount,
