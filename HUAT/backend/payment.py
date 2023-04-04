@@ -24,7 +24,7 @@ def get_publishable_key():
     stripe_config = {'publicKey': stripe_keys['publishable_key']}
     return jsonify(stripe_config)
 
-YOUR_DOMAIN = 'http://ec2-13-239-5-115.ap-southeast-2.compute.amazonaws.com:8100/tabs/wallet'
+YOUR_DOMAIN = 'http://ec2-3-26-37-251.ap-southeast-2.compute.amazonaws.com :8100/tabs/wallet'
 
 @app.route('/create-checkout-session', methods=['POST'])
 def create_checkout_session():

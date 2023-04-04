@@ -36,10 +36,10 @@ def getCarparkDetails(carparkid):
     "carparkid": carparkid
     }
     headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
-    r = requests.post('https://ec2-13-239-5-115.ap-southeast-2.compute.amazonaws.com:9000', json.dumps(payload), headers=headers, verify=False)
+    r = requests.post('https://ec2-3-26-37-251.ap-southeast-2.compute.amazonaws.com :9000', json.dumps(payload), headers=headers, verify=False)
     print("hi")
     print (r.json())
-    # p = Popen(['java', '-jar', 'HUAT/backend/smuxserver.jar','ec2-13-239-5-115.ap-southeast-2.compute.amazonaws.com','8989'],stdout=subprocess.PIPE, stderr=STDOUT)
+    # p = Popen(['java', '-jar', 'HUAT/backend/smuxserver.jar','ec2-3-26-37-251.ap-southeast-2.compute.amazonaws.com ','8989'],stdout=subprocess.PIPE, stderr=STDOUT)
     # for line in p.stdout.read():
     #     print(line)
     return jsonify (
@@ -65,9 +65,9 @@ def lotAdj(carparkid,parkingtype,lotadjustment):
     "lotadjustment": lotadjustment
     }
     headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
-    r = requests.post('https://ec2-13-239-5-115.ap-southeast-2.compute.amazonaws.com:9000', json.dumps(payload), headers=headers, verify=False)
+    r = requests.post('https://ec2-3-26-37-251.ap-southeast-2.compute.amazonaws.com :9000', json.dumps(payload), headers=headers, verify=False)
     print (r.json())
-    # p = Popen(['java', '-jar', 'HUAT/backend/smuxserver.jar','ec2-13-239-5-115.ap-southeast-2.compute.amazonaws.com','8989'],stdout=subprocess.PIPE, stderr=STDOUT)
+    # p = Popen(['java', '-jar', 'HUAT/backend/smuxserver.jar','ec2-3-26-37-251.ap-southeast-2.compute.amazonaws.com ','8989'],stdout=subprocess.PIPE, stderr=STDOUT)
     # for line in p.stdout.read():
     #     print(line)
     return jsonify (
@@ -88,9 +88,9 @@ def getCarparkPrice(carparkid):
     "carparkid": carparkid
     }
     headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
-    r = requests.post('https://ec2-13-239-5-115.ap-southeast-2.compute.amazonaws.com:9000', json.dumps(payload), headers=headers, verify=False)
+    r = requests.post('https://ec2-3-26-37-251.ap-southeast-2.compute.amazonaws.com :9000', json.dumps(payload), headers=headers, verify=False)
     print (r.json())
-    # p = Popen(['java', '-jar', 'HUAT/backend/smuxserver.jar','ec2-13-239-5-115.ap-southeast-2.compute.amazonaws.com','8989'],stdout=subprocess.PIPE, stderr=STDOUT)
+    # p = Popen(['java', '-jar', 'HUAT/backend/smuxserver.jar','ec2-3-26-37-251.ap-southeast-2.compute.amazonaws.com ','8989'],stdout=subprocess.PIPE, stderr=STDOUT)
     # for line in p.stdout.read():
     #     print(line)
     return jsonify (

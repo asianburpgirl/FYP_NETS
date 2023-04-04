@@ -133,7 +133,7 @@ export default defineComponent({
       const locations = [];
       const count = {};
       let pieData = [];
-      const url = "http://ec2-13-239-5-115.ap-southeast-2.compute.amazonaws.com:5001/bookings";
+      const url = "http://ec2-3-26-37-251.ap-southeast-2.compute.amazonaws.com :5001/bookings";
       
       axios
         .get(url)
@@ -174,7 +174,7 @@ export default defineComponent({
     getColumnChart() {
       const plans = {'1': 0, '2': 0}
       let columnData = [];
-      const url = "http://ec2-13-239-5-115.ap-southeast-2.compute.amazonaws.com:5005/subs";
+      const url = "http://ec2-3-26-37-251.ap-southeast-2.compute.amazonaws.com :5005/subs";
 
       axios
         .get(url)
@@ -207,7 +207,7 @@ export default defineComponent({
       const timeAxis = { '1': 0, '2': 0, '3': 0, '4': 0, '5': 0, '6': 0, '7': 0, '8': 0, '9': 0, '10': 0, '11': 0, '12': 0,
       '13': 0, '14': 0, '15': 0, '16': 0, '17': 0, '18': 0, '19': 0, '20': 0, '21': 0, '22': 0, '23': 0, '24': 0};
       let LineData = [];
-      const url = "http://ec2-13-239-5-115.ap-southeast-2.compute.amazonaws.com:5001/bookings";
+      const url = "http://ec2-3-26-37-251.ap-southeast-2.compute.amazonaws.com :5001/bookings";
 
       axios
         .get(url)
@@ -234,7 +234,7 @@ export default defineComponent({
     getBarChart() {
       const months = {'Jan': 0, 'Feb': 0, 'Mar': 0, 'Apr': 0, 'May': 0, 'Jun': 0, 'Jul': 0, 'Aug': 0, 'Sep': 0, 'Nov': 0, 'Oct': 0, 'Dec': 0}
       let BarData = [];
-      const url = "http://ec2-13-239-5-115.ap-southeast-2.compute.amazonaws.com:5006/transaction";
+      const url = "http://ec2-3-26-37-251.ap-southeast-2.compute.amazonaws.com :5006/transaction";
 
       axios
         .get(url)
@@ -262,7 +262,7 @@ export default defineComponent({
       const locations = [];
       const count = {};
       let GeoData = [];
-      const url = "http://ec2-13-239-5-115.ap-southeast-2.compute.amazonaws.com:5001/bookings";
+      const url = "http://ec2-3-26-37-251.ap-southeast-2.compute.amazonaws.com :5001/bookings";
       
       axios
         .get(url)
@@ -307,7 +307,7 @@ export default defineComponent({
     },
     async getRevenueData() {
       try {
-        const response = await axios.get('http://ec2-13-239-5-115.ap-southeast-2.compute.amazonaws.com:5001/forecastbooking');
+        const response = await axios.get('http://ec2-3-26-37-251.ap-southeast-2.compute.amazonaws.com :5001/forecastbooking');
         const revenueData = response.data;
         // console.log(revenueData)
 
@@ -385,7 +385,7 @@ export default defineComponent({
     // getSimulator() {
     //   this.carparksArraySimu = [];
 
-    //   let url = "http://ec2-13-239-5-115.ap-southeast-2.compute.amazonaws.com:5004/getCarpark/1";
+    //   let url = "http://ec2-3-26-37-251.ap-southeast-2.compute.amazonaws.com :5004/getCarpark/1";
     //   axios
     //     .post(url, {
     //       requesttype: 1000,
@@ -400,7 +400,7 @@ export default defineComponent({
     //           response.data.data.lotusehourly,
     //       });
 
-    //       url = "http://ec2-13-239-5-115.ap-southeast-2.compute.amazonaws.com:5004/getCarpark/2";
+    //       url = "http://ec2-3-26-37-251.ap-southeast-2.compute.amazonaws.com :5004/getCarpark/2";
     //       axios
     //         .post(url, {
     //           requesttype: 1000,
@@ -414,7 +414,7 @@ export default defineComponent({
     //               response.data.data.lotbalancehourly -
     //               response.data.data.lotusehourly,
     //           });
-    //           url = "http://ec2-13-239-5-115.ap-southeast-2.compute.amazonaws.com:5004/getCarpark/3";
+    //           url = "http://ec2-3-26-37-251.ap-southeast-2.compute.amazonaws.com :5004/getCarpark/3";
     //           axios
     //             .post(url, {
     //               requesttype: 1000,
@@ -428,7 +428,7 @@ export default defineComponent({
     //                   response.data.data.lotbalancehourly -
     //                   response.data.data.lotusehourly,
     //               });
-    //               url = "http://ec2-13-239-5-115.ap-southeast-2.compute.amazonaws.com:5004/getCarpark/4";
+    //               url = "http://ec2-3-26-37-251.ap-southeast-2.compute.amazonaws.com :5004/getCarpark/4";
     //               axios
     //                 .post(url, {
     //                   requesttype: 1000,
@@ -442,7 +442,7 @@ export default defineComponent({
     //                       response.data.data.lotbalancehourly -
     //                       response.data.data.lotusehourly,
     //                   });
-    //                   url = "http://ec2-13-239-5-115.ap-southeast-2.compute.amazonaws.com:5004/getCarpark/5";
+    //                   url = "http://ec2-3-26-37-251.ap-southeast-2.compute.amazonaws.com :5004/getCarpark/5";
     //                   axios
     //                     .post(url, {
     //                       requesttype: 1000,
@@ -456,7 +456,7 @@ export default defineComponent({
     //                           response.data.data.lotbalancehourly -
     //                           response.data.data.lotusehourly,
     //                       });
-    //                       url = "http://ec2-13-239-5-115.ap-southeast-2.compute.amazonaws.com:5004/getCarpark/6";
+    //                       url = "http://ec2-3-26-37-251.ap-southeast-2.compute.amazonaws.com :5004/getCarpark/6";
     //                       axios
     //                         .post(url, {
     //                           requesttype: 1000,
@@ -471,7 +471,7 @@ export default defineComponent({
     //                               response.data.data.lotusehourly,
     //                           });
 
-    //                           url = "http://ec2-13-239-5-115.ap-southeast-2.compute.amazonaws.com:5004/getCarpark/7";
+    //                           url = "http://ec2-3-26-37-251.ap-southeast-2.compute.amazonaws.com :5004/getCarpark/7";
     //                           axios
     //                             .post(url, {
     //                               requesttype: 1000,
@@ -485,7 +485,7 @@ export default defineComponent({
     //                                   response.data.data.lotbalancehourly -
     //                                   response.data.data.lotusehourly,
     //                               });
-    //                               url = "http://ec2-13-239-5-115.ap-southeast-2.compute.amazonaws.com:5004/getCarpark/8";
+    //                               url = "http://ec2-3-26-37-251.ap-southeast-2.compute.amazonaws.com :5004/getCarpark/8";
     //                               axios
     //                                 .post(url, {
     //                                   requesttype: 1000,
