@@ -187,7 +187,17 @@ export default defineComponent({
                       subsID: response.data.data.subsID,
                     })
                     .then((response) => {
-                      sucessMsg(subsAmt, response.data.data);
+                      const balance = response.data.data
+                      url = "http://13.55.33.68:5006/deduct"
+                      axios.post(url,{
+                        transType: "Plan",
+                        amount: subsAmt,
+                        userID: userData.userID
+                      })
+                      .then((response)=>{
+                        sucessMsg(subsAmt,balance);
+                      })
+                      
                     })
                     .catch((error) => {
                       console.log(error.message);

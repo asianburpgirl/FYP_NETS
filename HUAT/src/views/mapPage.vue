@@ -254,8 +254,9 @@ export default defineComponent({
                           url = "http://13.55.33.68:5006/deduct";
                           axios
                             .post(url, {
-                              amount: bookingAmount,
-                              userID: userID,
+                                transType: "Booking",
+                                amount: bookingAmount,
+                                userID: userID,
                             })
                             .then((response) => {
                               sucessMsg(bookingAmount, balance);
