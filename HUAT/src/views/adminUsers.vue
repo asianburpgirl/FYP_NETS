@@ -36,7 +36,7 @@ export default defineComponent({
   },
   methods: {
     getUsers() {
-      const url = "http://ec2-3-26-37-251.ap-southeast-2.compute.amazonaws.com :5002/users";
+      const url = "http://13.55.33.68:5002/users";
       axios
         .get(url)
         .then((response) => {

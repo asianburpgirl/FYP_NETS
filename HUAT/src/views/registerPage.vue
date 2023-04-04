@@ -268,7 +268,7 @@ export default defineComponent({
       }
     },
     registerUser() {
-      const url = "http://ec2-3-26-37-251.ap-southeast-2.compute.amazonaws.com :5002/users"; // hardcoded
+      const url = "http://13.55.33.68:5002/users"; // hardcoded
       axios
         .post(url, {
           email: this.email,
