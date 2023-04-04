@@ -208,7 +208,7 @@ export default defineComponent({
                 endTime.getMinutes() +
                 ":00";
 
-              let url = "http://13.55.33.68:5001/bookings";
+              let url = "http://127.0.0.1:5001/bookings";
               axios
                 .post(url, {
                   bookingDateTime: currentTime,
@@ -222,7 +222,7 @@ export default defineComponent({
                 })
                 .then((response) => {
                   url =
-                    "http://13.55.33.68:5001/updateBalance/" +
+                    "http://127.0.0.1:5001/updateBalance/" +
                     response.data.data.bookingID;
                   let bookingAmount = response.data.data.bookingAmt;
                   bookingAmount = bookingAmount.toString();
@@ -247,11 +247,11 @@ export default defineComponent({
                       const balance = response.data.data;
                       const carparkID = carpark.data.carparkid;
                       url =
-                        "http://13.55.33.68:5004/lotAdj/" + carparkID + "/2/1";
+                        "http://127.0.0.1:5004/lotAdj/" + carparkID + "/2/1";
                       axios
                         .get(url)
                         .then((response) => {
-                          url = "http://13.55.33.68:5006/deduct";
+                          url = "http://127.0.0.1:5006/deduct";
                           axios
                             .post(url, {
                               amount: bookingAmount,
@@ -377,6 +377,7 @@ export default defineComponent({
           console.log(error);
         });
     },
+    //127.0.0.1
     formatMoney(myFloat) {
       // money in DB store in 1 dp (eg. 12.1), to change to 2 dp (12.10)
       myFloat = parseFloat(myFloat);
@@ -448,11 +449,14 @@ export default defineComponent({
       this.subscriptionIsOpen = isOpen;
     },
     calculateTotalPrice(startTime, endTime, dateFormmated, rates) {
-        
-        startTime = new Date(dateFormmated +" " +startTime.toString().slice(15,25))
-        endTime = new Date(dateFormmated +" " +endTime.toString().slice(15,25))
+      startTime = new Date(
+        dateFormmated + " " + startTime.toString().slice(15, 25)
+      );
+      endTime = new Date(
+        dateFormmated + " " + endTime.toString().slice(15, 25)
+      );
 
-        console.log(startTime, endTime, dateFormmated, rates)
+      console.log(startTime, endTime, dateFormmated, rates);
       // use startTime, EndTime,date, calculate price based on weekend/weekday + peak/nonpeak
       // Tue Mar 28 2023 07:54:00 GMT+0800 (Singapore Standard Time) | Tue Mar 28 2023 15:54:00 GMT+0800 (Singapore Standard Time)| '2023-03-28' | object of rates
       let fee = 0;
@@ -610,7 +614,7 @@ export default defineComponent({
           rates
         )
       );
-      console.log(this.userBalance,totalPrice)
+      console.log(this.userBalance, totalPrice);
       if (this.chosenCarpark.availableLots == 0) {
         this.errorMessage.push("This carpark does not have anymore slots!");
       }
@@ -644,7 +648,7 @@ export default defineComponent({
     },
     // deductFromUser(bookingID) {
     //     // updateBalance
-    //     const url = "http://13.55.33.68:5001/updateBalance/" + bookingID;
+    //     const url = "http://127.0.0.1:5001/updateBalance/" + bookingID;
     //     axios
     //         .put(url, {
     //             bookingID: bookingID,
@@ -674,7 +678,7 @@ export default defineComponent({
       });
 
       //add markers
-      let url = "http://13.55.33.68:5004/getCarpark/1";
+      let url = "http://127.0.0.1:5004/getCarpark/1";
       axios
         .post(url, {
           requesttype: 1000,
@@ -688,7 +692,7 @@ export default defineComponent({
             lat: 1.3040258884,
             long: 103.8360824585,
           });
-          url = "http://13.55.33.68:5004/getCarpark/2";
+          url = "http://127.0.0.1:5004/getCarpark/2";
           axios
             .post(url, {
               requesttype: 1000,
@@ -702,7 +706,7 @@ export default defineComponent({
                 lat: 1.3041540384,
                 long: 103.8319625854,
               });
-              url = "http://13.55.33.68:5004/getCarpark/3";
+              url = "http://127.0.0.1:5004/getCarpark/3";
               axios
                 .post(url, {
                   requesttype: 1000,
@@ -716,7 +720,7 @@ export default defineComponent({
                     lat: 1.3033454418,
                     long: 103.8345565796,
                   });
-                  url = "http://13.55.33.68:5004/getCarpark/4";
+                  url = "http://127.0.0.1:5004/getCarpark/4";
                   axios
                     .post(url, {
                       requesttype: 1000,
@@ -730,7 +734,7 @@ export default defineComponent({
                         lat: 1.3050314188,
                         long: 103.8329772949,
                       });
-                      url = "http://13.55.33.68:5004/getCarpark/5";
+                      url = "http://127.0.0.1:5004/getCarpark/5";
                       axios
                         .post(url, {
                           requesttype: 1000,
@@ -745,7 +749,7 @@ export default defineComponent({
                             long: 103.8304824829,
                           });
 
-                          url = "http://13.55.33.68:5004/getCarpark/6";
+                          url = "http://127.0.0.1:5004/getCarpark/6";
                           axios
                             .post(url, {
                               requesttype: 1000,
@@ -761,7 +765,7 @@ export default defineComponent({
                                 long: 103.8386230469,
                               });
 
-                              url = "http://13.55.33.68:5004/getCarpark/7";
+                              url = "http://127.0.0.1:5004/getCarpark/7";
                               axios
                                 .post(url, {
                                   requesttype: 1000,
@@ -776,7 +780,7 @@ export default defineComponent({
                                     lat: 1.3010677099,
                                     long: 103.8357620239,
                                   });
-                                  url = "http://13.55.33.68:5004/getCarpark/8";
+                                  url = "http://127.0.0.1:5004/getCarpark/8";
                                   axios
                                     .post(url, {
                                       requesttype: 1000,
@@ -792,7 +796,7 @@ export default defineComponent({
                                         long: 103.8333206177,
                                       });
                                       let url =
-                                        "http://13.55.33.68:5004/getCarparkPrice/1";
+                                        "http://127.0.0.1:5004/getCarparkPrice/1";
                                       axios.get(url).then((response) => {
                                         this.carparksArraySimu[0][
                                           "weekdaypeakhourly"
@@ -820,7 +824,7 @@ export default defineComponent({
                                         );
 
                                         url =
-                                          "http://13.55.33.68:5004/getCarparkPrice/2";
+                                          "http://127.0.0.1:5004/getCarparkPrice/2";
                                         axios.get(url).then((response) => {
                                           this.carparksArraySimu[1][
                                             "weekdaypeakhourly"
@@ -848,7 +852,7 @@ export default defineComponent({
                                           );
 
                                           url =
-                                            "http://13.55.33.68:5004/getCarparkPrice/3";
+                                            "http://127.0.0.1:5004/getCarparkPrice/3";
                                           axios.get(url).then((response) => {
                                             this.carparksArraySimu[2][
                                               "weekdaypeakhourly"
@@ -876,7 +880,7 @@ export default defineComponent({
                                             );
 
                                             url =
-                                              "http://13.55.33.68:5004/getCarparkPrice/4";
+                                              "http://127.0.0.1:5004/getCarparkPrice/4";
                                             axios.get(url).then((response) => {
                                               this.carparksArraySimu[3][
                                                 "weekdaypeakhourly"
@@ -904,7 +908,7 @@ export default defineComponent({
                                               );
 
                                               url =
-                                                "http://13.55.33.68:5004/getCarparkPrice/5";
+                                                "http://127.0.0.1:5004/getCarparkPrice/5";
                                               axios
                                                 .get(url)
                                                 .then((response) => {
@@ -936,7 +940,7 @@ export default defineComponent({
                                                   );
 
                                                   url =
-                                                    "http://13.55.33.68:5004/getCarparkPrice/6";
+                                                    "http://127.0.0.1:5004/getCarparkPrice/6";
                                                   axios
                                                     .get(url)
                                                     .then((response) => {
@@ -969,7 +973,7 @@ export default defineComponent({
                                                           100
                                                       );
                                                       url =
-                                                        "http://13.55.33.68:5004/getCarparkPrice/7";
+                                                        "http://127.0.0.1:5004/getCarparkPrice/7";
                                                       axios
                                                         .get(url)
                                                         .then((response) => {
@@ -1003,7 +1007,7 @@ export default defineComponent({
                                                           );
 
                                                           url =
-                                                            "http://13.55.33.68:5004/getCarparkPrice/8";
+                                                            "http://127.0.0.1:5004/getCarparkPrice/8";
                                                           axios
                                                             .get(url)
                                                             .then(
@@ -1076,7 +1080,7 @@ export default defineComponent({
                                         ]);
                                       }
 
-                                      // const url = "http://13.55.33.68:5004/getCarparkPrice/1"
+                                      // const url = "http://127.0.0.1:5004/getCarparkPrice/1"
                                       // axios
                                       //     .get(url)
                                       //     .then((response) => {
