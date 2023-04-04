@@ -244,7 +244,8 @@
                     confirmationAlert(
                       eachBooking.bookingID,
                       eachBooking.amount,
-                      eachBooking.bookingLocation
+                      eachBooking.bookingLocation,
+                      userData
                     )
                   "
                   color="danger"
@@ -344,7 +345,7 @@ export default defineComponent({
   },
   setup() {
     const handlerMessage = ref("");
-    const confirmationAlert = async (bookingID, amount, bookingLocation) => {
+    const confirmationAlert = async (bookingID, amount, bookingLocation,userData) => {
       let amount2 = amount;
       amount2 = amount2.toString();
       const dotExists = amount.includes(".");
@@ -380,7 +381,7 @@ export default defineComponent({
               handlerMessage.value = "Alert confirmed";
 
               // update booking status to "cancel"
-              refund(amount);
+  
               let url = "http://13.55.33.68:5001/bookings/" + bookingID;
               axios
                 .put(url, {
@@ -408,7 +409,8 @@ export default defineComponent({
                               eachCarpark.carparkID +
                               "/2/-1";
                             axios.get(url).then((response) => {
-                              console.log(response);
+                              console.log(response, "here")
+                              
                               const dotExists = balance.includes(".");
                               if (dotExists) {
                                 newFloat = balance.split(".");
@@ -421,7 +423,16 @@ export default defineComponent({
                               } else {
                                 newFloat += ".00";
                               }
-                              sucessMsg(amount, newFloat);
+                              // create transcation
+                              url = "http://13.55.33.68:5006/topup" 
+                              axios.post(url, {
+                                amount: amount,
+                                userID: userData.userID,
+                              })
+                              .then((response) => {
+                                console.log(response, "refunded")
+                                sucessMsg(amount, newFloat);
+                              })
                             });
                           }
                         }
@@ -456,19 +467,6 @@ export default defineComponent({
       });
 
       await alert.present();
-    };
-
-    const refund = async (amount) => {
-      const userData = JSON.parse(localStorage.getItem("userData"));
-      const url = "http://13.55.33.68:5006/deduct";
-      axios
-        .post(url, {
-          amount: amount,
-          userID: userData["userID"],
-        })
-        .then((response) => {
-          console.log(response);
-        });
     };
 
     return {
