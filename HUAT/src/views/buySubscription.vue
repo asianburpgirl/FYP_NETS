@@ -188,7 +188,7 @@ export default defineComponent({
                     })
                     .then((response) => {
                       const balance = response.data.data
-                      url = "http://13.55.33.68:5006/deduct"
+                      const url = "http://13.55.33.68:5006/deduct"
                       axios.post(url,{
                         transType: "Plan",
                         amount: subsAmt,
