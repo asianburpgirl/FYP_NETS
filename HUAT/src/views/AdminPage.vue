@@ -49,8 +49,8 @@
           <h3>No. of bookings per location</h3>
           <GChart
             type="Map"
-            :data="GeoChartData"
-            :options="GeoChartOptions"
+            :data="MapChartData"
+            :options="MapChartOptions"
             :settings="settings"
           />
         </ion-col>
@@ -81,7 +81,7 @@ export default defineComponent({
       ColumnChartData: [["Subscription Plan", "No. of Subscribers", { role: 'style' }]],
       LineChartData: [["Time", "Number of bookings"]],
       BarChartData: [['Month','Revenue']],
-      GeoChartData: [['Places', 'No. of Bookings']],
+      MapChartData: [['Lat','Long', 'No. of Bookings']],
       PieChartoptions: {
         // title: "% of bookings per location",
         pieHole: 0.1,
@@ -109,7 +109,7 @@ export default defineComponent({
         // width: 400,
         // height: 400
       },
-      GeoChartOptions: {
+      MapChartOptions: {
         // region: 'SG',
         // displayMode: 'markers',
         // datalessRegionColor: 'lightblue',
@@ -261,18 +261,21 @@ export default defineComponent({
     getGeoChart() {
       const locations = [];
       const count = {};
-      let GeoData = [];
+      const finals = {};
+      let MapData = [];
+      let carparkData = [];
       const url = "http://13.55.33.68:5001/bookings";
+      const url2 = "http://13.55.33.68:5003/carparks"
       
       axios
         .get(url)
         .then((response) => {
-          GeoData = response.data.data.bookings;
+          MapData = response.data.data.bookings;
           // console.log(pieData)
           // Store the locations into a list first (without duplicates)
-          for (let i = 0; i < GeoData.length; i++){
-            if (!locations.includes(GeoData[i]["bookingLocation"])) {
-              locations.push(GeoData[i]["bookingLocation"])
+          for (let i = 0; i < MapData.length; i++){
+            if (!locations.includes(MapData[i]["bookingLocation"])) {
+              locations.push(MapData[i]["bookingLocation"])
             }
           }
           // console.log(locations)
@@ -280,30 +283,45 @@ export default defineComponent({
           for (let i = 0; i < locations.length; i++){
             count[locations[i]] = 0;
           }
-          // console.log(count)
+          console.log(count)
           // count the number of bookings per location 
-          for (let i = 0; i < GeoData.length; i++){
+          for (let i = 0; i < MapData.length; i++){
             for (const cnt in count){
-              if (cnt == GeoData[i]["bookingLocation"]){
+              if (cnt == MapData[i]["bookingLocation"]){
                 count[cnt] += 1;
               }
             }
           }
-          // console.log(count)
-          // Add it in to the chart
-          for (const cnnt in count){
-            if (cnnt == "*SCAPE") {
-              this.GeoChartData.push([cnnt + " shopping mall", "No. of bookings: " + count[cnnt]])
-            } else {
-              this.GeoChartData.push([cnnt, "No. of bookings: " + count[cnnt]])
+
+          axios
+          .get(url2)
+          .then((response) => {
+            carparkData = response.data.data.carparks
+            console.log(carparkData)
+
+            for (let i = 0; i < carparkData.length; i++){
+              for (const cnt in count){
+                if (cnt == carparkData[i]['carparkName']){
+                  finals[carparkData[i]['carparkName']] = [carparkData[i]['latitude'],carparkData[i]['longitude'],count[cnt]];
+                }
+              }
             }
-            // this.GeoChartData.push([cnnt, count[cnnt]])
-          }
-          return this.GeoChartData;
+            console.log(finals)
+
+            // Add it in to the chart
+            for (const final in finals){
+              this.MapChartData.push([finals[final][0],finals[final][1],"No. of bookings: " + finals[final][2]])
+            }
+
+            return this.MapChartData;
+          })
+          .catch((error) => {
+            console.log(error.message);
+          })
         })
         .catch((error) => {
           console.log(error.message);
-        });
+        }); 
     },
     async getRevenueData() {
       try {
