@@ -208,7 +208,7 @@ export default defineComponent({
                 endTime.getMinutes() +
                 ":00";
 
-              let url = "http://127.0.0.1:5001/bookings";
+              let url = "http://13.55.33.68:5001/bookings";
               axios
                 .post(url, {
                   bookingDateTime: currentTime,
@@ -222,7 +222,7 @@ export default defineComponent({
                 })
                 .then((response) => {
                   url =
-                    "http://127.0.0.1:5001/updateBalance/" +
+                    "http://13.55.33.68:5001/updateBalance/" +
                     response.data.data.bookingID;
                   let bookingAmount = response.data.data.bookingAmt;
                   bookingAmount = bookingAmount.toString();
@@ -251,7 +251,7 @@ export default defineComponent({
                       axios
                         .get(url)
                         .then((response) => {
-                          url = "http://127.0.0.1:5006/deduct";
+                          url = "http://13.55.33.68:5006/deduct";
                           axios
                             .post(url, {
                               amount: bookingAmount,
