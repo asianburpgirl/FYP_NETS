@@ -179,7 +179,7 @@ export default defineComponent({
                   // this.subsAmt = (this.userSpending * 3 * 0.95).toFixed(2)
 
                   // deduct money
-                  const url =
+                  let url =
                     "http://127.0.0.1:5005/updateBalanceSub/" +
                     response.data.data.subsID;
                   axios
@@ -187,7 +187,18 @@ export default defineComponent({
                       subsID: response.data.data.subsID,
                     })
                     .then((response) => {
-                      sucessMsg(subsAmt, response.data.data);
+                      const balance = response.data.data
+                      url = "http://127.0.0.1:5006/deduct";
+                          axios
+                            .post(url, {
+                              transType: "Plan",
+                              amount: subsAmt,
+                              userID: userData.userID,
+                            })
+                            .then((response) => {
+                              sucessMsg(subsAmt, balance);
+                            });
+                      
                     })
                     .catch((error) => {
                       console.log(error.message);

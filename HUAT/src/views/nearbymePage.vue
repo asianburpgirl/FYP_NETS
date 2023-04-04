@@ -495,8 +495,9 @@ export default defineComponent({
                           url = "http://127.0.0.1:5006/deduct";
                           axios
                             .post(url, {
-                              amount: bookingAmount,
-                              userID: userID,
+                                transType: "Booking",
+                                amount: bookingAmount,
+                                userID: userID,
                             })
                             .then((response) => {
                               sucessMsg(newFloat, balance);

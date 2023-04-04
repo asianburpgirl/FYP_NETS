@@ -177,7 +177,7 @@ def deductTrans():
         transID = transIDList[0] +1
 
     transDate = datetime.datetime.now()
-    transType = "Deduct"
+    transType = request.json.get('transType', None)
     amount = request.json.get('amount', None)
     userID = request.json.get('userID', None)
 
