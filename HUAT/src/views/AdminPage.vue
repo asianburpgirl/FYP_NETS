@@ -81,7 +81,8 @@ export default defineComponent({
       ColumnChartData: [["Subscription Plan", "No. of Subscribers", { role: 'style' }]],
       LineChartData: [["Time", "Number of bookings"]],
       BarChartData: [['Month','Revenue']],
-      MapChartData: [['Lat','Long', 'No. of Bookings']],
+      // MapChartData: [['Lat','Long', 'No. of Bookings']],
+      MapChartData: [['Places', 'No. of Bookings', 'Marker']],
       PieChartoptions: {
         // title: "% of bookings per location",
         pieHole: 0.1,
@@ -116,10 +117,24 @@ export default defineComponent({
         // colorAxis: {colors: ['green','gray', 'red']},
         // enableRegionInteractivity: true,
         mapType: 'terrain',
-        zoomLevel: 15,
+        zoomLevel: 16,
         showTooltip: true,
         showInfoWindow: true,
         useMapTypeControl: true,
+        icons: {
+          blue: {
+            normal:   '../assets/icon/Icons-Land-Vista-Map-Markers-Map-Marker-Ball-Azure.48.png',
+            selected: '../assets/icon/Icons-Land-Vista-Map-Markers-Map-Marker-Ball-Right-Azure.48.png'
+          },
+          green: {
+            normal:   '../assets/icon/Icons-Land-Vista-Map-Markers-Map-Marker-Ball-Chartreuse.48.png',
+            selected: '../assets/icon/Icons-Land-Vista-Map-Markers-Map-Marker-Ball-Right-Chartreuse.48.png'
+          },
+          pink: {
+            normal:   '../assets/icon/Icons-Land-Vista-Map-Markers-Map-Marker-Ball-Pink.48.png',
+            selected: '../assets/icon/Icons-Land-Vista-Map-Markers-Map-Marker-Ball-Right-Pink.48.png'
+          }
+        }
       },
       settings: {
         // packages: ['geochart']
@@ -261,11 +276,11 @@ export default defineComponent({
     getGeoChart() {
       const locations = [];
       const count = {};
-      const finals = {};
+      // const finals = {};
       let MapData = [];
-      let carparkData = [];
+      // let carparkData = [];
       const url = "http://13.55.33.68:5001/bookings";
-      const url2 = "http://13.55.33.68:5003/carparks"
+      // const url2 = "http://13.55.33.68:5003/carparks"
       
       axios
         .get(url)
@@ -293,31 +308,54 @@ export default defineComponent({
             }
           }
 
-          axios
-          .get(url2)
-          .then((response) => {
-            carparkData = response.data.data.carparks
-            console.log(carparkData)
-
-            for (let i = 0; i < carparkData.length; i++){
-              for (const cnt in count){
-                if (cnt == carparkData[i]['carparkName']){
-                  finals[carparkData[i]['carparkName']] = [carparkData[i]['latitude'],carparkData[i]['longitude'],count[cnt]];
-                }
+          // console.log(count)
+          // Add it in to the chart
+          for (const cnnt in count){
+            if (cnnt == "*SCAPE") {
+              if (count[cnnt] > 20) {
+                this.MapChartData.push([cnnt + " shopping mall", "No. of bookings: " + count[cnnt], 'pink'])
+              } else if (count[cnnt] >= 10 && count[cnnt] <= 20) {
+                this.MapChartData.push([cnnt + " shopping mall", "No. of bookings: " + count[cnnt], 'blue'])
+              } else {
+                this.MapChartData.push([cnnt + " shopping mall", "No. of bookings: " + count[cnnt], 'green'])
+              }
+            } else {
+              if (count[cnnt] > 20) {
+                this.MapChartData.push([cnnt, "No. of bookings: " + count[cnnt], 'pink'])
+              } else if (count[cnnt] >= 10 && count[cnnt] <= 20) {
+                this.MapChartData.push([cnnt, "No. of bookings: " + count[cnnt], 'blue'])
+              } else {
+                this.MapChartData.push([cnnt, "No. of bookings: " + count[cnnt], 'green'])
               }
             }
-            console.log(finals)
+            
+          }
 
-            // Add it in to the chart
-            for (const final in finals){
-              this.MapChartData.push([finals[final][0],finals[final][1],"No. of bookings: " + finals[final][2]])
-            }
+          // axios
+          // .get(url2)
+          // .then((response) => {
+          //   carparkData = response.data.data.carparks
+          //   console.log(carparkData)
 
-            return this.MapChartData;
-          })
-          .catch((error) => {
-            console.log(error.message);
-          })
+          //   for (let i = 0; i < carparkData.length; i++){
+          //     for (const cnt in count){
+          //       if (cnt == carparkData[i]['carparkName']){
+          //         finals[carparkData[i]['carparkName']] = [carparkData[i]['latitude'],carparkData[i]['longitude'],count[cnt]];
+          //       }
+          //     }
+          //   }
+          //   console.log(finals)
+
+          //   // Add it in to the chart
+          //   for (const final in finals){
+          //     this.MapChartData.push([finals[final][0],finals[final][1],"No. of bookings: " + finals[final][2]])
+          //   }
+
+          //   return this.MapChartData;
+          // })
+          // .catch((error) => {
+          //   console.log(error.message);
+          // })
         })
         .catch((error) => {
           console.log(error.message);
