@@ -7,7 +7,7 @@
       </div>
       
       <div class="ion-align-items-center">
-        <h6>Top 8 Popular Carparks</h6>
+        <h6>Top 4 Popular Carparks</h6>
           <GChart
             type="PieChart"
             :data="PieChartData"
@@ -65,7 +65,7 @@
 
 <script>
 import { IonGrid } from "@ionic/vue";
-import Chart from 'chart.js';
+import Chart from 'chart.js/auto';
 import { GChart } from "vue-google-charts";
 import { defineComponent } from "vue";
 import axios from "axios";
