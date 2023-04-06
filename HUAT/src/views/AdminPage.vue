@@ -7,7 +7,7 @@
       </div>
       
       <div class="ion-align-items-center">
-        <h6>Top 4 Popular Carparks</h6>
+        <h6>8 Carparks</h6>
           <GChart
             type="PieChart"
             :data="PieChartData"
@@ -16,7 +16,7 @@
       </div>
 
       <div class="ion-align-items-center">
-        <h6>Most Popular Subscription Plans</h6>
+        <h6>Subscription Plans</h6>
           <GChart
             type="ColumnChart"
             :data="ColumnChartData"
