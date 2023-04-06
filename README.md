@@ -27,9 +27,9 @@ CPAAS is created with:
 
 ## Project Environment Setup
 
-Ensure that NPM and node.js is installed. https://docs.npmjs.com/downloading-and-installing-node-js-and-npm#using-a-node-installer-to-install-node-js-and-npm
-Ensure that git is installed. https://git-scm.com/book/en/v2/Getting-Started-Installing-Git
-Choose a folder which you want to store the repo and go into the folder
+- Ensure that NPM and node.js is installed. https://docs.npmjs.com/downloading-and-installing-node-js-and-npm#using-a-node-installer-to-install-node-js-and-npm
+- Ensure that git is installed. https://git-scm.com/book/en/v2/Getting-Started-Installing-Git
+- Choose a folder which you want to store the repo and go into the folder
 git clone https://github.com/asianburpgirl/FYP_NETS.git to clone the new repo and change directory into the folder
 
 ### Starting the Project

@@ -450,14 +450,11 @@ export default defineComponent({
       this.subscriptionIsOpen = isOpen;
     },
     calculateTotalPrice(startTime, endTime, dateFormmated, rates) {
-      startTime = new Date(
-        dateFormmated + " " + startTime.toString().slice(15, 25)
-      );
-      endTime = new Date(
-        dateFormmated + " " + endTime.toString().slice(15, 25)
-      );
+        
+        startTime = new Date(dateFormmated +" " +startTime.toString().slice(15,25))
+        endTime = new Date(dateFormmated +" " +endTime.toString().slice(15,25))
 
-      console.log(startTime, endTime, dateFormmated, rates);
+        console.log(startTime, endTime, dateFormmated, rates)
       // use startTime, EndTime,date, calculate price based on weekend/weekday + peak/nonpeak
       // Tue Mar 28 2023 07:54:00 GMT+0800 (Singapore Standard Time) | Tue Mar 28 2023 15:54:00 GMT+0800 (Singapore Standard Time)| '2023-03-28' | object of rates
       let fee = 0;
@@ -615,7 +612,7 @@ export default defineComponent({
           rates
         )
       );
-      console.log(this.userBalance, totalPrice);
+      console.log(this.userBalance,totalPrice)
       if (this.chosenCarpark.availableLots == 0) {
         this.errorMessage.push("This carpark does not have anymore slots!");
       }
@@ -632,7 +629,6 @@ export default defineComponent({
       if (this.userBalance < totalPrice) {
         this.errorMessage.push("Insufficient credit. Top up your wallet !");
       }
-
       if (this.errorMessage.length == 0) {
         this.userData = JSON.parse(localStorage.getItem("userData"));
         // const userID = this.userData.userID;
