@@ -1,4 +1,6 @@
 .DS_Store
+.idea
+.vscode
 HUAT/android/.idea/deploymentTargetDropDown.xml
 HUAT/android/app/src/main/res/xml/config 2.xml
 HUAT/android/.idea/misc.xml
@@ -376,6 +378,6 @@ HUAT/android/app/src/main/assets/public/js/990.7c8b4718.js
 HUAT/ios/App/Podfile 4.lock
 HUAT/backend/__pycache__/user.cpython-38.pyc
 *.pyc
-
+HUAT/package-lock.json
 # Local Netlify folder
 .netlify
